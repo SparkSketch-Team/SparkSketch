@@ -33,6 +33,42 @@ jobs:
           output_location: "build" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
 
+  merge_to_dev:
+    needs: build_and_deploy_job
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    name: Merge Main to Dev
+    steps:
+      - name: Checkout Main Branch
+        uses: actions/checkout@v3
+        with:
+          ref: main
+      - name: Merge Main into Dev
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git checkout dev
+          git merge main
+          git push origin dev
+
+  merge_to_staging:
+    needs: build_and_deploy_job
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    name: Merge Main to Staging
+    steps:
+      - name: Checkout Main Branch
+        uses: actions/checkout@v3
+        with:
+          ref: main
+      - name: Merge Main into Staging
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git checkout staging
+          git merge main
+          git push origin staging
+
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
