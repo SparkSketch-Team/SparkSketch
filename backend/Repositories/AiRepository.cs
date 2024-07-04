@@ -24,8 +24,9 @@ using OpenAI_API.Models;
 
 public class AiRepository : BaseRepository
 {
+    private List<Prompt> _prompts = new();
 
-    public async Task<ChatResult> getResponse(JsonElement aiFunctionInfo)
+    public async Task<ChatResult> CreateNewPrompt()
     {
         var configBuilder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -43,17 +44,37 @@ public class AiRepository : BaseRepository
             MaxTokens = 500,
             ResponseFormat = ChatRequest.ResponseFormats.JsonObject,
             Messages = new ChatMessage[] {
-        new ChatMessage(ChatMessageRole.System, "You are a helpful assistant designed to output JSON."),
-        new ChatMessage(ChatMessageRole.User, "Who won the world series in 2020?  Return JSON of a 'wins' dictionary with the year as the numeric key and the winning team as the string value.")
+        new ChatMessage(ChatMessageRole.System, "You are a helpful assistant designed to output drawing prompts in JSON format."),
+        new ChatMessage(ChatMessageRole.System, "These are the current prompts: " + _prompts.ToString()),
+        new ChatMessage(ChatMessageRole.User, "Give a new drawing prompt for a quick doodle.  Return JSON of a 'prompt' dictionary with the theme and prompt as the string value.")
     }
         };
 
         var results = await api.Chat.CreateChatCompletionAsync(chatRequest);
         Console.WriteLine(results);
 
+        JsonResponse? jsonResponse = JsonSerializer.Deserialize<JsonResponse>(results.ToString());
+
+        if (jsonResponse != null)
+        {
+            _prompts.Add(jsonResponse.Prompt);
+        }
+
 
         return results;
+    }
 
+    public async Task<Prompt> GetPrompt()
+    {
+        if (_prompts.Count > 0)
+        {
+            return _prompts[0];
+        }
+        else
+        {
+            await CreateNewPrompt();
+            return _prompts[0];
+        }
     }
 
 }

@@ -10,21 +10,42 @@ public class AiController : ApiController
     private AiRepository aRepo = new AiRepository();
 
     [HttpPost]
-    [Route("GetResponse")]
-    public async Task<JsonResult> GetResponse([FromBody] JsonElement aiFunctionInfo)
+    [Route("CreateNewPrompt")]
+    public async Task<JsonResult> CreateNewPrompt()
     {
         using (aRepo)
         {
             try
             {
-                var response = await aRepo.getResponse(aiFunctionInfo);
+                var response = await aRepo.CreateNewPrompt();
                 if (response == null)
                 {
                     return FailMessage();
                 }
-                return SuccessMessage("Successfully connected to the AI");
+                return SuccessMessage(response);
             }
             catch (Exception e)
+            {
+                return FailMessage(e.Message);
+            }
+        }
+    }
+
+    [HttpGet]
+    [Route("GetPrompt")]
+    public async Task<JsonResult> GetPrompt()
+    {
+        using (aRepo)
+        {
+            try
+            {
+                var response = await aRepo.GetPrompt();
+                if (response == null)
+                {
+                    return FailMessage("No prompt available.");
+                }
+                return SuccessMessage(response);
+            } catch (Exception e)
             {
                 return FailMessage(e.Message);
             }
