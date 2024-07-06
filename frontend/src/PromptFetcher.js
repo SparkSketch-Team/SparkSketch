@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const DataFetcher = () => {
+const PromptFetcher = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -9,7 +9,7 @@ const DataFetcher = () => {
   useEffect(() => {
     axios.get('https://localhost:7251/api/Ai/getPrompt')
       .then(response => {
-        setData(response.data);
+        setData(response.data.results);
         setLoading(false);
       })
       .catch(error => {
@@ -30,4 +30,4 @@ const DataFetcher = () => {
   );
 };
 
-export default DataFetcher;
+export default PromptFetcher;
