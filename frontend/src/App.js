@@ -1,6 +1,6 @@
 // src/App.js
 import React from 'react';
-import DataFetcher from './DataFetcher';
+import DataFetcher from './PromptFetcher';
 
 function App() {
   return (
