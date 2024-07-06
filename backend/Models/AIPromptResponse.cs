@@ -11,8 +11,23 @@ public class AIPromptResponse
     public string Description { get; set; }
 }
 
-public class JsonResponse
+public class AiPromptJsonResponse
 {
     [JsonPropertyName("prompt")]
-    public AIPromptResponse Prompt { get; set; }
+    public AIPromptResponse aIPromptResponse { get; set; }
+
+    public static Prompt ConvertAiResponeToPrompt(AIPromptResponse aiPromptResponse)
+    {
+        return new Prompt
+        {
+            Theme = aiPromptResponse.Theme,
+            PromptText = aiPromptResponse.Description,
+            IsActive = true, // Assuming new prompts are active by default
+            PromptDate = DateTime.Now,
+            CreateDate = DateTime.Now,
+            //ModifiedDate = DateTime.Now,
+            CreatedBy = "system", // Assuming system created this entry
+            //ModifiedBy = "system" // Assuming system modified this entry
+        };
+    }
 }

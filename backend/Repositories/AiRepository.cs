@@ -4,6 +4,9 @@ using System.Text.Json.Nodes;
 using System.Text.Json;
 using OpenAI_API.Chat;
 using OpenAI_API.Models;
+using System;
+using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 // In SDK-style projects such as this one, several assembly attributes that were historically
 // defined in this file are now automatically added during build and populated with
@@ -24,10 +27,11 @@ using OpenAI_API.Models;
 
 public class AiRepository : BaseRepository
 {
-    private List<AIPromptResponse> _prompts = new();
 
     public async Task<ChatResult> CreateNewPrompt()
     {
+
+        //TODO: Fix this it is stupid
         var configBuilder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.development.json");
@@ -37,6 +41,20 @@ public class AiRepository : BaseRepository
 
         var api = new OpenAI_API.OpenAIAPI(apiKey);
 
+        List<string> oldPrompts = await GetAllPromptTextsAsync();
+        StringBuilder sb = new StringBuilder();
+
+        foreach (var prompt in oldPrompts)
+        {
+            if (sb.Length > 0)
+            {
+                sb.Append(" "); // Add separator if needed
+            }
+            sb.Append(prompt);
+        }
+
+        string combinedString = sb.ToString();
+
         ChatRequest chatRequest = new ChatRequest()
         {
             Model = Model.ChatGPTTurbo,
@@ -45,36 +63,67 @@ public class AiRepository : BaseRepository
             ResponseFormat = ChatRequest.ResponseFormats.JsonObject,
             Messages = new ChatMessage[] {
         new ChatMessage(ChatMessageRole.System, "You are a helpful assistant designed to output drawing prompts in JSON format."),
-        new ChatMessage(ChatMessageRole.System, "These are the current prompts: " + _prompts.ToString()),
-        new ChatMessage(ChatMessageRole.User, "Give a new drawing prompt for a quick doodle.  Return JSON of a 'prompt' dictionary with the theme and prompt as the string value.")
+        //TODO: fix, this is really stupid
+        new ChatMessage(ChatMessageRole.System, "The format is \"prompt\": { \"theme\": \"\", \"prompt\" }. Do not deviate from this format."),
+        new ChatMessage(ChatMessageRole.System, "These are the old prompts: " + combinedString + " The prompt you return must be different that the other prompts."),
+        new ChatMessage(ChatMessageRole.User, "Give a new drawing prompt for a quick doodle.  Return JSON of a 'prompt' dictionary with the 'theme' and 'prompt' as the string value.")
     }
         };
 
         var results = await api.Chat.CreateChatCompletionAsync(chatRequest);
         Console.WriteLine(results);
 
-        JsonResponse? jsonResponse = JsonSerializer.Deserialize<JsonResponse>(results.ToString());
+        AiPromptJsonResponse? jsonResponse = JsonSerializer.Deserialize<AiPromptJsonResponse>(results.ToString());
 
         if (jsonResponse != null)
         {
-            _prompts.Add(jsonResponse.Prompt);
+            Prompt newPrompt = AiPromptJsonResponse.ConvertAiResponeToPrompt(jsonResponse.aIPromptResponse);
+
+            // Save to database
+            try
+            {
+                db.Prompts.Add(newPrompt);
+                await db.SaveChangesAsync();
+            } catch (Exception e)
+            {
+                Console.WriteLine("An error occurred: " + e.Message);
+                if (e.InnerException != null)
+                {
+                    Console.WriteLine("Inner exception: " + e.InnerException.Message);
+                }
+            }
         }
 
 
         return results;
     }
 
-    public async Task<AIPromptResponse> GetPrompt()
+    public async Task<Prompt> GetPrompt()
     {
-        if (_prompts.Count > 0)
+        // Get the current date
+        DateTime currentDate = DateTime.Today;
+
+        // Find the first prompt with the current date
+        var prompt = db.Prompts.FirstOrDefault(p => p.PromptDate.Date == currentDate);
+
+        if (prompt != null)
         {
-            return _prompts[0];
+            return prompt;
         }
         else
         {
             await CreateNewPrompt();
-            return _prompts[0];
+            // Assuming CreateNewPrompt adds a new prompt to the _prompts list
+            return db.Prompts.First(p => p.PromptDate.Date == currentDate);
         }
+
+
     }
+
+    public async Task<List<string>> GetAllPromptTextsAsync()
+    {
+    return await db.Prompts.Select(p => p.PromptText).ToListAsync();
+    }
+
 
 }
