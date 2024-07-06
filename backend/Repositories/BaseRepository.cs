@@ -1,16 +1,16 @@
 public abstract class BaseRepository : IDisposable
 {
-    //protected DATABASE_NAME db { get; private set; }
+    protected SparkSketchContext db { get; private set; }
 
     public BaseRepository()
     {
-        //db = new CoordinatusContext();
+        db = new SparkSketchContext();
     }
 
     
     public void Dispose()
     {
-        //db.Dispose();
+        db.Dispose();
     }
     
 }

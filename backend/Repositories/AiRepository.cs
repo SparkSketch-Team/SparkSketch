@@ -24,7 +24,7 @@ using OpenAI_API.Models;
 
 public class AiRepository : BaseRepository
 {
-    private List<Prompt> _prompts = new();
+    private List<AIPromptResponse> _prompts = new();
 
     public async Task<ChatResult> CreateNewPrompt()
     {
@@ -64,7 +64,7 @@ public class AiRepository : BaseRepository
         return results;
     }
 
-    public async Task<Prompt> GetPrompt()
+    public async Task<AIPromptResponse> GetPrompt()
     {
         if (_prompts.Count > 0)
         {
