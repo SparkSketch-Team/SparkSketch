@@ -10,10 +10,10 @@ builder.Services.AddSwaggerGen();
 
 //TODO: Security Risk, will change
 builder.Services.AddCors(options => {
-    options.AddPolicy("AllowAll", builder => {
-        builder.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
+    options.AddPolicy("AllowReactApp", builder => {
+        builder.WithOrigins("https://lemon-ground-0ee28a610.5.azurestaticapps.net")
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
     });
 });
 
@@ -27,7 +27,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+app.UseCors("AllowReactApp");
 app.UseRouting();
 
 
