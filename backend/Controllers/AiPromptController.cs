@@ -7,7 +7,12 @@ using System.Text.Json;
 public class AiController : ApiController
 {
 
-    private AiRepository aRepo = new AiRepository();
+    private AiRepository aRepo;
+
+    public AiController(IConfiguration configuration)
+    {
+        aRepo = new AiRepository(configuration);
+    }
 
     [HttpPost]
     [Route("CreateNewPrompt")]

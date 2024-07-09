@@ -7,6 +7,7 @@ using OpenAI_API.Models;
 using System;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
+using System.Transactions;
 
 // In SDK-style projects such as this one, several assembly attributes that were historically
 // defined in this file are now automatically added during build and populated with
@@ -28,16 +29,14 @@ using System.Text;
 public class AiRepository : BaseRepository
 {
 
+    private string apiKey;
+    public AiRepository(IConfiguration config) : base(config)
+    {
+        apiKey = _config["OpenAI:ApiKey"];
+    }
+
     public async Task<ChatResult> CreateNewPrompt()
     {
-
-        //TODO: Fix this it is stupid
-        var configBuilder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.development.json");
-
-        IConfiguration configuration = configBuilder.Build();
-        string apiKey = configuration["OpenAI:ApiKey"];
 
         var api = new OpenAI_API.OpenAIAPI(apiKey);
 
