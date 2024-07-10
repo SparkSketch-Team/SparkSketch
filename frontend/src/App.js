@@ -5,13 +5,16 @@ import NavBar from './NavBar';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Welcome to My React App</h1>
-        <NavBar />
-        <PromptFetcher />
-      </header>
-    </div>
+    <><head>
+      <title>Sparksketch</title>
+      <link href = "App.css" rel = "stylesheet"></link>
+      </head><div className="App">
+        <header className="App-header">
+          <h1>Welcome to My React App</h1>
+          <NavBar />
+          <PromptFetcher />
+        </header>
+      </div></>
   );
 }
 
