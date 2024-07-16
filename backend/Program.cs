@@ -1,3 +1,4 @@
+using System.Security.Cryptography.Xml;
 using Microsoft.EntityFrameworkCore;
 
 // add class Program and add Main funct
@@ -14,26 +15,6 @@ class Program
         builder.Configuration.AddEnvironmentVariables();
 
 
-        /*
-                builder.Configuration.AddEnvironmentVariables();
-                builder.Configuration.AddUserSecrets<Program>();
-
-                var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                try
-                {
-                    // Don't break build if no keyvault access
-                    var keyVaultClient = new KeyVaultClient(
-                    new KeyVaultClient.AuthenticationCallback(
-                        azureServiceTokenProvider.KeyVaultTokenCallback));
-
-                    builder.Configuration.AddAzureKeyVault(
-                        $"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/",
-                        keyVaultClient,
-                        new DefaultKeyVaultSecretManager());
-                }
-                catch
-                { }
-        */
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -43,7 +24,7 @@ class Program
         
         builder.Services.AddCors(options => {
             options.AddPolicy("AllowReactApp", builder => {
-                builder.WithOrigins("https://lemon-ground-0ee28a610.5.azurestaticapps.net")
+                builder.AllowAnyOrigin()
                                .AllowAnyHeader()
                                .AllowAnyMethod();
             });
