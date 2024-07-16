@@ -2,15 +2,17 @@
 import React from 'react';
 import PromptFetcher from './PromptFetcher';
 import NavBar from './NavBar';
+import './App.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Welcome to My React App</h1>
-        <NavBar />
-        <PromptFetcher />
-      </header>
+      <NavBar  />
+        <header className="App-header">
+          <h1>Sparksketch Prototype</h1>
+          <PromptFetcher />
+        </header>
     </div>
   );
 }
