@@ -7,7 +7,7 @@ const PromptFetcher = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get('https://sparksketch-dev.azurewebsites.net/api/Ai/getPrompt')
+    axios.get(process.env.REACT_APP_API_URL + 'api/Ai/getPrompt')
       .then(response => {
         setData(response.data.results);
         setLoading(false);
