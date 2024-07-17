@@ -31,7 +31,16 @@ class Program
         });
 
         var app = builder.Build();
+        var app = builder.Build();
 
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+            app.UseExceptionHandler("/Error");
+            app.UseHsts();
+        }
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
@@ -44,16 +53,31 @@ class Program
         app.UseHttpsRedirection();
         app.UseCors("AllowReactApp");
         app.UseRouting();
+        app.UseHttpsRedirection();
+        app.UseCors("AllowReactApp");
+        app.UseRouting();
 
 
+        app.UseAuthorization();
         app.UseAuthorization();
 
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
         });
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
 
         app.MapControllers();
+        app.MapControllers();
+
+        app.Run();
+    }
+    
+}
+
 
         app.Run();
     }
