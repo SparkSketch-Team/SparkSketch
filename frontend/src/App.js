@@ -4,6 +4,7 @@ import PromptFetcher from './PromptFetcher';
 import NavBar from './NavBar';
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import FileUpload from './FileUpload';
 
 function App() {
   return (
@@ -12,7 +13,11 @@ function App() {
         <header className="App-header">
           <h1>Sparksketch Prototype</h1>
           <PromptFetcher />
+          <div>
+        <FileUpload />
+        </div>
         </header>
+        
     </div>
   );
 }
