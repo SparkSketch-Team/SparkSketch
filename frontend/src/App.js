@@ -5,6 +5,7 @@ import NavBar from './NavBar';
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import FileUpload from './FileUpload';
+import { BrowserRouter as Router } from "react-router-dom";
 
 function App() {
   return (
@@ -23,3 +24,4 @@ function App() {
 }
 
 export default App;
+
