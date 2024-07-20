@@ -6,7 +6,7 @@ const ImageFeed = () => {
     const [images, setImages] = useState([]);
 
     useEffect(() => {
-        axios.get(REACT_API_URL + '/api/images')
+        axios.get(process.env.REACT_APP_API_URL + '/api/images')
             .then(response => {
                 setImages(response.data);
             })
