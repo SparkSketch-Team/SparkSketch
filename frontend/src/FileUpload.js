@@ -19,6 +19,7 @@ const FileUpload = () => {
       .then(response => response.json())
       .then(data => {
         console.log('File successfully uploaded:', data);
+        // document.location.href='/link'; User sent to ViewPosts page when an upload is successful
       })
       .catch(error => {
         console.error('Error uploading file:', error);
