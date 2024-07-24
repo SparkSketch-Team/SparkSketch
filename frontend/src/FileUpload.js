@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Button from 'react-bootstrap/Button';
 
 const FileUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -28,9 +29,9 @@ const FileUpload = () => {
 
   return (
     <div>
-      <h2>File Upload</h2>
+      <h2>Finished Drawing?</h2>
       <input type="file" onChange={onFileChange} />
-      <button onClick={onFileUpload}>Upload!</button>
+      <Button type='button' class='btn btn-lg btn-info' onClick={onFileUpload}>Upload!</Button>
     </div>
   );
 };

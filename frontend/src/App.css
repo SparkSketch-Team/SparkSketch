@@ -1,5 +1,5 @@
 .App {
-  background: linear-gradient(skyblue, yellow);
+  background:skyblue;
 }
 
 .App-logo {
@@ -13,15 +13,32 @@
   }
 }
 
-.App-header {
+.App-body {
   text-align: center;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: flex-start;
   font-size: calc(10px + 2vmin);
   color: black;
+  row-gap: 50px;
+}
+
+.App-prompt {
+  background-color: #fdc007;
+  padding: 25px;
+  margin: 0;
+  border: 2px solid;
+}
+
+.App-upload {
+  padding: 25px;
+  background-color: #fdc007;
+  margin-top: 100px;
+  margin-left: 450px;
+  margin-right: 450px;
+  border: 2px solid;
+  border-radius: 25px
 }
 
 .App-link {

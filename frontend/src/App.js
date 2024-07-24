@@ -10,11 +10,17 @@ import FileUpload from './FileUpload';
 function App() {
   return (
     <div className="App">
+      <nav>
       <NavBar  />
-        <header className="App-header">
-          <h1>Sparksketch Prototype</h1>
+      </nav>
+        <header className="App-body">
+          <h1>
+            Today's Prompt:
+          </h1>
+          <p className='App-prompt'>
           <PromptFetcher />
-          <div>
+          </p>
+        <div className='App-upload'>
         <FileUpload />
         </div>
         </header>
