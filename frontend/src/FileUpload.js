@@ -31,7 +31,7 @@ const FileUpload = () => {
     <div>
       <h2>Finished Drawing?</h2>
       <input type="file" onChange={onFileChange} />
-      <Button type='button' class='btn btn-lg btn-info' onClick={onFileUpload}>Upload!</Button>
+      <Button type='button' class='btn btn-lg btn-warning' onClick={onFileUpload}>Upload!</Button>
     </div>
   );
 };

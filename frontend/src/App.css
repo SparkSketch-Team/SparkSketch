@@ -1,5 +1,5 @@
 .App {
-  background:skyblue;
+  background-image: url('tile_background.png');
 }
 
 .App-logo {
@@ -25,7 +25,7 @@
 }
 
 .App-prompt {
-  background-color: #fdc007;
+  background-color: skyblue;
   padding: 25px;
   margin: 0;
   border: 2px solid;
@@ -33,7 +33,7 @@
 
 .App-upload {
   padding: 25px;
-  background-color: #fdc007;
+  background-color: skyblue;
   margin-top: 100px;
   margin-left: 450px;
   margin-right: 450px;
