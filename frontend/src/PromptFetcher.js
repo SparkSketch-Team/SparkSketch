@@ -8,17 +8,20 @@ const PromptFetcher = () => {
 console.log(process.env.REACT_APP_API_URL);
 
 
-  useEffect(() => {
-    axios.get(process.env.REACT_APP_API_URL + 'api/Ai/getPrompt')
-      .then(response => {
-        setData(response.data.results);
-        setLoading(false);
-      })
-      .catch(error => {
-        setError(error);
-        setLoading(false);
-      });
-  }, []);
+useEffect(() => {
+  axios.get(process.env.REACT_APP_API_URL + 'api/Ai/getPrompt')
+    .then(response => {
+      setData(response.data.results);
+      setLoading(false);
+    })
+    .catch(error => {
+      console.log('Error:', error);
+      setError(error);
+      setLoading(false);
+    });
+}, []);
+
+
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;

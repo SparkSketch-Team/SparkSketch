@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using Microsoft.AspNetCore.Cors;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -38,6 +39,7 @@ public class AiController : ApiController
 
     [HttpGet]
     [Route("GetPrompt")]
+    [EnableCors("ReactPolicy")]
     public async Task<JsonResult> GetPrompt()
     {
         using (aRepo)
