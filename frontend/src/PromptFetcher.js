@@ -5,7 +5,7 @@ const PromptFetcher = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-console.log(process.env.REACT_APP_API_URL);
+console.log("API URL: "  + process.env.REACT_APP_API_URL);
 
 
 useEffect(() => {
