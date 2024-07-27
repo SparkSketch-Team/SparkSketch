@@ -13,7 +13,7 @@ const FileUpload = () => {
     formData.append('file', selectedFile);
 
     // Replace with your backend endpoint
-    fetch(process.env.REACT_APP_API_URL + 'api/sketch/uploadImage', {
+    fetch(process.env.REACT_APP_API_URL + 'api/ImageUpload/upload', {
       method: 'POST',
       body: formData,
     })

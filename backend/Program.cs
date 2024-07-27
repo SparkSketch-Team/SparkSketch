@@ -1,13 +1,16 @@
 using System.Security.Cryptography.Xml;
 using Microsoft.EntityFrameworkCore;
 
-// add class Program and add Main funct
 class Program
 {
 
     static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsole();
+        builder.Logging.AddDebug();
 
         builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
         builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);

@@ -8,6 +8,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Transactions;
+using Microsoft.AspNetCore.Components;
 
 // In SDK-style projects such as this one, several assembly attributes that were historically
 // defined in this file are now automatically added during build and populated with
@@ -24,6 +25,8 @@ using System.Transactions;
 // The following GUID is for the ID of the typelib if this project is exposed to COM.
 
 [assembly: Guid("f8e357f4-bde9-4bca-b212-2c161df506ec")]
+
+
 
 
 public class AiRepository : BaseRepository

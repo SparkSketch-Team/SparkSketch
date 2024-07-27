@@ -10,7 +10,8 @@ public class ImageUploadController : ApiController
     private readonly BlobServiceClient _blobServiceClient;
     private readonly string _containerName;
 
-    public ImageUploadController(IConfiguration configuration)
+
+    public ImageUploadController(IConfiguration configuration, ILogger<ImageUploadController> logger) : base(logger)
     {
         string accountName = configuration["AzureStorage:AccountName"];
         string accountKey = configuration["AzureStorage:AccountKey"];
@@ -28,9 +29,12 @@ public class ImageUploadController : ApiController
     [HttpPost("upload")]
     public async Task<IActionResult> UploadFile(IFormFile file)
     {
+
+        _logger.LogInformation("Image Upload Called");
         if (file == null || file.Length == 0)
         {
-            return BadRequest("No file uploaded.");
+            _logger.LogError("Image Upload Failed");
+            return FailMessage("No file uploaded.");
         }
 
         var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
@@ -41,15 +45,19 @@ public class ImageUploadController : ApiController
             await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = file.ContentType });
         }
 
-        return Ok(new { filePath = blobClient.Uri.ToString() });
+        _logger.LogInformation("Image upload successful");
+
+        return SuccessMessage(new { filePath = blobClient.Uri.ToString() });
     }
 
     [HttpGet("download/{fileName}")]
     public async Task<IActionResult> DownloadFile(string fileName)
     {
+        _logger.LogInformation("Download File Called");
         if (string.IsNullOrEmpty(fileName))
         {
-            return BadRequest("File name cannot be null or empty.");
+            _logger.LogError("Download File Failed");
+            return FailMessage("File name cannot be null or empty.");
         }
 
         var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
@@ -57,10 +65,13 @@ public class ImageUploadController : ApiController
 
         if (!await blobClient.ExistsAsync())
         {
+            _logger.LogError("Download File Failed: Image not Found");
             return NotFound("File not found.");
         }
 
         var blobDownloadInfo = await blobClient.DownloadAsync();
+
+        _logger.LogInformation("Image download successful");
 
         return File(blobDownloadInfo.Value.Content, blobDownloadInfo.Value.ContentType, fileName);
     }
@@ -68,6 +79,8 @@ public class ImageUploadController : ApiController
     [HttpGet("list")]
     public async Task<IActionResult> ListFiles()
     {
+
+        _logger.LogInformation("Download File Called");
         var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
         var files = new List<string>();
         var uriBuilder = new UriBuilder(_blobServiceClient.Uri);
@@ -78,7 +91,9 @@ public class ImageUploadController : ApiController
             files.Add(uriBuilder.ToString());
         }
 
-        return Ok(files);
+        _logger.LogInformation("Files sent to user");
+
+        return SuccessMessage(files);
     }
 
 
