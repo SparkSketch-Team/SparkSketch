@@ -1,5 +1,8 @@
+
+html {background-color:black}
+
 .App {
-  background-image: url('tile_background.png');
+  background: black;
 }
 
 .App-logo {
@@ -18,29 +21,38 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   font-size: calc(10px + 2vmin);
-  color: black;
+  color: white;
   row-gap: 50px;
+  margin-top: 30px;
+  border: 2px solid white;
+  margin-left: 500px;
+  margin-right: 500px;
+  margin-top: 200px;
+  padding: 50px;
+  display:inline-flex;
 }
 
 .App-prompt {
-  background-color: skyblue;
   padding: 25px;
   margin: 0;
-  border: 2px solid;
+  border: 0px;
 }
 
 .App-upload {
   padding: 25px;
-  background-color: skyblue;
   margin-top: 100px;
   margin-left: 450px;
   margin-right: 450px;
-  border: 2px solid;
+  border: 0px;
   border-radius: 25px
 }
 
+.App-title {
+  margin-left: 600px;
+  margin-right: 600px;
+  border: 0px;
+}
 .App-link {
   color: #61dafb;
 }

@@ -9,7 +9,7 @@ import FileUpload from './FileUpload';
 
 function App() {
   return (
-    <div className="App">
+    <body className="App">
       <nav>
       <NavBar  />
       </nav>
@@ -17,15 +17,15 @@ function App() {
           <h1>
             Today's Prompt:
           </h1>
-          <p className='App-prompt'>
+          <p>
           <PromptFetcher />
           </p>
-        <div className='App-upload'>
+        <div>
         <FileUpload />
         </div>
         </header>
         
-    </div>
+    </body>
   );
 }
 
