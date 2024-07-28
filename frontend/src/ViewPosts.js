@@ -4,7 +4,7 @@ import axios from 'axios';
 
 function ViewPosts() {
     useEffect(() => {
-        axios.get(process.env.REACT_APP_API_URL + '/api/ImageUpload/list')
+        axios.get(process.env.REACT_APP_API_URL + 'api/ImageUpload/list')
             .then(response => {
                   //  setImages(response.data);
              })

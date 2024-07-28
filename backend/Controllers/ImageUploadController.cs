@@ -1,6 +1,8 @@
+using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -46,8 +48,9 @@ public class ImageUploadController : ApiController
         }
 
         _logger.LogInformation("Image upload successful");
-
-        return SuccessMessage(new { filePath = blobClient.Uri.ToString() });
+        var response = new { filePath = blobClient.Uri.ToString() };
+        _logger.LogInformation($"Response: {JsonConvert.SerializeObject(response)}");
+        return SuccessMessage(response);
     }
 
     [HttpGet("download/{fileName}")]

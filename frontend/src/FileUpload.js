@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
+import axios from 'axios';
 
 const FileUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -12,19 +13,17 @@ const FileUpload = () => {
     const formData = new FormData();
     formData.append('file', selectedFile);
 
-    // Replace with your backend endpoint
-    fetch(process.env.REACT_APP_API_URL + 'api/ImageUpload/upload', {
-      method: 'POST',
-      body: formData,
+    console.log('Selected file:', selectedFile);
+    console.log('FormData:', formData);
+
+    axios.post(process.env.REACT_APP_API_URL + 'api/ImageUpload/upload', formData)
+    .then(response => {
+      console.log('File successfully uploaded:', response.data.results);
+      // document.location.href='/link'; // Uncomment this line if you want to redirect the user after a successful upload
     })
-      .then(response => response.json())
-      .then(data => {
-        console.log('File successfully uploaded:', data);
-        // document.location.href='/link'; User sent to ViewPosts page when an upload is successful
-      })
-      .catch(error => {
-        console.error('Error uploading file:', error);
-      });
+    .catch(error => {
+      console.error('Error uploading file:', error);
+    });
   };
 
   return (
