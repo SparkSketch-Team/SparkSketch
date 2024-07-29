@@ -13,17 +13,17 @@ function App() {
       <nav>
       <NavBar  />
       </nav>
-        <header className="App-body">
-          <h1>
+        <div className="App-body">
+          <p className='App-prompt'>
             Today's Prompt:
-          </h1>
+          </p>
           <p>
           <PromptFetcher />
           </p>
         <div>
         <FileUpload />
         </div>
-        </header>
+        </div>
         
     </body>
   );

@@ -28,9 +28,9 @@ const FileUpload = () => {
 
   return (
     <div>
-      <h2>Finished Drawing?</h2>
+      <p className='App-prompt'>Finished Drawing?</p>
       <input type="file" onChange={onFileChange} />
-      <Button type='button' class='btn btn-lg btn-warning' onClick={onFileUpload}>Upload!</Button>
+      <Button variant='secondary' onClick={onFileUpload}>Upload!</Button>
     </div>
   );
 };

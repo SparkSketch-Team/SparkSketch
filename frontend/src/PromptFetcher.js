@@ -28,7 +28,6 @@ useEffect(() => {
 
   return (
     <div>
-      <h1>Data from API</h1>
       <p><strong>Theme:</strong> {data.theme}</p>
       <p><strong>Prompt:</strong> {data.promptText}</p>
     </div>

@@ -18,7 +18,7 @@ const ImageFeed = () => {
     return (
         <div>
             {images.map((url, index) => (
-                <img key={index} src={url} alt={`image-${index}`} />
+                <img key={index} src={url} alt={`images-${index}`} />
             ))}
         </div>
     );

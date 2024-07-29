@@ -17,26 +17,30 @@ html {background-color:black}
 }
 
 .App-body {
+  font-family: 'Roboto';
   text-align: center;
-  min-height: 100vh;
-  display: flex;
+  align-items: center;
   flex-direction: column;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(8px + 1vmin);
   color: white;
-  row-gap: 50px;
+  row-gap: 20px;
   margin-top: 30px;
   border: 2px solid white;
   margin-left: 500px;
   margin-right: 500px;
-  margin-top: 200px;
+  margin-top: 150px;
+  margin-bottom: 100px;
   padding: 50px;
   display:inline-flex;
 }
 
 .App-prompt {
-  padding: 25px;
-  margin: 0;
-  border: 0px;
+padding-left: 125px;
+padding-right: 125px;
+font-size: larger;
+border: 1px;
+border-radius: 15px;
+background-color: rgb(91, 91, 91);
 }
 
 .App-upload {
@@ -48,11 +52,6 @@ html {background-color:black}
   border-radius: 25px
 }
 
-.App-title {
-  margin-left: 600px;
-  margin-right: 600px;
-  border: 0px;
-}
 .App-link {
   color: #61dafb;
 }
