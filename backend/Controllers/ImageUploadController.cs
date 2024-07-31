@@ -15,8 +15,7 @@ public class ImageUploadController : ApiController
 
     public ImageUploadController(IConfiguration configuration, ILogger<ImageUploadController> logger) : base(logger)
     {
-        string accountName = configuration["AzureStorage:AccountName"];
-        string accountKey = configuration["AzureStorage:AccountKey"];
+
         string storageConnectionString = configuration.GetConnectionString("AzureStorageConnectionString");
         _blobServiceClient = new BlobServiceClient(storageConnectionString);
 
