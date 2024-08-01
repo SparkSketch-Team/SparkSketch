@@ -2,6 +2,7 @@ import React, {useEffect } from 'react';
 import NavBar from './NavBar';
 import axios from 'axios';
 import ImageFeed from './ImageFeed';
+import './App.css'
 
 function ViewPosts() {
     useEffect(() => {
@@ -16,7 +17,7 @@ function ViewPosts() {
     return(
         <div className='App'>
             <NavBar />
-            <h1>Test</h1>
+            <h1 className='App-title'>Explore</h1>
             <ImageFeed />
         </div>
     );
