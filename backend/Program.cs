@@ -18,6 +18,8 @@ class Program
 
         builder.Configuration.AddEnvironmentVariables();
 
+        builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+
 
 
         builder.Services.AddControllers();
