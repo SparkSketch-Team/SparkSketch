@@ -28,7 +28,7 @@ html {background-color:black}
   border: 2px solid white;
   margin-left: 500px;
   margin-right: 500px;
-  margin-top: 150px;
+  margin-top: 50px;
   margin-bottom: 100px;
   padding: 50px;
   display:inline-flex;
@@ -52,8 +52,12 @@ background-color: rgb(91, 91, 91);
   border-radius: 25px
 }
 
-.App-link {
-  color: #61dafb;
+.App-title {
+  color: darkgoldenrod;
+  text-align: center;
+  font-size: 80px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  margin-top: 60px;
 }
 
 @keyframes App-logo-spin {

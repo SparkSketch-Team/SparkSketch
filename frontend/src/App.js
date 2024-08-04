@@ -13,6 +13,9 @@ function App() {
       <nav>
       <NavBar  />
       </nav>
+      <header className='App-title'>
+        SPARKSKETCH
+      </header>
         <div className="App-body">
           <p className='App-prompt'>
             Today's Prompt:
