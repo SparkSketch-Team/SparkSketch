@@ -26,6 +26,8 @@ jobs:
       - name: Install Dependencies
         run: npm install
         working-directory: ./frontend # Specify the working directory where your package.json is located
+      - name: Check Node.js version
+        run: node -v
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
