@@ -35,7 +35,7 @@ const FileUpload = () => {
     <div>
       <p className='App-prompt'>Finished Drawing?</p>
       <input type="file" onChange={onFileChange} />
-      <Button variant='secondary' onClick={onFileUpload}>Upload!</Button>
+      <Button variant='warning' onClick={onFileUpload}>Upload!</Button>
 
       {showSnackbar && (
         <Alert variant="danger" onClose={() => setShowSnackbar(false)} dismissible>
