@@ -40,5 +40,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://sparksketch-dev.azurewebsites.net/"
+  "proxy": "https://sparksketch-dev.azurewebsites.net/",
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+  }
 }
