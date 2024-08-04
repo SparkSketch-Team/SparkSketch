@@ -53,8 +53,8 @@ jobs:
 
           ###### End of Repository/Build Configurations ######
 
-        - name: Print environment variables
-          run: printenv
+      - name: Print environment variables
+        run: printenv
 
 
   close_pull_request_job:
