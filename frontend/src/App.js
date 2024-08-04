@@ -1,23 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from 'react';
+import PromptFetcher from './PromptFetcher';
+import NavBar from './NavBar';
+import './App.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <NavBar  />
+        <header className="App-header">
+          <h1>Sparksketch Prototype</h1>
+          <PromptFetcher />
+        </header>
     </div>
   );
 }
