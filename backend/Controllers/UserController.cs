@@ -8,11 +8,11 @@ using System.Security.Claims;
 [Route("api/[controller]")]
 public class UserController : ApiController
 {
-    private UserRepository uRepo;
+    private readonly IUserRepository _userRepository;
 
-    public UserController(IConfiguration configuration, ILogger<AiController> logger) : base(logger)
+    public UserController(IUserRepository userRepository, ILogger<UserController> logger) : base(logger)
     {
-        uRepo = new UserRepository(configuration);
+        _userRepository = userRepository;
     }
 
     [HttpPost]
@@ -25,9 +25,9 @@ public class UserController : ApiController
         Random random = new Random();
         await Task.Delay(random.Next(1000, 5000));
 
-        if (await uRepo.ValidateUser(loginInfo))
+        if (await _userRepository.ValidateUser(loginInfo))
         {
-            var claims = await uRepo.GetUserClaims(loginInfo);
+            var claims = await _userRepository.GetUserClaims(loginInfo);
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             await context.SignInAsync(
@@ -71,7 +71,7 @@ public class UserController : ApiController
     {
         try
         {
-            var response = await uRepo.AddUser(userInfo);
+            var response = await _userRepository.AddUser(userInfo);
             if (response != null)
             {
                 return SuccessMessage(response);
@@ -90,13 +90,11 @@ public class UserController : ApiController
     [HttpPost]
     //[Authorize(Policy = "AdminOnly")]
     [Route("EditUser")]
-    public async Task<JsonResult> EditUse([FromBody] UserSummary info)
+    public async Task<JsonResult> EditUser([FromBody] UserSummary info)
     {
-        using (uRepo)
-        {
             try
             {
-                var response = await uRepo.EditUser(info);
+                var response = await _userRepository.EditUser(info);
                 if (response)
                 {
                     return SuccessMessage(true);
@@ -110,7 +108,6 @@ public class UserController : ApiController
             {
                 return FailMessage(ex.Message);
             }
-        }
     }
 
     [HttpPost]
@@ -118,11 +115,9 @@ public class UserController : ApiController
     [Route("Validate")]
     public async Task<JsonResult> Validate([FromBody] ValidateUserInformation info)
     {
-        using (uRepo)
-        {
             try
             {
-                var response = await uRepo.Validate(info);
+                var response = await _userRepository.Validate(info);
                 if (response)
                 {
                     return SuccessMessage(true);
@@ -136,7 +131,6 @@ public class UserController : ApiController
             {
                 return FailMessage(ex.Message);
             }
-        }
     }
 
     [HttpGet]
@@ -146,7 +140,7 @@ public class UserController : ApiController
     {
         try
         {
-            var response = await uRepo.SendPasswordReset(email);
+            var response = await _userRepository.SendPasswordReset(email);
             if (!response) return FailMessage("Send reset email failed");
             return SuccessMessage(response);
         }
@@ -163,7 +157,7 @@ public class UserController : ApiController
     {
         try
         {
-            var response = await uRepo.SetPassword(passwordInformation);
+            var response = await _userRepository.SetPassword(passwordInformation);
             if (!response) return FailMessage("Setting password failed");
             return SuccessMessage(response);
 
@@ -179,10 +173,7 @@ public class UserController : ApiController
     [Route("GetUsersDT")]
     public async Task<JsonResult> GetUsersDT([FromBody] UserDTRequest dtRequest)
     {
-        using (uRepo)
-        {
-            return SuccessMessage(await uRepo.GetUsersDT(dtRequest));
-        }
+        return SuccessMessage(await _userRepository.GetUsersDT(dtRequest));
     }
 
     [HttpGet]
@@ -190,10 +181,8 @@ public class UserController : ApiController
     [Route("GetUser")]
     public async Task<JsonResult> GetUser(Guid userID)
     {
-        using (uRepo)
-        {
-            return SuccessMessage(await uRepo.GetUser(userID));
-        }
+
+            return SuccessMessage(await _userRepository.GetUser(userID));
     }
 
 

@@ -33,6 +33,10 @@ using Microsoft.Extensions.Options;
 
         protected async Task<bool> SubmitEmail(IList<string> toList, IList<string> ccList, IList<string> bccList, StringBuilder template)
         {
+        if (_mailSettings.Port == null)
+        {
+            throw new Exception("Malconfigured Mail Settings");
+        }
             var ret = true;
 
             if ((toList == null) || !toList.Any(e => e.Any()))
@@ -110,7 +114,7 @@ using Microsoft.Extensions.Options;
                 //     Console.WriteLine(resourceName);
                 // }
 
-                using (var resource = assembly.GetManifestResourceStream($"Coordinatus_2.Infrastructure.EmailSenders.Templates.{templateFileName}.html"))
+                using (var resource = assembly.GetManifestResourceStream($"Infrastructure.EmailSenders.Templates.{templateFileName}.html"))
                 {
                     if (resource != null)
                     {

@@ -3,14 +3,15 @@ using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Azure.Core;
+using backend.Services;
 
-public class UserRepository : BaseRepository
+public class UserRepository : BaseRepository, IUserRepository
 {
+    private readonly IAccountEmailSender _emailSender;
 
-
-    public UserRepository(IConfiguration config) : base(config)
+    public UserRepository(IConfiguration config, IAccountEmailSender emailSender) : base(config)
     {
-        //Do something
+        _emailSender = emailSender;
     }
     public async Task<Claim[]> GetUserClaims(LoginInfo loginInfo)
     {
@@ -162,6 +163,10 @@ public class UserRepository : BaseRepository
             {
 
                 var permission = db.Permissions.FirstOrDefault(p => p.PermissionLevel == userInfo.PermissionLevel);
+                if (permission == null)
+                {
+                    throw new Exception("Couldn't find Permissions");
+                }
                 User newUser = new User()
                 {
                     UserId = Guid.NewGuid(),
@@ -173,7 +178,7 @@ public class UserRepository : BaseRepository
                     UserPermission = permission,
 
                 };
-                //newUser.PasswordHash = this.EncodePassword(newUser.UserId, userInfo.Password); //we are currently not going to have passwords configured from UserInfo
+                newUser.PasswordHash = this.EncodePassword(newUser.UserId, userInfo.Password); //we are currently not going to have passwords configured from UserInfo
 
                 //check if email is already used
                 if ((await db.Users.Include(u => u.UserPermission).Where(x => x.EmailAddress == newUser.EmailAddress).CountAsync()) > 0)
@@ -187,20 +192,20 @@ public class UserRepository : BaseRepository
                 //Console.WriteLine(newUser);
                 await db.SaveChangesAsync();
                 //send validation email
-                //if ((userInfo.DontSendEmail == null || userInfo.DontSendEmail == false) && !await SendValidationEmail(newUser, false))
-                //{
-                //    throw new Exception("Couldn't send validation email");
-                //}
-                //else if (userInfo.DontSendEmail == true)
-                //{
-                //    var validateEmail = new Email();
-                //    validateEmail.EmailID = Guid.NewGuid();
-                //    validateEmail.UserID = newUser.UserId;
-                //    validateEmail.TypeEnum = (int)EmailType.PasswordReset;
-                //    validateEmail.ExpirationDate = DateTimeOffset.UtcNow.AddDays(3);
-                //    validateEmail.IsActive = true;
-                //    db.Emails.Add(validateEmail);
-                //}
+                if ((userInfo.DontSendEmail == null || userInfo.DontSendEmail == false) && !await SendValidationEmail(newUser, false))
+                {
+                    throw new Exception("Couldn't send validation email");
+                }
+                else if (userInfo.DontSendEmail == true)
+                {
+                    var validateEmail = new Email();
+                    validateEmail.EmailID = Guid.NewGuid();
+                    validateEmail.UserID = newUser.UserId;
+                    validateEmail.TypeEnum = (int)EmailType.PasswordReset;
+                    validateEmail.ExpirationDate = DateTimeOffset.UtcNow.AddDays(3);
+                    validateEmail.IsActive = true;
+                    db.Emails.Add(validateEmail);
+                }
 
                 await db.SaveChangesAsync();
                 //Console.WriteLine("Changes Saved");
@@ -324,15 +329,15 @@ public class UserRepository : BaseRepository
 
 
         //Need to Configure Validation Email
-        //if (await (new AccountEmailSender().SubmitNewUserValidateEmail(new AccountEmailDetail(user.EmailAddress, validateEmail.EmailID, ValidateUserType.User))))
-        //{
-        //    if (saveChanges) await db.SaveChangesAsync();
-        //}
-        //else
-        //{
-        //    Console.WriteLine("Email not sent");
-        //    return false;
-        //}
+        if (await _emailSender.SubmitNewUserValidateEmail(new AccountEmailDetail(user.EmailAddress, validateEmail.EmailID, ValidateUserType.User)))
+        {
+            if (saveChanges) await db.SaveChangesAsync();
+        }
+        else
+        {
+            Console.WriteLine("Email not sent");
+            return false;
+        }
         return false;
 
     }

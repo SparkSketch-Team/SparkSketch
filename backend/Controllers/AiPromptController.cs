@@ -7,24 +7,21 @@ using Microsoft.AspNetCore.Cors;
 [Route("api/[controller]")]
 public class AiController : ApiController
 {
+    private readonly IAiRepository _aiRepository;
 
-    private AiRepository aRepo;
-
-    public AiController(IConfiguration configuration, ILogger<AiController> logger) : base(logger)
+    public AiController(IConfiguration configuration, IAiRepository aiRepository, ILogger<AiController> logger) : base(logger)
     {
-        aRepo = new AiRepository(configuration);
+        _aiRepository = aiRepository;
     }
 
     [HttpPost]
     [Route("CreateNewPrompt")]
     public async Task<JsonResult> CreateNewPrompt()
     {
-        using (aRepo)
-        {
             try
             {
                 _logger.LogInformation("CreateNewPrompt called.");
-                var response = await aRepo.CreateNewPrompt();
+                var response = await _aiRepository.CreateNewPrompt();
                 if (response == null)
                 {
                     _logger.LogWarning("CreateNewPrompt returned null.");
@@ -38,19 +35,17 @@ public class AiController : ApiController
                 _logger.LogError(e, "Exception in CreateNewPrompt.");
                 return FailMessage(e.Message);
             }
-        }
     }
 
     [HttpGet]
     [Route("GetPrompt")]
     public async Task<JsonResult> GetPrompt()
     {
-        using (aRepo)
-        {
+
             try
             {
                 _logger.LogInformation("GetPrompt called.");
-                var response = await aRepo.GetPrompt();
+                var response = await _aiRepository.GetPrompt();
                 if (response == null)
                 {
                     _logger.LogWarning("GetPrompt returned null.");
@@ -64,6 +59,5 @@ public class AiController : ApiController
                 return FailMessage(e.Message);
             }
         }
-    }
 
 }

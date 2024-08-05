@@ -1,4 +1,5 @@
 using System.Security.Cryptography.Xml;
+using backend.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,8 +19,11 @@ class Program
 
         builder.Configuration.AddEnvironmentVariables();
 
+        // Register Services
         builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
+        // Use Dependency Injection for AccountEmailSender
+        builder.Services.AddTransient<IAccountEmailSender, AccountEmailSender>();
 
 
         builder.Services.AddControllers();
@@ -47,6 +51,10 @@ class Program
                                .AllowAnyMethod();
             });
         });
+
+        // Register Repositories
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IAiRepository, AiRepository>();
 
         var app = builder.Build();
 

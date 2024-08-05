@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <Folder Include="Configuration\" />
+    <Folder Include="Infrastructure\EmailSenders\Templates\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1development_1json__JsonSchema="https://json.schemastore.org/azure-containerapp-template.json" /></VisualStudio></ProjectExtensions>

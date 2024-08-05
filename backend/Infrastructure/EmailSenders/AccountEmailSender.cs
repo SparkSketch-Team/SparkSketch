@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using static Org.BouncyCastle.Math.EC.ECCurve;
+using backend.Services;
+
 public class AccountEmailDetail : BaseEmailSenderDetail
 {
     public AccountEmailDetail() : base() { }
@@ -47,7 +47,7 @@ public enum ValidateUserType
     User = 1
 }
 
-public class AccountEmailSender : BaseEmailSender
+public class AccountEmailSender : BaseEmailSender, IAccountEmailSender
 {
     public AccountEmailSender(IConfiguration config, IOptions<MailSettings> mailSettings) : base(config, mailSettings) { }
 
