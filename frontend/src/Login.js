@@ -27,7 +27,7 @@ function Login() {
 
         // API call to backend for login
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}api/User/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
