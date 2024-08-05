@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './App.css'
 
 const PromptFetcher = () => {
   const [data, setData] = useState([]);
@@ -27,7 +28,7 @@ useEffect(() => {
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div>
+    <div className='prompt'>
       <p><strong>Theme:</strong> {data.theme}</p>
       <p><strong>Prompt:</strong> {data.promptText}</p>
     </div>

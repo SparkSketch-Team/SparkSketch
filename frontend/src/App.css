@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap');
+
 
 html {background-color:black}
 
@@ -21,6 +23,10 @@ html {background-color:black}
   margin: 30px 0;
 }
 
+.prompt {
+  font-size: 19px;
+}
+
 .App-body {
   font-family: 'Roboto';
   text-align: center;
@@ -31,15 +37,15 @@ html {background-color:black}
   row-gap: 20px;
   border: 2px solid white;
   margin: auto;
-  margin-top: 30px;
-  padding: 50px;
+  margin-top: 40px;
+  padding: 60px 40px;
   display: inline-flex;
 }
 
 .App-prompt {
 padding-left: 125px;
 padding-right: 125px;
-font-size: larger;
+font-size: 20px;
 border: 1px;
 border-radius: 15px;
 background-color: rgb(88, 88, 88);
@@ -57,8 +63,8 @@ background-color: rgb(88, 88, 88);
 .App-title {
   color: darkgoldenrod;
   text-align: center;
-  font-size: 70px;
-  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 60px;
+  font-family: 'Exo 2', sans-serif;
   margin-top: 60px;
 }
 
