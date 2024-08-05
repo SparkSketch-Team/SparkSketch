@@ -15,11 +15,6 @@ function Login() {
         console.log('Forgot Password clicked');
     };
 
-    const handleRegister = (event) => {
-        event.preventDefault();
-        // Logic to handle register
-        console.log('Register clicked');
-    };
 
     const handleLogin = async (event) => {
         event.preventDefault();
@@ -101,21 +96,7 @@ function Login() {
                 {errorMessage && <p className='error'>{errorMessage}</p>}
                 <div className='Register'>
                     <p>
-                        Don't have an account?
-                        <button
-                            type='button'
-                            onClick={handleRegister}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                color: 'blue',
-                                cursor: 'pointer',
-                                textDecoration: 'underline',
-                                padding: 0,
-                            }}
-                        >
-                            Register
-                        </button>
+                        Don't have an account? <a href='/register'>Register</a>
                     </p>
                 </div>
             </form>
