@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using Microsoft.EntityFrameworkCore;
 
 public class User
 {
@@ -9,6 +10,8 @@ public class User
     public string FirstName { get; set; } = null!;
     [Required]
     public string LastName { get; set; } = null!;
+    [Required]
+    public string Username { get; set; } = null!;
     [Required]
     public string EmailAddress { get; set; } = null!;
     public string PasswordHash { get; set; } = "Password"; // The issue is is that this leaves a default password when we create an user. Ideally, we have a null password so the unvalidated user cannot access

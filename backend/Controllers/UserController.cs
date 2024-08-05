@@ -37,7 +37,7 @@ public class UserController : ApiController
 
             var user = context.User;
             var claimsT = context.User.Claims;
-            var uid = context.User.Claims.FirstOrDefault(c => c.Type == CoordinatwosClaims.UserId);
+            var uid = context.User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId);
 
             return SuccessMessage(true);
         }

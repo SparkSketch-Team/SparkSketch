@@ -14,7 +14,7 @@ public class UserRepository : BaseRepository
     }
     public async Task<Claim[]> GetUserClaims(LoginInfo loginInfo)
     {
-        var user = await db.Users.FirstOrDefaultAsync(u => u.EmailAddress == loginInfo.email && u.IsActive);
+        var user = await db.Users.FirstOrDefaultAsync(u => u.EmailAddress == loginInfo.username && u.IsActive);
         List<Claim> claims = new List<Claim>();
         if (user != null)
         {
@@ -22,14 +22,14 @@ public class UserRepository : BaseRepository
             //var userPermission = await db.Permissions.FirstOrDefaultAsync(p => p.PermissionId == user.UserPermission.PermissionId);
             //Console.WriteLine("Check");
 
-            claims.Add(new Claim(CoordinatwosClaims.UserId, user.UserId.ToString()));
+            claims.Add(new Claim(SparkSketchClaims.UserId, user.UserId.ToString()));
             if (userRole != null)
             {
-                claims.Add(new Claim(CoordinatwosClaims.Role, userRole.RoleId.ToString()));
+                claims.Add(new Claim(SparkSketchClaims.Role, userRole.RoleId.ToString()));
             }
             if (user.UserPermission != null)
             {
-                claims.Add(new Claim(CoordinatwosClaims.PermissionLevel, user.UserPermission.PermissionLevel.ToString()));
+                claims.Add(new Claim(SparkSketchClaims.PermissionLevel, user.UserPermission.PermissionLevel.ToString()));
             }
 
             //var userPermission = await db.Permissions.Where(p => p.PermissionId == user.UserPermission.PermissionId).ToListAsync();
@@ -168,8 +168,10 @@ public class UserRepository : BaseRepository
                     FirstName = userInfo.FirstName,
                     LastName = userInfo.LastName,
                     EmailAddress = userInfo.EmailAddress,
+                    Username = userInfo.Username,
                     IsActive = true,
                     UserPermission = permission,
+
                 };
                 //newUser.PasswordHash = this.EncodePassword(newUser.UserId, userInfo.Password); //we are currently not going to have passwords configured from UserInfo
 
@@ -185,20 +187,20 @@ public class UserRepository : BaseRepository
                 //Console.WriteLine(newUser);
                 await db.SaveChangesAsync();
                 //send validation email
-                if ((userInfo.dontSendEmail == null || userInfo.dontSendEmail == false) && !(await SendValidationEmail(newUser, false)))
-                {
-                    throw new Exception("Couldn't send validation email");
-                }
-                else if (userInfo.dontSendEmail == true)
-                {
-                    var validateEmail = new Email();
-                    validateEmail.EmailID = Guid.NewGuid();
-                    validateEmail.UserID = newUser.UserId;
-                    validateEmail.TypeEnum = (int)EmailType.PasswordReset;
-                    validateEmail.ExpirationDate = DateTimeOffset.UtcNow.AddDays(3);
-                    validateEmail.IsActive = true;
-                    db.Emails.Add(validateEmail);
-                }
+                //if ((userInfo.DontSendEmail == null || userInfo.DontSendEmail == false) && !await SendValidationEmail(newUser, false))
+                //{
+                //    throw new Exception("Couldn't send validation email");
+                //}
+                //else if (userInfo.DontSendEmail == true)
+                //{
+                //    var validateEmail = new Email();
+                //    validateEmail.EmailID = Guid.NewGuid();
+                //    validateEmail.UserID = newUser.UserId;
+                //    validateEmail.TypeEnum = (int)EmailType.PasswordReset;
+                //    validateEmail.ExpirationDate = DateTimeOffset.UtcNow.AddDays(3);
+                //    validateEmail.IsActive = true;
+                //    db.Emails.Add(validateEmail);
+                //}
 
                 await db.SaveChangesAsync();
                 //Console.WriteLine("Changes Saved");
@@ -255,7 +257,7 @@ public class UserRepository : BaseRepository
 
     public async Task<bool> ValidateUser(LoginInfo loginInfo)
     {
-        var user = await db.Users.Include(u => u.UserPermission).FirstOrDefaultAsync(u => u.EmailAddress == loginInfo.email && u.IsActive);
+        var user = await db.Users.Include(u => u.UserPermission).FirstOrDefaultAsync(u => u.Username == loginInfo.username && u.IsActive);
         if (user != null)
         {
             if (ValidatePassword(user.UserId, user.PasswordHash, loginInfo.password))
@@ -318,7 +320,10 @@ public class UserRepository : BaseRepository
         validateEmail.ExpirationDate = DateTimeOffset.UtcNow.AddDays(3);
         validateEmail.IsActive = true;
         db.Emails.Add(validateEmail);
+        await db.SaveChangesAsync();
 
+
+        //Need to Configure Validation Email
         //if (await (new AccountEmailSender().SubmitNewUserValidateEmail(new AccountEmailDetail(user.EmailAddress, validateEmail.EmailID, ValidateUserType.User))))
         //{
         //    if (saveChanges) await db.SaveChangesAsync();
