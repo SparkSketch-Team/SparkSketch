@@ -22,7 +22,7 @@ const FileUpload = () => {
     axios.post(process.env.REACT_APP_API_URL + 'api/ImageUpload/upload', formData)
     .then(response => {
       console.log('File successfully uploaded:', response.data.results);
-      document.location.href='/link'; // Uncomment this line if you want to redirect the user after a successful upload
+      document.location.href='/link'; 
     })
     .catch(error => {
       console.error('Error uploading file:', error);
