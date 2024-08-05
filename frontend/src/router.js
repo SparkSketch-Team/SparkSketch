@@ -3,6 +3,7 @@ import App from './App';
 import ViewPosts from './ViewPosts';
 import ErrorPage from './error-page';
 import Login from './Login';
+import Register from './Register';
 
 
 export const router = createBrowserRouter([
@@ -22,6 +23,10 @@ export const router = createBrowserRouter([
     {
       path: "/login",
       element: <Login />
+    },
+    {
+      path: "/register",
+      element: <Register />
     }
   ]);
 
