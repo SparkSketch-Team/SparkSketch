@@ -6,6 +6,8 @@ html {background-color:black}
 .App {
   background: black;
   text-align: center;
+  justify-content: center;
+  align-items: center;
 }
 
 .Register {
@@ -17,10 +19,47 @@ html {background-color:black}
   margin: 20px 0;
 }
 
-.input-box {
+.wrapper {
   position: relative;
+  width: 420px;
+  height: 450px;
+}
+
+.wrapper .form-box {
+  width: 100%;
+  padding: 40px;
+}
+
+form .input-box {
+  position: relative;
+  height: 50px;
   width: 100%;
   margin: 30px 0;
+  background-color: darkgoldenrod;
+  border-radius: 40px;
+}
+
+.input-box input {
+  height: 100%;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  border: 2px solid rgba(71, 46, 16);
+  border-radius: 40px;
+  color: white;
+}
+
+.input-box input::placeholder {
+  color: white;
+}
+
+.input-box .Icon {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  translate: 0 -50%;
+  color: white;
 }
 
 .prompt {
@@ -39,6 +78,10 @@ html {background-color:black}
   margin: auto;
   margin-top: 40px;
   padding: 60px 40px;
+  display: inline-flex;
+}
+
+.Login-body {
   display: inline-flex;
 }
 

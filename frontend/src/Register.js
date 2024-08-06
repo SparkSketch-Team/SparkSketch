@@ -8,6 +8,9 @@ function Register() {
 
     return (
         <div className='App'>
+            <div className='Login-body'>
+            <div className='wrapper'>
+            <div className='form-box login'>
             <form action=''>
                 <h1 className='App-title'>Register</h1>
                 <div className='input-box'>
@@ -34,6 +37,9 @@ function Register() {
                     </p>
                 </div>
             </form>
+            </div>
+            </div>
+            </div>
         </div>
     )
 }
