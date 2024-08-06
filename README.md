@@ -70,51 +70,51 @@ Please contact @rhit-hueyee for any technical questions.
 
 ## Roadmap
 - [ ] Home Page/TItle
-   - [ ] Log in/Sign up
-   - [ ] Scroll down
-      - [ ] Help
-Contact us
-About spark sketch
-Team Info
-FAQs
-Privacy policy
-Terms of Service
-Newsletter/Media/PR/Blog
-Prompt page
-Time remaining until next prompt
-Custom/group prompts
-Personal profile
-Profile settings
-edit/change photos
-Settings
-Password change
-Device Permissions
-Camera
-Contacts
-Location
-Notifications
-Photos
-Microphone
-Personal preferences
-Language
-Comments on/off
-Prompt preferences
-Personal details
-Links
-Help
-Contact us
-About spark sketch
-Team Info
-FAQs
-Privacy policy
-Terms of Service
-Share profile
- following/followers
-Explore page (see others’ art)
-Like
-Comment
-Follow
-Share
-Save
+  - [ ] Log in/Sign up
+  - [ ] Scroll down
+    - [ ] Help
+    - [ ] Contact us
+    - [ ] About spark sketch
+    - [ ] Team Info
+    - [ ] FAQs
+    - [ ] Privacy policy
+    - [ ] Terms of Service
+  - [ ] Newsletter/Media/PR/Blog
+- [ ] Prompt page
+  - [ ] Time remaining until next prompt
+  - [ ] Custom/group prompts
+- [ ] Personal profile
+  - [ ] Profile settings
+      - [ ] edit/change photos
+      - [ ] Settings
+        - [ ] Password change
+        - [ ] Device Permissions
+          - [ ] Camera
+          - [ ] Contacts
+          - [ ] Location
+          - [ ] Notifications
+          - [ ] Photos
+          - [ ] Microphone
+        - [ ] Personal preferences
+          - [ ] Language
+          - [ ] Comments on/off
+          - [ ] Prompt preferences
+        - [ ] Personal details
+      - [ ] Links
+        - [ ] Help
+        - [ ] Contact us
+        - [ ] About spark sketch
+        - [ ] Team Info
+        - [ ] FAQs
+        - [ ] Privacy policy
+        - [ ] Terms of Service
+      - [ ] Share profile
+      - [ ] following/followers
+- [ ] Explore page (see others’ art)
+  - [ ] Like
+  - [ ] Comment
+  - [ ] Follow
+  - [ ] Share
+  - [ ] Save
 
 
