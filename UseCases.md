@@ -1,4 +1,4 @@
-# UC 1: User creates an account
+# UC 1: User creates an account [ ]
 ## Actor: End User
 
 1. User clicks Register Button
