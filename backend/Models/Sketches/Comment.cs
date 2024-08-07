@@ -11,7 +11,7 @@ public class Comment
     public int PostID { get; set; }
 
     [ForeignKey("PostID")]
-    public Post Post { get; set; }
+    public Sketch Sketch { get; set; }
 
     [Required]
     public int UserID { get; set; }
