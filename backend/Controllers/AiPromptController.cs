@@ -18,8 +18,6 @@ public class AiController : ApiController
     [Route("CreateNewPrompt")]
     public async Task<JsonResult> CreateNewPrompt()
     {
-        using (aRepo)
-        {
             try
             {
                 _logger.LogInformation("CreateNewPrompt called.");
@@ -37,7 +35,6 @@ public class AiController : ApiController
                 _logger.LogError(e, "Exception in CreateNewPrompt.");
                 return FailMessage(e.Message);
             }
-    }
     }
 
     [HttpGet]
@@ -61,7 +58,5 @@ public class AiController : ApiController
                 _logger.LogError(e, "Exception in GetPrompt.");
                 return FailMessage(e.Message);
             }
-        }
     }
-
 }
