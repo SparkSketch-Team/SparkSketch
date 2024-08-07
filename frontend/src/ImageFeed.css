@@ -1,0 +1,21 @@
+/* src/components/ImageFeed.css */
+.image-feed {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-gap: 30px;
+    padding: 10px;
+    margin: auto;
+}
+
+.image-item {
+    width: 100%;
+    padding: 5px;
+    height: auto;
+    object-fit: cover;
+    border: 2px solid darkgoldenrod;
+    border-radius: 10px;
+}
+
+.image-item:hover{
+    cursor: pointer;
+}

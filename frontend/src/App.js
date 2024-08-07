@@ -4,17 +4,33 @@ import PromptFetcher from './PromptFetcher';
 import NavBar from './NavBar';
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import FileUpload from './FileUpload';
+
 
 function App() {
   return (
-    <div className="App">
+    <body className="App">
+      <nav>
       <NavBar  />
-        <header className="App-header">
-          <h1>Sparksketch Prototype</h1>
+      </nav>
+      <header className='App-title'>
+        SPARKSKETCH
+      </header>
+        <div className="App-body">
+          <p className='App-prompt'>
+            Today's Prompt:
+          </p>
+          <p>
           <PromptFetcher />
-        </header>
-    </div>
+          </p>
+        <div>
+        <FileUpload />
+        </div>
+        </div>
+        
+    </body>
   );
 }
 
 export default App;
+

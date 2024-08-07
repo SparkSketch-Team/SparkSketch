@@ -1,7 +1,8 @@
 using System.Security.Cryptography.Xml;
+using backend.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
-// add class Program and add Main funct
 class Program
 {
 
@@ -9,11 +10,20 @@ class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsole();
+        builder.Logging.AddDebug();
+
         builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
         builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
         builder.Configuration.AddEnvironmentVariables();
 
+        // Register Services
+        builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+
+        // Use Dependency Injection for AccountEmailSender
+        builder.Services.AddTransient<IAccountEmailSender, AccountEmailSender>();
 
 
         builder.Services.AddControllers();
@@ -21,14 +31,30 @@ class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        
-        builder.Services.AddCors(options => {
-            options.AddPolicy("AllowReactApp", builder => {
+        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.Cookie.Name = "coordinatwosAuthToken";
+                options.ExpireTimeSpan = TimeSpan.FromHours(24);
+                options.SlidingExpiration = true;
+                options.AccessDeniedPath = "/Forbidden";
+                //can add options to redirect: https://bitbucket.org/counterpart-biz/srs-portal-code/src/9e07a3df132fbc22568ff037df44a614b28f9e17/SRSWebPortal/Program.cs?at=master#Program.cs-75,78
+            });
+
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowReactApp", builder =>
+            {
                 builder.AllowAnyOrigin()
                                .AllowAnyHeader()
                                .AllowAnyMethod();
             });
         });
+
+        // Register Repositories
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IAiRepository, AiRepository>();
 
         var app = builder.Build();
 
@@ -57,7 +83,7 @@ class Program
 
         app.Run();
     }
-    
+
 }
 
 

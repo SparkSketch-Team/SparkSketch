@@ -1,0 +1,22 @@
+{
+
+        "navigationFallback": {
+          "rewrite": "/index.html",
+          "exclude": ["*.{css,scss,js,png,gif,ico,jpg,svg}"]
+        },
+    "routes": [
+      {
+        "route": "/link",
+        "rewrite": "/index.html"
+      },
+      {
+        "route": "/home",
+        "rewrite": "/index.html"
+      },
+      {
+        "route": "/login",
+        "rewrite": "/index.html"
+      }
+    ]
+  }
+  
