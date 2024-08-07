@@ -1,0 +1,47 @@
+name: Update Markdown with Project Statuses
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Runs every hour, adjust as needed
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  update-markdown:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Update Markdown
+      env:
+        GH_PAT: ${{ secrets.GH_PAT }}
+        ORG: SparkSketch-Team # Your organization name
+        REPO: SparkSketch # Your repository name
+        PROJECT_NUMBER: 2 # Your project number
+        MD_FILE: UseCases.md # The markdown file to update
+      run: |
+        declare -A ITEM_IDS
+        ITEM_IDS["UC 1: User creates an account"]=123456 # Replace with actual item IDs
+        ITEM_IDS["UC 2: User Uploads a Prompt"]=789012 # Replace with actual item IDs
+        # Add more items as needed
+
+        for ITEM_NAME in "${!ITEM_IDS[@]}"; do
+          ITEM_ID=${ITEM_IDS[$ITEM_NAME]}
+          
+          curl -H "Authorization: token $GH_PAT" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$ORG/$REPO/projects/$PROJECT_NUMBER/items/$ITEM_ID" \
+            > item.json
+
+          STATUS=$(jq -r '.status' item.json)
+          
+          # Update the markdown file with the status of each item
+          sed -i "/^# ${ITEM_NAME}/{n;s/.*/Status: $STATUS/;}" $MD_FILE
+        done
+        
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+        git add $MD_FILE
+        git commit -m "Update project statuses"
+        git push
