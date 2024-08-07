@@ -1,31 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+html {background-color:black}
+
 .App {
+  background: black;
   text-align: center;
-  background: linear-gradient(skyblue, yellow);
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  justify-content: flex-start;
-  font-size: calc(10px + 2vmin);
-  color: black;
 }
 
-.App-link {
-  color: #61dafb;
+.Register {
+  color: white;
+  margin: 20px 0;
+}
+.Remember {
+  color: white;
+  margin: 20px 0;
+}
+
+.wrapper {
+  position: relative;
+  width: 420px;
+  height: 450px;
+}
+
+.wrapper .form-box {
+  width: 100%;
+  padding: 40px;
+}
+
+form .input-box {
+  position: relative;
+  height: 50px;
+  width: 100%;
+  margin: 30px 0;
+  background-color: darkgoldenrod;
+  border-radius: 40px;
+}
+
+.input-box input {
+  height: 100%;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  border: 2px solid rgba(71, 46, 16);
+  border-radius: 40px;
+  color: white;
+}
+
+.input-box input::placeholder {
+  color: white;
+}
+
+.input-box .Icon {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  translate: 0 -50%;
+  color: white;
+}
+
+.prompt {
+  font-size: 19px;
+}
+
+.App-body {
+  font-family: 'Roboto';
+  text-align: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: calc(8px + 1vmin);
+  color: white;
+  row-gap: 20px;
+  border: 2px solid white;
+  margin: auto;
+  margin-top: 40px;
+  padding: 60px 40px;
+  display: inline-flex;
+}
+
+.Login-body {
+  display: inline-flex;
+}
+
+.App-prompt {
+padding-left: 125px;
+padding-right: 125px;
+font-size: 20px;
+border: 1px;
+border-radius: 15px;
+background-color: rgb(88, 88, 88);
+}
+
+.App-upload {
+  padding: 25px;
+  margin-top: 100px;
+  margin-left: 450px;
+  margin-right: 450px;
+  border: 0px;
+  border-radius: 25px
+}
+
+.App-title {
+  color: darkgoldenrod;
+  text-align: center;
+  font-size: 60px;
+  font-family: 'Exo 2', sans-serif;
+  margin-top: 60px;
 }
 
 @keyframes App-logo-spin {

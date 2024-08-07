@@ -3,6 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 
 public class ApiController : ControllerBase
 {
+
+    protected readonly ILogger<ApiController> _logger;
+
+    public ApiController(ILogger<ApiController> logger)
+    {
+        _logger = logger;
+    }
     protected JsonResult SuccessMessage(object? data = null)
     {
         var message = new MessageObject()
@@ -10,6 +17,7 @@ public class ApiController : ControllerBase
             success = true,
             results = data
         };
+        _logger.LogInformation("Success message created: {Message}", message);
         var result = new JsonResult(message);
         return result;
     }
@@ -22,6 +30,7 @@ public class ApiController : ControllerBase
             results = failMessage,
             error = ex
         };
+        _logger.LogError("Fail message created: {Message}", message);
         var result = new JsonResult(message);
         return result;
     }
