@@ -38,7 +38,7 @@ public class SparkSketchContext : DbContext
         modelBuilder.Entity<Follower>()
             .HasOne(f => f.User)
             .WithMany(u => u.Followers)
-            .HasForeignKey(f => f.UserID)
+            .HasForeignKey(f => f.FollowedUserID)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Follower>()

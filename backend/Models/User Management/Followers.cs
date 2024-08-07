@@ -4,16 +4,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 public class Follower
 {
     [Key]
-    public int FollowerID { get; set; }
+    public int FollowID { get; set; }
 
     [Required]
-    public int UserID { get; set; }
+    public Guid FollowedUserID { get; set; }
 
     [ForeignKey("UserID")]
     public User User { get; set; }
 
     [Required]
-    public int FollowingUserID { get; set; }
+    public Guid FollowingUserID { get; set; }
 
     [ForeignKey("FollowingUserID")]
     public User FollowingUser { get; set; }

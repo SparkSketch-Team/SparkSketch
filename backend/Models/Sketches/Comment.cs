@@ -14,7 +14,7 @@ public class Comment
     public Sketch Sketch { get; set; }
 
     [Required]
-    public int UserID { get; set; }
+    public Guid CommenterID { get; set; }
 
     [ForeignKey("UserID")]
     public User User { get; set; }

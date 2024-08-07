@@ -7,7 +7,7 @@ public class Sketch {
     public int PostId { get; set; }
 
     [Required]
-    public Guid UserID { get; set; }
+    public Guid ArtistID { get; set; }
 
     [ForeignKey("UserId")]
     public User? user { get; set; }

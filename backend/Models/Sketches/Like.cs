@@ -14,7 +14,7 @@ public class Like
     public Sketch Post { get; set; }
 
     [Required]
-    public int UserID { get; set; }
+    public Guid UserID { get; set; }
 
     [ForeignKey("UserID")]
     public User User { get; set; }

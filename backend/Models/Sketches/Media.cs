@@ -7,7 +7,7 @@ public class Media
     public int MediaID { get; set; }
 
     [Required]
-    public int UserID { get; set; }
+    public Guid ArtistID { get; set; }
 
     [ForeignKey("UserID")]
     public User User { get; set; }
