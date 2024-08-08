@@ -1,0 +1,18 @@
+
+
+
+.wrapper_register {
+    position: relative;
+    width: 420px;
+    height: 700px;
+    background: transparent;
+    background-color: black;
+    border-radius: 40px;
+    margin-top: 60px;
+    border: 2px solid darkgoldenrod;
+}
+
+.wrapper_register .form-box {
+    width: 100%;
+    padding: 40px;
+}

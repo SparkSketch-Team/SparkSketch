@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './App.css';
+import './Login.css';
 import Navbar from './NavBar';
 import Button from 'react-bootstrap/Button';
 import { FaUser } from "react-icons/fa";

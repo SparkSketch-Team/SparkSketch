@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+html {background-color:black}
+
+.App {
+    background: black;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.Login-body {
+    display: inline-flex;
+}
+
+.wrapper {
+    position: relative;
+    width: 420px;
+    height: 560px;
+    background: transparent;
+    background-color: black;
+    border-radius: 40px;
+    margin-top: 60px;
+    border: 2px solid darkgoldenrod;
+}
+
+.wrapper .form-box {
+    width: 100%;
+    padding: 40px;
+}
+
+form .input-box {
+    position: relative;
+    height: 50px;
+    width: 100%;
+    margin: 30px 0;
+    background-color: darkgoldenrod;
+    border-radius: 40px; 
+}
+
+.input-box input {
+    height: 100%;
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid rgba(71, 46, 16);
+    border-radius: 40px;
+    color: white;
+}
+
+.input-box input::placeholder {
+    color: white;
+}
+
+.input-box .Icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    translate: 0 -50%;
+    color: white;
+}
+
+.App-title {
+    color: darkgoldenrod;
+    text-align: center;
+    font-size: 60px;
+    font-family: 'Ubuntu', sans-serif;
+    margin-top: 50px;
+}
+
+.Register {
+    color: darkgoldenrod;
+    margin: 20px 0;
+}
+
+.Remember {
+    color: darkgoldenrod;
+    margin: 20px 0;
+}
+
