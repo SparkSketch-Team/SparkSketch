@@ -30,14 +30,25 @@ jobs:
           echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
 
       - name: Set SQL connection string
-        run: echo "DefaultConnection=${{ secrets.SQL_CONNECTION_STRING_DEV }}" >> $GITHUB_ENV
+        run: echo "SQL_CONNECTION_STRING=${{ secrets.SQL_CONNECTION_STRING_DEV }}" >> $GITHUB_ENV
       
       - name: Build with dotnet
         run: dotnet build --configuration Release
         working-directory: ./backend
+
+      - name: Debug Secrets
+        run: echo "SQL_CONNECTION_STRING starts with: ${SQL_CONNECTION_STRING:0:10}"
+
+      - name: Debug Environment Variables
+        run: |
+        echo "SQL_CONNECTION_STRING: $SQL_CONNECTION_STRING"
+        echo "GITHUB_ENV:"
+        cat $GITHUB_ENV
+        
+
       
       - name: Create migration SQL script
-        run: dotnet ef migrations script -o migration.sql --context SparkSketchContext
+        run: dotnet ef migrations script -o migration.sql --context SparkSketchContext -v
         working-directory: ./backend
 
       - name: dotnet publish

@@ -27,6 +27,7 @@ public class SparkSketchContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        Console.WriteLine($"Using connection string: {connectionString}");
         optionsBuilder.UseSqlServer(connectionString);
     }
 
