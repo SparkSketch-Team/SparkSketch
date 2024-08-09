@@ -95,4 +95,15 @@ This same flow works for Login
 5. User clicks "yes"
 6. System signs out user and brings user to home page
 
+# UC 10: Forgot Password
+## Actor: End User
+
+1. User selects "Frogot your password" on the login screen
+2. System takes user to forgot password page and prompts user to enter their email
+3. User enters email into the page and selects "send"
+4. System sends the user a confirmation code via email and takes user to a page with a confirmation code input
+6. User inputs confirmation code
+7. System checks if code is valid, if yes user is taken to a password reset screen
+8. User types in a new password and confirms it
+9. System checks if password is new, if yes user is logged in and brought to the home screen
 
