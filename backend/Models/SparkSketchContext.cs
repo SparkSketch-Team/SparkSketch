@@ -13,24 +13,31 @@ public class SparkSketchContext : DbContext
     public DbSet<Prompt> Prompts { get; set; } = null!;
     public DbSet<Permission> Permissions { get; set; } = null!;
     public virtual DbSet<Email> Emails { get; set; } = null!;
-    public DbSet<Sketch> Sketchs { get; set; }
-    public DbSet<Comment> Comments { get; set; }
-    public DbSet<Like> Likes { get; set; }
-    public DbSet<Follower> Followers { get; set; }
-    public DbSet<Media> Media { get; set; }
+    public DbSet<Sketch> Sketchs { get; set; } = null!;
+    public DbSet<Comment> Comments { get; set; } = null!;
+    public DbSet<Like> Likes { get; set; } = null!;
+    public DbSet<Follower> Followers { get; set; } = null!;
+    public DbSet<Media> Media { get; set; } = null!;
 
     public SparkSketchContext(IConfiguration configuration)
     {
         _config = configuration;
-        connectionString = _config.GetConnectionString("DefaultConnection");
+
+        connectionString = Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")
+                            ?? _config.GetConnectionString("DefaultConnection");
     }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-
-        //TODO: Fix, huge security violation and is retarded
-        optionsBuilder.UseSqlServer(connectionString);
+        if (!optionsBuilder.IsConfigured)
+        {
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new ArgumentException("The connection string cannot be null or empty.");
+            }
+            optionsBuilder.UseSqlServer(connectionString);
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
