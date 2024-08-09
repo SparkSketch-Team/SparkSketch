@@ -4,7 +4,7 @@ import ViewPosts from './ViewPosts';
 import ErrorPage from './error-page';
 import Login from './Login';
 import Register from './Register';
-
+import Forgot from './Forgot';
 
 export const router = createBrowserRouter([
     {
@@ -27,6 +27,10 @@ export const router = createBrowserRouter([
     {
       path: "/register",
       element: <Register />
+    },
+    {
+      path: "/forgot_password",
+      element: <Forgot />
     }
   ]);
 
