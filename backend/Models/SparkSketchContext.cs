@@ -4,7 +4,6 @@ using Microsoft.Extensions.Hosting;
 
 public class SparkSketchContext : DbContext
 {
-    private IConfiguration _config;
     private string connectionString;
 
     public DbSet<User> Users { get; set; } = null!;
@@ -21,23 +20,14 @@ public class SparkSketchContext : DbContext
 
     public SparkSketchContext(IConfiguration configuration)
     {
-        _config = configuration;
-
-        connectionString = Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")
-                            ?? _config.GetConnectionString("DefaultConnection");
+        var envConnectionString = Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING");
+        connectionString = envConnectionString ?? configuration.GetConnectionString("DefaultConnection");
     }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (!optionsBuilder.IsConfigured)
-        {
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new ArgumentException("The connection string cannot be null or empty.");
-            }
-            optionsBuilder.UseSqlServer(connectionString);
-        }
+        optionsBuilder.UseSqlServer(connectionString);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

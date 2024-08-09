@@ -31,16 +31,14 @@ jobs:
 
       - name: Set SQL connection string
         run: echo "SQL_CONNECTION_STRING=${{ secrets.SQL_CONNECTION_STRING_MAIN }}" >> $GITHUB_ENV
-
+      
       - name: Build with dotnet
         run: dotnet build --configuration Release
         working-directory: ./backend
-
-
+      
       - name: Create migration SQL script
-        run: dotnet ef migrations script -o migration.sql --connection "${{ secrets.SQL_CONNECTION_STRING_MAIN }}" --context SparkSketchContext
+        run: dotnet ef migrations script -o migration.sql --context SparkSketchContext
         working-directory: ./backend
-
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
