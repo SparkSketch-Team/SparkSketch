@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using System.Data;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 public class User
 {
@@ -18,4 +17,26 @@ public class User
     [Required]
     public bool IsActive { get; set; }
     public Permission UserPermission { get; set; }
+
+    public string? ProfilePictureUrl { get; set; }
+
+    public string? Bio { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+    // Last Login
+
+    public ICollection<Sketch> Sketches { get; set; }
+
+    public ICollection<Comment> Comments { get; set; }
+
+    public ICollection<Like> Likes { get; set; }
+
+    public ICollection<Follower> Followers { get; set; }
+
+    public ICollection<Follower> Following { get; set; }
+
+    public ICollection<Media> Media { get; set; }
 }

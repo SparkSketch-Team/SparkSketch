@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import './App.css';
+import './Login.css';
 import Navbar from './NavBar';
 import Button from 'react-bootstrap/Button';
+import { FaUser } from "react-icons/fa";
+import { FaLock } from "react-icons/fa";
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -50,6 +52,9 @@ function Login() {
     return (
         <div className='App'>
             <Navbar />
+            <div className='Login-body'>
+            <div className='wrapper'>
+            <div className='form-box login'>
             <form onSubmit={handleLogin}>
                 <h1 className='App-title'>Login</h1>
                 <div className='input-box'>
@@ -60,6 +65,7 @@ function Login() {
                         onChange={(e) => setUsername(e.target.value)}
                         required
                     />
+                    <FaUser className='Icon'/>
                 </div>
                 <div className='input-box'>
                     <input
@@ -69,6 +75,7 @@ function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
+                    <FaLock className='Icon'/>
                 </div>
                 <div className='Remember'>
                     <label>
@@ -100,6 +107,9 @@ function Login() {
                     </p>
                 </div>
             </form>
+            </div>
+            </div>
+            </div>
         </div>
     );
 }

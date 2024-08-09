@@ -15,7 +15,7 @@ public class UserRepository : BaseRepository, IUserRepository
     }
     public async Task<Claim[]> GetUserClaims(LoginInfo loginInfo)
     {
-        var user = await db.Users.FirstOrDefaultAsync(u => u.EmailAddress == loginInfo.username && u.IsActive);
+        var user = await db.Users.FirstOrDefaultAsync(u => u.Username == loginInfo.username && u.IsActive);
         List<Claim> claims = new List<Claim>();
         if (user != null)
         {
@@ -186,26 +186,33 @@ public class UserRepository : BaseRepository, IUserRepository
                     throw new Exception("Email address already in use");
                 }
 
+                //check if Username is already used
+                if ((await db.Users.Include(u => u.UserPermission).Where(x => x.Username == newUser.Username).CountAsync()) > 0)
+                {
+                    throw new Exception("Username already in use");
+                }
+
                 db.Users.Add(newUser);
 
 
                 //Console.WriteLine(newUser);
                 await db.SaveChangesAsync();
-                //send validation email
-                if ((userInfo.DontSendEmail == null || userInfo.DontSendEmail == false) && !await SendValidationEmail(newUser, false))
-                {
-                    throw new Exception("Couldn't send validation email");
-                }
-                else if (userInfo.DontSendEmail == true)
-                {
-                    var validateEmail = new Email();
-                    validateEmail.EmailID = Guid.NewGuid();
-                    validateEmail.UserID = newUser.UserId;
-                    validateEmail.TypeEnum = (int)EmailType.PasswordReset;
-                    validateEmail.ExpirationDate = DateTimeOffset.UtcNow.AddDays(3);
-                    validateEmail.IsActive = true;
-                    db.Emails.Add(validateEmail);
-                }
+
+                //TODO: send validation email
+                //if ((userInfo.DontSendEmail == null || userInfo.DontSendEmail == false) && !await SendValidationEmail(newUser, false))
+                //{
+                //    throw new Exception("Couldn't send validation email");
+                //}
+                //else if (userInfo.DontSendEmail == true)
+                //{
+                //    var validateEmail = new Email();
+                //    validateEmail.EmailID = Guid.NewGuid();
+                //    validateEmail.UserID = newUser.UserId;
+                //    validateEmail.TypeEnum = (int)EmailType.PasswordReset;
+                //    validateEmail.ExpirationDate = DateTimeOffset.UtcNow.AddDays(3);
+                //    validateEmail.IsActive = true;
+                //    db.Emails.Add(validateEmail);
+                //}
 
                 await db.SaveChangesAsync();
                 //Console.WriteLine("Changes Saved");
