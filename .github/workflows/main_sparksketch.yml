@@ -38,8 +38,9 @@ jobs:
 
 
       - name: Create migration SQL script
-        run: dotnet ef migrations script -o migration.sql
+        run: dotnet ef migrations script -o migration.sql --connection "${{ secrets.SQL_CONNECTION_STRING_MAIN }}" --context SparkSketchContext
         working-directory: ./backend
+
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
