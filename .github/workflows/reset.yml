@@ -1,0 +1,36 @@
+name: Reset Dev and Staging Branches to Main
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  reset:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # Ensure full history is fetched
+
+    - name: Set up Git
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+
+    - name: Reset dev to main
+      run: |
+        git checkout dev
+        git reset --hard main
+        git push --force origin dev
+
+    - name: Reset staging to main
+      run: |
+        git checkout staging
+        git reset --hard main
+        git push --force origin staging
