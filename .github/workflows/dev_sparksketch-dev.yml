@@ -117,4 +117,4 @@ jobs:
       - name: Run migration script on Azure SQL Database
         run: |
           echo "Running sqlcmd..."
-          sqlcmd -S ${{ secrets.AZURE_SQL_SERVER }} -d ${{ secrets.AZURE_SQL_DATABASE_DEV }} -U ${{ secrets.AZURE_SQL_USERNAME }} -P ${{ secrets.AZURE_SQL_PASSWORD }} -i migration.sql -?
+          sqlcmd -S ${{ secrets.AZURE_SQL_SERVER }},1433 -d ${{ secrets.AZURE_SQL_DATABASE_DEV }} -U ${{ secrets.AZURE_SQL_USERNAME }} -P ${{ secrets.AZURE_SQL_PASSWORD }} -N -i migration.sql
