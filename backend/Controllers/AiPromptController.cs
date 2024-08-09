@@ -58,6 +58,5 @@ public class AiController : ApiController
                 _logger.LogError(e, "Exception in GetPrompt.");
                 return FailMessage(e.Message);
             }
-        }
-
+    }
 }
