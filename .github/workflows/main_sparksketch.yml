@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - SparkSketch
+name: SparkSketch-Production Web App
 
 on:
   push:
@@ -42,12 +42,26 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+       id-token: write #This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
           name: .net-app
+
+      - name: Download migration script from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: migration-script
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_BFC3981D39E64E25A7E66B5DB12F976E }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B82E04AA0C854C85AA4453ACD1B231FB }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8B93CFB4D3D54F1D9BCB89136EDBBE29 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -57,3 +71,12 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_77A37FBAB1404AAF9108C35DF70D9849 }}
           package: .
+
+      - name: Run migration script on Azure SQL Database
+        env:
+          AZURE_SQL_SERVER: ${{ secrets.AZURE_SQL_SERVER }}
+          AZURE_SQL_DATABASE: ${{ secrets.AZURE_SQL_DATABASE_MAIN }}
+          AZURE_SQL_USERNAME: ${{ secrets.AZURE_SQL_USERNAME }}
+          AZURE_SQL_PASSWORD: ${{ secrets.AZURE_SQL_PASSWORD }}
+        run: |
+          sqlcmd -S $AZURE_SQL_SERVER.database.windows.net -d $AZURE_SQL_DATABASE -U $AZURE_SQL_USERNAME -P $AZURE_SQL_PASSWORD -i migration.sql

@@ -31,7 +31,7 @@ using Microsoft.Extensions.Options;
             _mailSettings = mailSettings.Value;
         }
 
-        protected async Task<bool> SubmitEmail(IList<string> toList, IList<string> ccList, IList<string> bccList, StringBuilder template)
+        protected async Task<bool> SubmitEmail(IList<string> toList, IList<string>? ccList, IList<string>? bccList, StringBuilder template)
         {
         if (_mailSettings.Port == null)
         {

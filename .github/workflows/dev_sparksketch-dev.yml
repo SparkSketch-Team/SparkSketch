@@ -30,11 +30,21 @@ jobs:
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
         working-directory: ./backend
 
+      - name: Create migration SQL script
+        run: dotnet ef migrations script -o migration.sql
+        working-directory: ./backend
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
+
+      - name: Upload migration SQL script
+        uses: actions/upload-artifact@v3
+        with:
+          name: migration-script
+          path: ./backend/migration.sql
 
   deploy:
     runs-on: windows-latest
@@ -43,14 +53,19 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write # This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
           name: .net-app
-      
+
+      - name: Download migration script from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: migration-script
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -65,4 +80,12 @@ jobs:
           app-name: 'SparkSketch-Dev'
           slot-name: 'Production'
           package: .
-          
+
+      - name: Run migration script on Azure SQL Database
+        env:
+          AZURE_SQL_SERVER: ${{ secrets.AZURE_SQL_SERVER }}
+          AZURE_SQL_DATABASE: ${{ secrets.AZURE_SQL_DATABASE_DEV }}
+          AZURE_SQL_USERNAME: ${{ secrets.AZURE_SQL_USERNAME }}
+          AZURE_SQL_PASSWORD: ${{ secrets.AZURE_SQL_PASSWORD }}
+        run: |
+          sqlcmd -S $AZURE_SQL_SERVER.database.windows.net -d $AZURE_SQL_DATABASE -U $AZURE_SQL_USERNAME -P $AZURE_SQL_PASSWORD -i migration.sql
