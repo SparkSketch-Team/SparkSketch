@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - SparkSketch-Dev
+name: SparkSketch-Dev Web App
 
 on:
   push:
@@ -22,16 +22,22 @@ jobs:
           dotnet-version: '6.0.x'
           include-prerelease: true
 
+      - name: Install dotnet-ef tool
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Add dotnet tools to PATH
+        run: echo "::add-path::${HOME}/.dotnet/tools"
+
       - name: Build with dotnet
         run: dotnet build --configuration Release
         working-directory: ./backend
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
-        working-directory: ./backend
-
       - name: Create migration SQL script
         run: dotnet ef migrations script -o migration.sql
+        working-directory: ./backend
+
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
         working-directory: ./backend
 
       - name: Upload artifact for deployment job

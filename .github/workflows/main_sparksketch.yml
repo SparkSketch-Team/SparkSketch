@@ -22,8 +22,19 @@ jobs:
           dotnet-version: '6.0.x'
           include-prerelease: true
 
+      - name: Install dotnet-ef tool
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Add dotnet tools to PATH
+        run: echo "::add-path::${HOME}/.dotnet/tools"
+
       - name: Build with dotnet
         run: dotnet build --configuration Release
+        working-directory: ./backend
+
+
+      - name: Create migration SQL script
+        run: dotnet ef migrations script -o migration.sql
         working-directory: ./backend
 
       - name: dotnet publish
@@ -35,6 +46,12 @@ jobs:
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
+
+      - name: Upload migration SQL script
+        uses: actions/upload-artifact@v3
+        with:
+          name: migration-script
+          path: ./backend/migration.sql
 
   deploy:
     runs-on: windows-latest
