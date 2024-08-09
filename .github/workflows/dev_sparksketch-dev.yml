@@ -24,28 +24,33 @@ jobs:
 
       - name: Install dotnet-ef tool
         run: dotnet tool install --global dotnet-ef --version 7.0.7
-
+      
       - name: Add dotnet tools to PATH
-        run: |
-          echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
-
+        run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
+        shell: bash
+      
       - name: Set SQL connection string
         run: echo "SQL_CONNECTION_STRING=${{ secrets.SQL_CONNECTION_STRING_DEV }}" >> $GITHUB_ENV
+        shell: bash
+      
+      - name: Debug Environment Variables in bash
+        run: |
+          echo "SQL_CONNECTION_STRING starts with: ${SQL_CONNECTION_STRING:0:10}"
+          echo "GITHUB_ENV content:"
+          cat $GITHUB_ENV
+        shell: bash
       
       - name: Build with dotnet
         run: dotnet build --configuration Release
         working-directory: ./backend
-
-      - name: Debug Secrets
+        shell: pwsh
+      
+      - name: Debug Environment Variables in pwsh
         run: |
-          echo "SQL_CONNECTION_STRING starts with: ${SQL_CONNECTION_STRING:0:10}"
-        shell: bash
-
-      - name: Debug Environment Variables
-        run: |
-          echo "SQL_CONNECTION_STRING: $SQL_CONNECTION_STRING"
-          echo "GITHUB_ENV:"
-          cat $GITHUB_ENV
+          Write-Host "SQL_CONNECTION_STRING: $Env:SQL_CONNECTION_STRING"
+          Write-Host "GITHUB_ENV content:"
+          Get-Content "$Env:GITHUB_ENV"
+        shell: pwsh
       
       
       - name: Create migration SQL script
