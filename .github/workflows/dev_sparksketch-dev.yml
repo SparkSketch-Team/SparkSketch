@@ -43,11 +43,10 @@ jobs:
 
       - name: Debug Environment Variables
         run: |
-        echo "SQL_CONNECTION_STRING: $SQL_CONNECTION_STRING"
-        echo "GITHUB_ENV:"
-        cat $GITHUB_ENV
-        
-
+          echo "SQL_CONNECTION_STRING: $SQL_CONNECTION_STRING"
+          echo "GITHUB_ENV:"
+          cat $GITHUB_ENV
+      
       
       - name: Create migration SQL script
         run: dotnet ef migrations script -o migration.sql --context SparkSketchContext -v
