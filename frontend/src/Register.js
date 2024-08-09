@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './App.css';
+import './Login.css';
+import './Register.css';
 import Button from 'react-bootstrap/Button';
 
 function Register() {
@@ -90,7 +91,7 @@ function Register() {
     return (
         <div className='App'>
             <div className='Login-body'>
-                <div className='wrapper'>
+                <div className='wrapper_register'>
                     <div className='form-box login'>
                         <form onSubmit={handleSubmit}>
                             <h1 className='App-title'>Register</h1>

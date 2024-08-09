@@ -4,7 +4,6 @@ using Microsoft.Extensions.Hosting;
 
 public class SparkSketchContext : DbContext
 {
-    private IConfiguration _config;
     private string connectionString;
 
     public DbSet<User> Users { get; set; } = null!;
@@ -13,23 +12,22 @@ public class SparkSketchContext : DbContext
     public DbSet<Prompt> Prompts { get; set; } = null!;
     public DbSet<Permission> Permissions { get; set; } = null!;
     public virtual DbSet<Email> Emails { get; set; } = null!;
-    public DbSet<Sketch> Sketchs { get; set; }
-    public DbSet<Comment> Comments { get; set; }
-    public DbSet<Like> Likes { get; set; }
-    public DbSet<Follower> Followers { get; set; }
-    public DbSet<Media> Media { get; set; }
+    public DbSet<Sketch> Sketchs { get; set; } = null!;
+    public DbSet<Comment> Comments { get; set; } = null!;
+    public DbSet<Like> Likes { get; set; } = null!;
+    public DbSet<Follower> Followers { get; set; } = null!;
+    public DbSet<Media> Media { get; set; } = null!;
 
     public SparkSketchContext(IConfiguration configuration)
     {
-        _config = configuration;
-        connectionString = _config.GetConnectionString("DefaultConnection");
+        var envConnectionString = Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING");
+        connectionString = envConnectionString ?? configuration.GetConnectionString("DefaultConnection");
     }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-
-        //TODO: Fix, huge security violation and is retarded
+        Console.WriteLine($"Using connection string: {connectionString}");
         optionsBuilder.UseSqlServer(connectionString);
     }
 

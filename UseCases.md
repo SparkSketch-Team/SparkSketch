@@ -81,6 +81,18 @@ This same flow works for Login
 ## Actor: End User
 
 1. User clicks on their profile
-2. System takes user to ptofile page
+2. System takes user to profile page
 3. User clicks on "previous posts"
 4. System takes user to page with previous posts in chronological order
+
+# UC 9: User logs out
+## Actor: End User
+
+1. User clicks on the dropdown menu
+2. System opens the menu
+3. User clicks "log out"
+4. System opens a box asking for confirmation from the user
+5. User clicks "yes"
+6. System signs out user and brings user to home page
+
+
