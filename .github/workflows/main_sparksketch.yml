@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - SparkSketch
+name: SparkSketch-Production Web App
 
 on:
   push:
@@ -22,8 +22,38 @@ jobs:
           dotnet-version: '6.0.x'
           include-prerelease: true
 
+      - name: Install dotnet-ef tool
+        run: dotnet tool install --global dotnet-ef --version 7.0.7
+
+      - name: Add dotnet tools to PATH
+        run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
+        shell: bash
+
+      - name: Set SQL connection string
+        run: echo "SQL_CONNECTION_STRING=${{ secrets.SQL_CONNECTION_STRING_MAIN }}" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Debug Environment Variables in bash
+        run: |
+          echo "SQL_CONNECTION_STRING starts with: ${SQL_CONNECTION_STRING:0:10}"
+          echo "GITHUB_ENV content:"
+          cat $GITHUB_ENV
+        shell: bash
+      
       - name: Build with dotnet
         run: dotnet build --configuration Release
+        working-directory: ./backend
+        shell: pwsh
+
+      - name: Debug Environment Variables in pwsh
+        run: |
+          Write-Host "SQL_CONNECTION_STRING: $Env:SQL_CONNECTION_STRING"
+          Write-Host "GITHUB_ENV content:"
+          Get-Content "$Env:GITHUB_ENV"
+        shell: pwsh
+      
+      - name: Create migration SQL script
+        run: dotnet ef migrations script -o migration.sql --context SparkSketchContext -v -i
         working-directory: ./backend
 
       - name: dotnet publish
@@ -36,18 +66,38 @@ jobs:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
 
+      - name: Upload migration SQL script
+        uses: actions/upload-artifact@v3
+        with:
+          name: migration-script
+          path: ./backend/migration.sql
+
   deploy:
     runs-on: windows-latest
     needs: build
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+       id-token: write #This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
           name: .net-app
+
+      - name: Download migration script from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: migration-script
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_BFC3981D39E64E25A7E66B5DB12F976E }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B82E04AA0C854C85AA4453ACD1B231FB }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8B93CFB4D3D54F1D9BCB89136EDBBE29 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -57,3 +107,15 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_77A37FBAB1404AAF9108C35DF70D9849 }}
           package: .
+
+      - name: Debug secrets
+        run: |
+          echo "AZURE_SQL_SERVER: ${{ secrets.AZURE_SQL_SERVER }}"
+          echo "AZURE_SQL_DATABASE: ${{ secrets.AZURE_SQL_DATABASE_MAIN }}"
+          echo "AZURE_SQL_USERNAME: ${{ secrets.AZURE_SQL_USERNAME }}"
+          echo "AZURE_SQL_PASSWORD: ${{ secrets.AZURE_SQL_PASSWORD }}"
+  
+      - name: Run migration script on Azure SQL Database
+        run: |
+          echo "Running sqlcmd..."
+          sqlcmd -S ${{ secrets.AZURE_SQL_SERVER }},1433 -d ${{ secrets.AZURE_SQL_DATABASE_MAIN }} -U ${{ secrets.AZURE_SQL_USERNAME }} -P ${{ secrets.AZURE_SQL_PASSWORD }} -N -i migration.sql
