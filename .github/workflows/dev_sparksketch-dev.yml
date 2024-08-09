@@ -30,7 +30,7 @@ jobs:
           echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
 
       - name: Set SQL connection string
-        run: echo "SQL_CONNECTION_STRING=${{ secrets.SQL_CONNECTION_STRING_DEV }}" >> $GITHUB_ENV
+        run: echo "DefaultConnection=${{ secrets.SQL_CONNECTION_STRING_DEV }}" >> $GITHUB_ENV
       
       - name: Build with dotnet
         run: dotnet build --configuration Release
