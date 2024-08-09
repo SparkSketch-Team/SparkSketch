@@ -118,4 +118,4 @@ jobs:
           echo "AZURE_SQL_DATABASE: $AZURE_SQL_DATABASE"
           echo "AZURE_SQL_USERNAME: $AZURE_SQL_USERNAME"
           echo "Running sqlcmd..."
-          sqlcmd -S $AZURE_SQL_SERVER.database.windows.net -d $AZURE_SQL_DATABASE -U $AZURE_SQL_USERNAME -P $AZURE_SQL_PASSWORD -i ./migration.sql
+          sqlcmd -S $AZURE_SQL_SERVER -d $AZURE_SQL_DATABASE -U $AZURE_SQL_USERNAME -P $AZURE_SQL_PASSWORD -i ./migration.sql

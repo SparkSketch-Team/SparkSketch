@@ -26,18 +26,34 @@ jobs:
         run: dotnet tool install --global dotnet-ef --version 7.0.7
 
       - name: Add dotnet tools to PATH
-        run: |
-          echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
+        run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
+        shell: bash
 
       - name: Set SQL connection string
         run: echo "SQL_CONNECTION_STRING=${{ secrets.SQL_CONNECTION_STRING_MAIN }}" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Debug Environment Variables in bash
+        run: |
+          echo "SQL_CONNECTION_STRING starts with: ${SQL_CONNECTION_STRING:0:10}"
+          echo "GITHUB_ENV content:"
+          cat $GITHUB_ENV
+        shell: bash
       
       - name: Build with dotnet
         run: dotnet build --configuration Release
         working-directory: ./backend
+        shell: pwsh
+
+      - name: Debug Environment Variables in pwsh
+        run: |
+          Write-Host "SQL_CONNECTION_STRING: $Env:SQL_CONNECTION_STRING"
+          Write-Host "GITHUB_ENV content:"
+          Get-Content "$Env:GITHUB_ENV"
+        shell: pwsh
       
       - name: Create migration SQL script
-        run: dotnet ef migrations script -o migration.sql --context SparkSketchContext
+        run: dotnet ef migrations script -o migration.sql --context SparkSketchContext -v -i
         working-directory: ./backend
 
       - name: dotnet publish
@@ -99,4 +115,8 @@ jobs:
           AZURE_SQL_USERNAME: ${{ secrets.AZURE_SQL_USERNAME }}
           AZURE_SQL_PASSWORD: ${{ secrets.AZURE_SQL_PASSWORD }}
         run: |
-          sqlcmd -S $AZURE_SQL_SERVER.database.windows.net -d $AZURE_SQL_DATABASE -U $AZURE_SQL_USERNAME -P $AZURE_SQL_PASSWORD -i migration.sql
+          echo "AZURE_SQL_SERVER: $AZURE_SQL_SERVER"
+          echo "AZURE_SQL_DATABASE: $AZURE_SQL_DATABASE"
+          echo "AZURE_SQL_USERNAME: $AZURE_SQL_USERNAME"
+          echo "Running sqlcmd..."
+          sqlcmd -S $AZURE_SQL_SERVER -d $AZURE_SQL_DATABASE -U $AZURE_SQL_USERNAME -P $AZURE_SQL_PASSWORD -i ./migration.sql
