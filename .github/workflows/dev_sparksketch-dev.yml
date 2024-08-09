@@ -37,7 +37,9 @@ jobs:
         working-directory: ./backend
 
       - name: Debug Secrets
-        run: echo "SQL_CONNECTION_STRING starts with: ${SQL_CONNECTION_STRING:0:10}"
+        run: |
+          echo "SQL_CONNECTION_STRING starts with: ${SQL_CONNECTION_STRING:0:10}"
+        shell: bash
 
       - name: Debug Environment Variables
         run: |
