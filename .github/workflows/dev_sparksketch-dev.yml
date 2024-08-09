@@ -52,9 +52,8 @@ jobs:
           Get-Content "$Env:GITHUB_ENV"
         shell: pwsh
       
-      
       - name: Create migration SQL script
-        run: dotnet ef migrations script -o migration.sql --context SparkSketchContext -v
+        run: dotnet ef migrations script -o migration.sql --context SparkSketchContext -v -i
         working-directory: ./backend
 
       - name: dotnet publish
@@ -115,4 +114,8 @@ jobs:
           AZURE_SQL_USERNAME: ${{ secrets.AZURE_SQL_USERNAME }}
           AZURE_SQL_PASSWORD: ${{ secrets.AZURE_SQL_PASSWORD }}
         run: |
-          sqlcmd -S $AZURE_SQL_SERVER.database.windows.net -d $AZURE_SQL_DATABASE -U $AZURE_SQL_USERNAME -P $AZURE_SQL_PASSWORD -i migration.sql
+          echo "AZURE_SQL_SERVER: $AZURE_SQL_SERVER"
+          echo "AZURE_SQL_DATABASE: $AZURE_SQL_DATABASE"
+          echo "AZURE_SQL_USERNAME: $AZURE_SQL_USERNAME"
+          echo "Running sqlcmd..."
+          sqlcmd -S $AZURE_SQL_SERVER.database.windows.net -d $AZURE_SQL_DATABASE -U $AZURE_SQL_USERNAME -P $AZURE_SQL_PASSWORD -i ./migration.sql
