@@ -113,10 +113,8 @@ jobs:
           echo "AZURE_SQL_DATABASE: ${{ secrets.AZURE_SQL_DATABASE_DEV }}"
           echo "AZURE_SQL_USERNAME: ${{ secrets.AZURE_SQL_USERNAME }}"
           echo "AZURE_SQL_PASSWORD: ${{ secrets.AZURE_SQL_PASSWORD }}"
-          sqlcmd -S $AZURE_SQL_SERVER -d $AZURE_SQL_DATABASE -U $AZURE_SQL_USERNAME -P $AZURE_SQL_PASSWORD -i ./migration.sql
 
       - name: Run migration script on Azure SQL Database
         run: |
           echo "Running sqlcmd..."
-          sqlcmd -S ${{ secrets.AZURE_SQL_SERVER }}.database.windows.net -d ${{ secrets.AZURE_SQL_DATABASE_DEV }} -U ${{ secrets.AZURE_SQL_USERNAME }} -P ${{ secrets.AZURE_SQL_PASSWORD }} -i migration.sql
-          
+          sqlcmd -S ${{ secrets.AZURE_SQL_SERVER }} -d ${{ secrets.AZURE_SQL_DATABASE_DEV }} -U ${{ secrets.AZURE_SQL_USERNAME }} -P ${{ secrets.AZURE_SQL_PASSWORD }} -i migration.sql -?
