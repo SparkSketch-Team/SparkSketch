@@ -125,11 +125,12 @@ public class UserRepository : BaseRepository, IUserRepository
 
     public async Task<UserSummary?> GetUser(Guid userId)
     {
-        var user = await db.Users.Include(x => x.UserPermission).Where(x => x.UserId == userId).FirstOrDefaultAsync();
-        if (user != null)
-        {
-            return UserSummary.Assemble(user);
-        }
+            var user = await db.Users.Where(x => x.UserId == userId).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                return UserSummary.Assemble(user);
+            }
+
         return null;
     }
 
@@ -232,22 +233,44 @@ public class UserRepository : BaseRepository, IUserRepository
         }
     }
 
-    // public async Task<UserSummary> GetSelf(HttpContext httpContext){
-    //     return await UserSummary.AssembleSelf(httpContext);
-    // } 
+    public async Task<UserSummary> GetSelf(HttpContext httpContext)
+    {
+        return null;//await UserSummary.AssembleSelf(httpContext);
+    }
 
     public async Task<bool> EditUser(UserSummary userInfo)
     {
+        // Check if User Exists
         var user = await db.Users.Include(u => u.UserPermission).Where(x => x.UserId == userInfo.userID).FirstOrDefaultAsync();
         if (user == null)
         {
             throw new Exception("Unable to find user");
         }
+
+        // If new email is different check that it isn't in use
         var numTimesEmailUsed = await db.Users.Include(u => u.UserPermission).Where(x => x.EmailAddress == userInfo.userSummary.emailAddress).CountAsync();
         if (numTimesEmailUsed > 1 || (numTimesEmailUsed > 0 && userInfo.userSummary.emailAddress != user.EmailAddress))
         {
             throw new Exception("Email address already in use");
         }
+
+        // Check if new Username is in place
+        var numberOfUsernames = await db.Users.Include(u => u.UserPermission).Where(x => x.Username == userInfo.userSummary.username).CountAsync();
+        if(numberOfUsernames > 0)
+        {
+            throw new Exception("Username already in use");
+        }
+
+        // If new pfp, upload to blobStorage //user pfps
+
+        // Change to new data
+
+        db.Users.Update(new User
+        {
+
+        });
+
+        /*
         var permission = await db.Permissions.FirstOrDefaultAsync(p => p.PermissionId == (int)userInfo.role);
 
         if (permission == null)
@@ -262,6 +285,8 @@ public class UserRepository : BaseRepository, IUserRepository
         user.EmailAddress = userInfo.userSummary.emailAddress;
         user.IsActive = userInfo.userSummary.isActive;
         user.UserPermission = permission;
+
+        */
 
         await db.SaveChangesAsync();
         return true;
