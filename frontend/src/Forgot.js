@@ -1,8 +1,6 @@
 import React from 'react';
 import './Login.css';
 
-
-
 function Forgot() {
     return (
         <div className='App'> 
@@ -14,7 +12,7 @@ function Forgot() {
                             <div className='input-box'>
                                 <input
                                     type='text'
-                                    placeholder='Enter email'
+                                    placeholder='Enter Username'
                                     required
                                 />
                             </div>

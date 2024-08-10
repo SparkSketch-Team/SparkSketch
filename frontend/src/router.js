@@ -5,6 +5,7 @@ import ErrorPage from './error-page';
 import Login from './Login';
 import Register from './Register';
 import Forgot from './Forgot';
+import Email from './Email';
 
 export const router = createBrowserRouter([
     {
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
     {
       path: "/forgot_password",
       element: <Forgot />
+    },
+    {
+    path: "/otp",
+    element: <Email />
     }
   ]);
 
