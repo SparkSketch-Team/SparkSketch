@@ -11,11 +11,6 @@ function Login() {
     const [errorMessage, setErrorMessage] = useState('');
 
     // Handler functions for buttons
-    const handleForgotPassword = (event) => {
-        event.preventDefault();
-        // Logic to handle forgot password
-        console.log('Forgot Password clicked');
-    };
 
 
     const handleLogin = async (event) => {
@@ -82,20 +77,9 @@ function Login() {
                         <input type='checkbox' />
                         Remember me
                     </label>
-                    <button
-                        type='button'
-                        onClick={handleForgotPassword}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            color: 'blue',
-                            cursor: 'pointer',
-                            textDecoration: 'underline',
-                            padding: 0,
-                        }}
-                    >
-                        Forgot Password?
-                    </button>
+                    <p>
+                        <a href='forgot_password'>Forgot Password?</a>
+                    </p>
                 </div>
                 <Button variant='warning' type='submit'>
                     Login

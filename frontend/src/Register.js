@@ -131,7 +131,7 @@ function Register() {
                                 <input
                                     type='password'
                                     name='confirmPassword'
-                                    placeholder='Repeat Password'
+                                    placeholder='Confirm Password'
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
                                     required
