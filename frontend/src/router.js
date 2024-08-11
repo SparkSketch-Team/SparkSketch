@@ -7,6 +7,7 @@ import Register from './Register';
 import Forgot from './Forgot';
 import Email from './Email';
 import Reset from './Reset';
+import Profile from './Profile';
 
 export const router = createBrowserRouter([
     {
@@ -41,6 +42,10 @@ export const router = createBrowserRouter([
     {
       path: "/reset_password",
       element: <Reset />
+    },
+    {
+      path: "/profile",
+      element: <Profile />
     }
   ]);
 

@@ -98,7 +98,7 @@ This same flow works for Login
 # UC 10: Forgot Password
 ## Actor: End User
 
-1. User selects "Frogot your password" on the login screen
+1. User selects "Forgot your password" on the login screen
 2. System takes user to forgot password page and prompts user to enter their email
 3. User enters email into the page and selects "send"
 4. System sends the user a confirmation code via email and takes user to a page with a confirmation code input
