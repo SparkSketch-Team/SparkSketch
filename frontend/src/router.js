@@ -6,6 +6,7 @@ import Login from './Login';
 import Register from './Register';
 import Forgot from './Forgot';
 import Email from './Email';
+import Reset from './Reset';
 
 export const router = createBrowserRouter([
     {
@@ -36,6 +37,10 @@ export const router = createBrowserRouter([
     {
     path: "/otp",
     element: <Email />
+    },
+    {
+      path: "/reset_password",
+      element: <Reset />
     }
   ]);
 

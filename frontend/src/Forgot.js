@@ -12,7 +12,7 @@ function Forgot() {
                             <div className='input-box'>
                                 <input
                                     type='text'
-                                    placeholder='Enter Username'
+                                    placeholder='Enter Email'
                                     required
                                 />
                             </div>

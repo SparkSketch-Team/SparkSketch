@@ -89,3 +89,9 @@ form button {
     margin: 20px 0;
 }
 
+.link {
+    color: rgb(66, 151, 255);
+    background-color: transparent;
+    border: none;
+}
+
