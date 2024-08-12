@@ -4,11 +4,14 @@ import Navbar from './NavBar';
 import Button from 'react-bootstrap/Button';
 import { FaUser } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
+
 
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
 
     // Handler functions for buttons
     const handleForgotPassword = (event) => {
@@ -40,7 +43,8 @@ function Login() {
                     localStorage.setItem('token', result.results);
                     console.log('Login successful');
                     // Redirect user or update UI as needed
-                    // Example: window.location.href = '/dashboard';
+                    // Example: window.location.href = '/link';
+                    navigate('/home')
                 } else {
                     console.log("Invalid username or password");
                     setErrorMessage('Invalid username or password');
