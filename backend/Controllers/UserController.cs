@@ -3,23 +3,28 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.CodeDom.Compiler;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ApiController
 {
     private readonly IUserRepository _userRepository;
+    private readonly IConfiguration _config;
 
-    public UserController(IUserRepository userRepository, ILogger<UserController> logger) : base(logger)
+    public UserController(IUserRepository userRepository, IConfiguration config, ILogger<UserController> logger) : base(logger)
     {
         _userRepository = userRepository;
+        _config = config;
     }
 
     [HttpPost]
     [Route("Login")]
     public async Task<JsonResult> Login([FromBody] LoginInfo loginInfo)
     {
-        //Console.WriteLine("Login");
         var context = HttpContext;
 
         Random random = new Random();
@@ -28,58 +33,57 @@ public class UserController : ApiController
         if (await _userRepository.ValidateUser(loginInfo))
         {
             var claims = await _userRepository.GetUserClaims(loginInfo);
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-            await context.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(identity)
-            );
+            var token = GenerateJwtToken(claims);
 
-            var user = context.User;
-            var claimsT = context.User.Claims;
-            var uid = context.User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId);
 
-            return SuccessMessage(true);
+            return SuccessMessage(token);
         }
         else
         {
-            //Console.WriteLine("Not Validated");
-            return FailMessage();
+            return FailMessage("Failed to login");
         }
 
     }
 
-    // [HttpGet]
-    // [Route("GetSelf")]
-    // public async Task<JsonResult> GetSelf(){
-    //     using (aRepo){
-    //         try {
-    //             var response = await aRepo.GetSelf(HttpContext);
-    //             if(response == null) {
-    //                 return FailMessage();
-    //             }
-    //             return SuccessMessage(response);
-    //         } catch (Exception ex) {
-    //             return FailMessage(ex.Message);
-    //         }
-    //     }
-    // }
+    private string GenerateJwtToken(IEnumerable<Claim> claims) {
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-    [HttpPost]
+        var token = new JwtSecurityToken(
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.Now.AddMinutes(30),
+            signingCredentials: creds);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+        // [HttpGet]
+        // [Route("GetSelf")]
+        // public async Task<JsonResult> GetSelf(){
+        //     using (aRepo){
+        //         try {
+        //             var response = await aRepo.GetSelf(HttpContext);
+        //             if(response == null) {
+        //                 return FailMessage();
+        //             }
+        //             return SuccessMessage(response);
+        //         } catch (Exception ex) {
+        //             return FailMessage(ex.Message);
+        //         }
+        //     }
+        // }
+
+        [HttpPost]
     [Route("AddUser")]
     public async Task<JsonResult> AddUser([FromBody] UserInfo userInfo)
     {
         try
         {
             var response = await _userRepository.AddUser(userInfo);
-            if (response != null)
-            {
-                return SuccessMessage(response);
-            }
-            else
-            {
-                return FailMessage("Adding User Failed");
-            }
+            return SuccessMessage(response);
         }
         catch (Exception ex)
         {

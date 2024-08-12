@@ -21,8 +21,7 @@ function Login() {
     const handleLogin = async (event) => {
         event.preventDefault();
         setErrorMessage(''); // Reset error message
-
-        // API call to backend for login
+    
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}api/User/login`, {
                 method: 'POST',
@@ -31,12 +30,15 @@ function Login() {
                 },
                 body: JSON.stringify({ username, password }),
             });
-
+    
             if (response.ok) {
                 const result = await response.json();
-                if (result.success) {
+                if (result.token) {
+                    // Store the JWT token
+                    localStorage.setItem('token', result.token);
                     console.log('Login successful');
                     // Redirect user or update UI as needed
+                    // Example: window.location.href = '/dashboard';
                 } else {
                     setErrorMessage('Invalid username or password');
                 }
@@ -48,6 +50,7 @@ function Login() {
             console.error('Error:', error);
         }
     };
+    
 
     return (
         <div className='App'>
