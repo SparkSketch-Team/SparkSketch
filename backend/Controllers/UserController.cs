@@ -25,56 +25,16 @@ public class UserController : ApiController
     [Route("Login")]
     public async Task<JsonResult> Login([FromBody] LoginInfo loginInfo)
     {
-        var context = HttpContext;
-
-        Random random = new Random();
-        await Task.Delay(random.Next(1000, 5000));
-
-        if (await _userRepository.ValidateUser(loginInfo))
+        var token = await _userRepository.Login(loginInfo);
+        if (!string.IsNullOrEmpty(token))
         {
-            var claims = await _userRepository.GetUserClaims(loginInfo);
-
-            var token = GenerateJwtToken(claims);
-
-
             return SuccessMessage(token);
         }
         else
         {
-            return FailMessage("Failed to login");
+            return FailMessage("Failed to Login");
         }
-
     }
-
-    private string GenerateJwtToken(IEnumerable<Claim> claims) {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.Now.AddMinutes(30),
-            signingCredentials: creds);
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
-        // [HttpGet]
-        // [Route("GetSelf")]
-        // public async Task<JsonResult> GetSelf(){
-        //     using (aRepo){
-        //         try {
-        //             var response = await aRepo.GetSelf(HttpContext);
-        //             if(response == null) {
-        //                 return FailMessage();
-        //             }
-        //             return SuccessMessage(response);
-        //         } catch (Exception ex) {
-        //             return FailMessage(ex.Message);
-        //         }
-        //     }
-        // }
 
     [HttpPost]
     [Route("AddUser")]
@@ -82,8 +42,15 @@ public class UserController : ApiController
     {
         try
         {
-            var response = await _userRepository.AddUser(userInfo);
-            return SuccessMessage(response);
+            var token = await _userRepository.RegisterAndLoginUser(userInfo);
+            if (!string.IsNullOrEmpty(token))
+            {
+                return SuccessMessage(token);
+            }
+            else
+            {
+                return FailMessage("Failed to Login");
+            }
         }
         catch (Exception ex)
         {
