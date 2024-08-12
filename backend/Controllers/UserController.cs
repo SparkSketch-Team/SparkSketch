@@ -76,7 +76,7 @@ public class UserController : ApiController
         //     }
         // }
 
-        [HttpPost]
+    [HttpPost]
     [Route("AddUser")]
     public async Task<JsonResult> AddUser([FromBody] UserInfo userInfo)
     {
