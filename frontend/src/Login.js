@@ -21,6 +21,7 @@ function Login() {
     const handleLogin = async (event) => {
         event.preventDefault();
         setErrorMessage(''); // Reset error message
+        console.log('Login clicked');
     
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}api/User/login`, {
@@ -33,16 +34,19 @@ function Login() {
     
             if (response.ok) {
                 const result = await response.json();
-                if (result.token) {
+                console.log(result);
+                if (result.results) {
                     // Store the JWT token
-                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('token', result.results);
                     console.log('Login successful');
                     // Redirect user or update UI as needed
                     // Example: window.location.href = '/dashboard';
                 } else {
+                    console.log("Invalid username or password");
                     setErrorMessage('Invalid username or password');
                 }
             } else {
+                console.log('Failed to connect to the server');
                 setErrorMessage('Failed to connect to the server');
             }
         } catch (error) {
