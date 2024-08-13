@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import Avatar from 'react-avatar';
 
 
 
@@ -29,6 +30,11 @@ function BasicExample() {
                 Separated link
               </NavDropdown.Item>
             </NavDropdown>
+          </Nav>
+          <Nav className='ms-auto'>
+          <Nav.Link href='/profile'>
+          <Avatar name='Aids Shoe' size='35' round/>
+          </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

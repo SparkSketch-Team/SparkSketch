@@ -4,25 +4,23 @@ import Navbar from './NavBar';
 import Button from 'react-bootstrap/Button';
 import { FaUser } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
+
 
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
 
     // Handler functions for buttons
-    const handleForgotPassword = (event) => {
-        event.preventDefault();
-        // Logic to handle forgot password
-        console.log('Forgot Password clicked');
-    };
 
 
     const handleLogin = async (event) => {
         event.preventDefault();
         setErrorMessage(''); // Reset error message
-
-        // API call to backend for login
+        console.log('Login clicked');
+    
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}api/User/login`, {
                 method: 'POST',
@@ -31,16 +29,23 @@ function Login() {
                 },
                 body: JSON.stringify({ username, password }),
             });
-
+    
             if (response.ok) {
                 const result = await response.json();
-                if (result.success) {
+                console.log(result);
+                if (result.results) {
+                    // Store the JWT token
+                    localStorage.setItem('token', result.results);
                     console.log('Login successful');
                     // Redirect user or update UI as needed
+                    // Example: window.location.href = '/link';
+                    navigate('/home')
                 } else {
+                    console.log("Invalid username or password");
                     setErrorMessage('Invalid username or password');
                 }
             } else {
+                console.log('Failed to connect to the server');
                 setErrorMessage('Failed to connect to the server');
             }
         } catch (error) {
@@ -48,6 +53,7 @@ function Login() {
             console.error('Error:', error);
         }
     };
+    
 
     return (
         <div className='App'>
@@ -82,20 +88,9 @@ function Login() {
                         <input type='checkbox' />
                         Remember me
                     </label>
-                    <button
-                        type='button'
-                        onClick={handleForgotPassword}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            color: 'blue',
-                            cursor: 'pointer',
-                            textDecoration: 'underline',
-                            padding: 0,
-                        }}
-                    >
-                        Forgot Password?
-                    </button>
+                    <p>
+                        <a href='forgot_password'>Forgot Password?</a>
+                    </p>
                 </div>
                 <Button variant='warning' type='submit'>
                     Login

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 public interface IUserRepository
 {
     Task<Claim[]> GetUserClaims(LoginInfo loginInfo);
+    Task<string> Login(LoginInfo loginInfo);
+    Task<string> RegisterAndLoginUser(UserInfo userInfo);
     Task<UserDTSummary> GetUsersDT(UserDTRequest userDTRequest);
     Task<UserSummary?> GetUser(Guid userId);
     Task<UserSummary?> GetUserAi(string firstName);
