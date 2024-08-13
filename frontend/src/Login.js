@@ -4,11 +4,14 @@ import Navbar from './NavBar';
 import Button from 'react-bootstrap/Button';
 import { FaUser } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
+
 
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
 
     // Handler functions for buttons
     const handleForgotPassword = (event) => {
@@ -21,8 +24,8 @@ function Login() {
     const handleLogin = async (event) => {
         event.preventDefault();
         setErrorMessage(''); // Reset error message
-
-        // API call to backend for login
+        console.log('Login clicked');
+    
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}api/User/login`, {
                 method: 'POST',
@@ -31,16 +34,23 @@ function Login() {
                 },
                 body: JSON.stringify({ username, password }),
             });
-
+    
             if (response.ok) {
                 const result = await response.json();
-                if (result.success) {
+                console.log(result);
+                if (result.results) {
+                    // Store the JWT token
+                    localStorage.setItem('token', result.results);
                     console.log('Login successful');
                     // Redirect user or update UI as needed
+                    // Example: window.location.href = '/link';
+                    navigate('/home')
                 } else {
+                    console.log("Invalid username or password");
                     setErrorMessage('Invalid username or password');
                 }
             } else {
+                console.log('Failed to connect to the server');
                 setErrorMessage('Failed to connect to the server');
             }
         } catch (error) {
@@ -48,6 +58,7 @@ function Login() {
             console.error('Error:', error);
         }
     };
+    
 
     return (
         <div className='App'>

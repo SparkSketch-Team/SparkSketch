@@ -7,7 +7,7 @@ const ImageFeed = () => {
     const [images, setImages] = useState([]);
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_API_URL + '/api/ImageUpload/list')
+        axios.get(process.env.REACT_APP_API_URL + 'api/ImageUpload/list')
             .then(response => {
                 if (response.data.success) {
                     setImages(response.data.results);
