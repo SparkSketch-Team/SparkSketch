@@ -1,7 +1,10 @@
 using System.Security.Cryptography.Xml;
+using System.Text;
 using backend.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 class Program
 {
@@ -31,14 +34,23 @@ class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie(options =>
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+            .AddJwtBearer(options =>
             {
-                options.Cookie.Name = "coordinatwosAuthToken";
-                options.ExpireTimeSpan = TimeSpan.FromHours(24);
-                options.SlidingExpiration = true;
-                options.AccessDeniedPath = "/Forbidden";
-                //can add options to redirect: https://bitbucket.org/counterpart-biz/srs-portal-code/src/9e07a3df132fbc22568ff037df44a614b28f9e17/SRSWebPortal/Program.cs?at=master#Program.cs-75,78
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                };
             });
 
 

@@ -54,37 +54,42 @@ function Register() {
                 }),
             });
 
-            if (!response.ok) {
+            if (response.ok) {
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error);
+                }
+
+                localStorage.setItem('token', data.results);
+
+                // Reset form and show success message
+                setFormData({
+                email: '',
+                username: '',
+                password: '',
+                confirmPassword: '',
+                agreedToTerms: false,
+                });
+                setError('');
+                setSuccess(true);
+
+                // Redirect to prompting page after successful registration
+                setTimeout(() => {
+                    window.location.href = '/home'; // Change to your prompting page route
+                }, 2000);
+
+
+            } else {
                 throw new Error('Registration failed.');
             }
-
-            // Reset form and show success message
+        } catch (err) {
             setFormData({
-                email: '',
-                username: '',
                 password: '',
                 confirmPassword: '',
-                agreedToTerms: false,
-            });
-            setError('');
-            setSuccess(true);
-
-            // Redirect to prompting page after successful registration
-            setTimeout(() => {
-                window.location.href = '/home'; // Change to your prompting page route
-            }, 2000);
-
-        } catch (err) {
+                });
             setError(err.message);
             setSuccess(false);
-            // Optionally clear form data
-            setFormData({
-                email: '',
-                username: '',
-                password: '',
-                confirmPassword: '',
-                agreedToTerms: false,
-            });
         }
     };
 

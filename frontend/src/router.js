@@ -4,29 +4,30 @@ import ViewPosts from './ViewPosts';
 import ErrorPage from './error-page';
 import Login from './Login';
 import Register from './Register';
+import PrivateRoute from './PrivateRoute';
 import Forgot from './Forgot';
 import Reset from './Reset';
 import Profile from './Profile';
 
 export const router = createBrowserRouter([
-    {
+  {
       path: "/",
       element: <App />,
       errorElement: <ErrorPage />,
-    },
-    {
+  },
+  {
       path: "/link",
-      element: <ViewPosts />
-    },
-    {
+      element: <PrivateRoute element={<ViewPosts />} />,
+  },
+  {
       path: "/home",
-      element: <App />
-    },
-    {
+      element: <PrivateRoute element={<App />} />,
+  },
+  {
       path: "/login",
-      element: <Login />
-    },
-    {
+      element: <Login />,
+  },
+  {
       path: "/register",
       element: <Register />
     },
@@ -40,7 +41,7 @@ export const router = createBrowserRouter([
     },
     {
       path: "/profile",
-      element: <Profile />
+      element: <PrivateRoute element={<Profile />} />,
     }
   ]);
 

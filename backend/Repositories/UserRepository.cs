@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Azure.Core;
 using backend.Services;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 public class UserRepository : BaseRepository, IUserRepository
 {
@@ -39,6 +41,148 @@ public class UserRepository : BaseRepository, IUserRepository
 
         }
         return claims.ToArray();
+    }
+
+    public async Task<string> Login(LoginInfo loginInfo)
+    {
+        Random random = new Random();
+        await Task.Delay(random.Next(1000, 5000));
+
+        if(await ValidateUser(loginInfo))
+        {
+            var claims = await this.GetUserClaims(loginInfo);
+
+            var token = GenerateJwtToken(claims);
+
+            return token;
+        } else
+        {
+            return "";
+        }
+    }
+
+    private string GenerateJwtToken(IEnumerable<Claim> claims)
+    {
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.Now.AddMinutes(30),
+            signingCredentials: creds);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public async Task<string> RegisterAndLoginUser(UserInfo userInfo)
+    {
+            try
+            {
+                // Register the user
+                var newUserId = await AddUser(userInfo);
+
+                // Prepare login information
+                var loginInfo = new LoginInfo
+                {
+                    username = userInfo.Username,
+                    password = userInfo.Password
+                };
+
+                // Attempt to log in the user
+                var loginToken = await Login(loginInfo);
+
+                if (string.IsNullOrEmpty(loginToken))
+                {
+                    throw new Exception("Registration succeeded but login failed.");
+                }
+
+                // Commit transaction if both registration and login succeed
+                return loginToken;
+            }
+            catch (Exception ex)
+            {
+                // Log exception here using a logging framework
+                throw new Exception($"Failed to register and login user: {ex.Message}");
+            }
+    }
+
+    public async Task<Guid> AddUser(UserInfo userInfo)
+    {
+        using (var dbT = db.Database.BeginTransaction())
+        {
+            try
+            {
+
+                var permission = db.Permissions.FirstOrDefault(p => p.PermissionLevel == userInfo.PermissionLevel);
+                if (permission == null)
+                {
+                    throw new Exception("Couldn't find Permissions");
+                }
+                User newUser = new User()
+                {
+                    UserId = Guid.NewGuid(),
+                    FirstName = userInfo.FirstName,
+                    LastName = userInfo.LastName,
+                    EmailAddress = userInfo.EmailAddress,
+                    Username = userInfo.Username,
+                    IsActive = true,
+                    UserPermission = permission,
+
+                };
+                newUser.PasswordHash = this.EncodePassword(newUser.UserId, userInfo.Password); //we are currently not going to have passwords configured from UserInfo
+
+                //check if email is already used
+                if ((await db.Users.Include(u => u.UserPermission).Where(x => x.EmailAddress == newUser.EmailAddress).CountAsync()) > 0)
+                {
+                    throw new Exception("Email address already in use");
+                }
+
+                //check if Username is already used
+                if ((await db.Users.Include(u => u.UserPermission).Where(x => x.Username == newUser.Username).CountAsync()) > 0)
+                {
+                    throw new Exception("Username already in use");
+                }
+
+                db.Users.Add(newUser);
+
+
+                //Console.WriteLine(newUser);
+                await db.SaveChangesAsync();
+
+                //TODO: send validation email
+                //if ((userInfo.DontSendEmail == null || userInfo.DontSendEmail == false) && !await SendValidationEmail(newUser, false))
+                //{
+                //    throw new Exception("Couldn't send validation email");
+                //}
+                //else if (userInfo.DontSendEmail == true)
+                //{
+                //    var validateEmail = new Email();
+                //    validateEmail.EmailID = Guid.NewGuid();
+                //    validateEmail.UserID = newUser.UserId;
+                //    validateEmail.TypeEnum = (int)EmailType.PasswordReset;
+                //    validateEmail.ExpirationDate = DateTimeOffset.UtcNow.AddDays(3);
+                //    validateEmail.IsActive = true;
+                //    db.Emails.Add(validateEmail);
+                //}
+
+                await db.SaveChangesAsync();
+                //Console.WriteLine("Changes Saved");
+                await dbT.CommitAsync();
+                return newUser.UserId;
+            }
+            catch (Exception ex)
+            {
+                var message = ex.Message;
+                var mstring = ex.ToString();
+                Console.WriteLine(message);
+                Console.WriteLine(mstring);
+                dbT.Rollback();
+                throw new Exception(message);
+            }
+
+        }
     }
 
     public async Task<UserDTSummary> GetUsersDT(UserDTRequest userDTRequest)
@@ -155,82 +299,7 @@ public class UserRepository : BaseRepository, IUserRepository
     //     return null;
     // }
 
-    public async Task<Guid> AddUser(UserInfo userInfo)
-    {
-        using (var dbT = db.Database.BeginTransaction())
-        {
-            try
-            {
-
-                var permission = db.Permissions.FirstOrDefault(p => p.PermissionLevel == userInfo.PermissionLevel);
-                if (permission == null)
-                {
-                    throw new Exception("Couldn't find Permissions");
-                }
-                User newUser = new User()
-                {
-                    UserId = Guid.NewGuid(),
-                    FirstName = userInfo.FirstName,
-                    LastName = userInfo.LastName,
-                    EmailAddress = userInfo.EmailAddress,
-                    Username = userInfo.Username,
-                    IsActive = true,
-                    UserPermission = permission,
-
-                };
-                newUser.PasswordHash = this.EncodePassword(newUser.UserId, userInfo.Password); //we are currently not going to have passwords configured from UserInfo
-
-                //check if email is already used
-                if ((await db.Users.Include(u => u.UserPermission).Where(x => x.EmailAddress == newUser.EmailAddress).CountAsync()) > 0)
-                {
-                    throw new Exception("Email address already in use");
-                }
-
-                //check if Username is already used
-                if ((await db.Users.Include(u => u.UserPermission).Where(x => x.Username == newUser.Username).CountAsync()) > 0)
-                {
-                    throw new Exception("Username already in use");
-                }
-
-                db.Users.Add(newUser);
-
-
-                //Console.WriteLine(newUser);
-                await db.SaveChangesAsync();
-
-                //TODO: send validation email
-                //if ((userInfo.DontSendEmail == null || userInfo.DontSendEmail == false) && !await SendValidationEmail(newUser, false))
-                //{
-                //    throw new Exception("Couldn't send validation email");
-                //}
-                //else if (userInfo.DontSendEmail == true)
-                //{
-                //    var validateEmail = new Email();
-                //    validateEmail.EmailID = Guid.NewGuid();
-                //    validateEmail.UserID = newUser.UserId;
-                //    validateEmail.TypeEnum = (int)EmailType.PasswordReset;
-                //    validateEmail.ExpirationDate = DateTimeOffset.UtcNow.AddDays(3);
-                //    validateEmail.IsActive = true;
-                //    db.Emails.Add(validateEmail);
-                //}
-
-                await db.SaveChangesAsync();
-                //Console.WriteLine("Changes Saved");
-                await dbT.CommitAsync();
-                return newUser.UserId;
-            }
-            catch (Exception ex)
-            {
-                var message = ex.Message;
-                var mstring = ex.ToString();
-                Console.WriteLine(message);
-                Console.WriteLine(mstring);
-                dbT.Rollback();
-                throw new Exception(message);
-            }
-
-        }
-    }
+   
 
     // public async Task<UserSummary> GetSelf(HttpContext httpContext){
     //     return await UserSummary.AssembleSelf(httpContext);
