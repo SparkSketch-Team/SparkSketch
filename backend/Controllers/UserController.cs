@@ -79,27 +79,35 @@ public class UserController : ApiController
     }
 
     [HttpPost]
-    //[Authorize(Policy = "AdminOnly")]
     [Route("EditUser")]
-    public async Task<JsonResult> EditUser([FromBody] UserSummary info)
+    public async Task<JsonResult> EditUser([FromBody] UserInfo info)
     {
-            try
+        try
+        {
+            // Get the current user's ID from the JWT claims
+            var currentUserId = User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId)?.Value;
+
+            if (currentUserId.IsNullOrEmpty())
             {
-                var response = await _userRepository.EditUser(info);
-                if (response)
-                {
-                    return SuccessMessage(true);
-                }
-                else
-                {
-                    return FailMessage("Edit User Failed");
-                }
+                return FailMessage("Unauthorized attempt to edit another user's profile.");
             }
-            catch (Exception ex)
+
+            var response = await _userRepository.EditUser(info);
+            if (response)
             {
-                return FailMessage(ex.Message);
+                return SuccessMessage(true);
             }
+            else
+            {
+                return FailMessage("Edit User Failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            return FailMessage(ex.Message);
+        }
     }
+
 
     [HttpPost]
     [AllowAnonymous]

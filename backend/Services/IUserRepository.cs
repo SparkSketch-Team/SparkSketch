@@ -12,7 +12,7 @@ public interface IUserRepository
     Task<UserSummary?> GetUser(Guid userId);
     Task<UserSummary?> GetUserAi(string firstName);
     Task<Guid> AddUser(UserInfo userInfo);
-    Task<bool> EditUser(UserSummary userInfo);
+    Task<bool> EditUser(UserInfo userInfo);
     Task<UserSummary> GetSelf(HttpContext httpContext);
     Task<bool> ValidateUser(LoginInfo loginInfo);
     Task<bool> Validate(ValidateUserInformation info);

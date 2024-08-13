@@ -35,10 +35,6 @@ public class UserRepository : BaseRepository, IUserRepository
                 claims.Add(new Claim(SparkSketchClaims.PermissionLevel, user.UserPermission.PermissionLevel.ToString()));
             }
 
-            //var userPermission = await db.Permissions.Where(p => p.PermissionId == user.UserPermission.PermissionId).ToListAsync();
-
-            //claims.Add(new Claim(CoordinatwosClaims.PermissionLevel, userPermission[0].PermissionLevel.ToString()));
-
         }
         return claims.ToArray();
     }
@@ -307,59 +303,50 @@ public class UserRepository : BaseRepository, IUserRepository
         return null;//await UserSummary.AssembleSelf(httpContext);
     }
 
-    public async Task<bool> EditUser(UserSummary userInfo)
+    public async Task<bool> EditUser(UserInfo userInfo)
     {
-        // Check if User Exists
-        var user = await db.Users.Include(u => u.UserPermission).Where(x => x.UserId == userInfo.userID).FirstOrDefaultAsync();
+        // Check if the User Exists
+        var user = await db.Users.Include(u => u.UserPermission)
+            .FirstOrDefaultAsync(x => x.UserId == userInfo.UserId);
         if (user == null)
         {
             throw new Exception("Unable to find user");
         }
 
-        // If new email is different check that it isn't in use
-        var numTimesEmailUsed = await db.Users.Include(u => u.UserPermission).Where(x => x.EmailAddress == userInfo.userSummary.emailAddress).CountAsync();
-        if (numTimesEmailUsed > 1 || (numTimesEmailUsed > 0 && userInfo.userSummary.emailAddress != user.EmailAddress))
+        // If new email is different, check that it isn't in use
+        if (userInfo.EmailAddress != user.EmailAddress)
         {
-            throw new Exception("Email address already in use");
+            var emailExists = await db.Users.AnyAsync(x => x.EmailAddress == userInfo.EmailAddress);
+            if (emailExists)
+            {
+                throw new Exception("Email address already in use");
+            }
         }
 
-        // Check if new Username is in place
-        var numberOfUsernames = await db.Users.Include(u => u.UserPermission).Where(x => x.Username == userInfo.userSummary.username).CountAsync();
-        if(numberOfUsernames > 0)
+        // If new Username is different, check that it isn't in use
+        if (userInfo.EmailAddress != user.Username)
         {
-            throw new Exception("Username already in use");
+            var usernameExists = await db.Users.AnyAsync(x => x.Username == userInfo.EmailAddress);
+            if (usernameExists)
+            {
+                throw new Exception("Username already in use");
+            }
         }
 
-        // If new pfp, upload to blobStorage //user pfps
+        // Update user properties
+        user.FirstName = userInfo.FirstName;
+        user.LastName = userInfo.LastName;
+        user.EmailAddress = userInfo.EmailAddress;
+        //user.IsActive = userInfo.IsActive;
+        // pfp
+        // Bio
 
-        // Change to new data
 
-        db.Users.Update(new User
-        {
-
-        });
-
-        /*
-        var permission = await db.Permissions.FirstOrDefaultAsync(p => p.PermissionId == (int)userInfo.role);
-
-        if (permission == null)
-        {
-            throw new Exception("Invalid Permission Level");
-        }
-
-        // Step 3: If permission does not exist, create a new one
-
-        user.FirstName = userInfo.userSummary.firstName;
-        user.LastName = userInfo.userSummary.lastName;
-        user.EmailAddress = userInfo.userSummary.emailAddress;
-        user.IsActive = userInfo.userSummary.isActive;
-        user.UserPermission = permission;
-
-        */
-
+        db.Users.Update(user);
         await db.SaveChangesAsync();
         return true;
     }
+
 
     public async Task<bool> ValidateUser(LoginInfo loginInfo)
     {
