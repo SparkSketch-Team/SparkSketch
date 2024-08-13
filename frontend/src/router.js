@@ -5,7 +5,9 @@ import ErrorPage from './error-page';
 import Login from './Login';
 import Register from './Register';
 import PrivateRoute from './PrivateRoute';
-
+import Forgot from './Forgot';
+import Reset from './Reset';
+import Profile from './Profile';
 
 export const router = createBrowserRouter([
   {
@@ -27,8 +29,20 @@ export const router = createBrowserRouter([
   },
   {
       path: "/register",
-      element: <Register />,
-  }
-]);
+      element: <Register />
+    },
+    {
+      path: "/forgot_password",
+      element: <Forgot />
+    },
+    {
+      path: "/reset_password",
+      element: <Reset />
+    },
+    {
+      path: "/profile",
+      element: <PrivateRoute element={<Profile />} />,
+    }
+  ]);
 
 export default router;
