@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 public interface IUserRepository
 {
@@ -12,6 +13,7 @@ public interface IUserRepository
     Task<UserSummary?> GetUserAi(string firstName);
     Task<Guid> AddUser(UserInfo userInfo);
     Task<bool> EditUser(UserSummary userInfo);
+    Task<UserSummary> GetSelf(HttpContext httpContext);
     Task<bool> ValidateUser(LoginInfo loginInfo);
     Task<bool> Validate(ValidateUserInformation info);
     Task<bool> SendValidationEmail(User user, bool saveChanges);
