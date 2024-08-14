@@ -1,5 +1,5 @@
 // src/App.js
-import React from 'react';
+import React, {useEffect} from 'react';
 import PromptFetcher from './PromptFetcher';
 import NavBar from './NavBar';
 import './App.css'
@@ -8,6 +8,14 @@ import FileUpload from './FileUpload';
 
 
 function App() {
+
+  useEffect(() => {
+    const apiUrl = process.env.REACT_APP_MOCK_JWT_TOKEN;
+    if (apiUrl) {
+      localStorage.setItem('token', apiUrl);
+    }
+  }, []);
+
   return (
     <body className="App">
       <nav>
