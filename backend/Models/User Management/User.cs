@@ -18,9 +18,9 @@ public class User
     public bool IsActive { get; set; }
     public Permission? UserPermission { get; set; }
 
-    public string ProfilePictureUrl { get; set; } = null!;
+    public string? ProfilePictureUrl { get; set; }
 
-    public string Bio { get; set; } = null!;
+    public string? Bio { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

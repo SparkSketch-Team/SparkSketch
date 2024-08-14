@@ -72,7 +72,7 @@ public class UserRepository : BaseRepository, IUserRepository
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public async Task<string> RegisterAndLoginUser(UserInfo userInfo)
+    public async Task<string> RegisterAndLoginUser(CreateUserInfo userInfo)
     {
             try
             {
@@ -104,7 +104,7 @@ public class UserRepository : BaseRepository, IUserRepository
             }
     }
 
-    public async Task<Guid> AddUser(UserInfo userInfo)
+    public async Task<Guid> AddUser(CreateUserInfo userInfo)
     {
         using (var dbT = db.Database.BeginTransaction())
         {
@@ -303,11 +303,11 @@ public class UserRepository : BaseRepository, IUserRepository
         return null;//await UserSummary.AssembleSelf(httpContext);
     }
 
-    public async Task<bool> EditUser(UserInfo userInfo)
+    public async Task<bool> EditUser(EditUserInfo userInfo, string userId)
     {
         // Check if the User Exists
         var user = await db.Users.Include(u => u.UserPermission)
-            .FirstOrDefaultAsync(x => x.UserId == userInfo.UserId);
+            .FirstOrDefaultAsync(x => x.UserId == Guid.Parse(userId));
         if (user == null)
         {
             throw new Exception("Unable to find user");
@@ -350,7 +350,8 @@ public class UserRepository : BaseRepository, IUserRepository
 
     public async Task<bool> ValidateUser(LoginInfo loginInfo)
     {
-        var user = await db.Users.Include(u => u.UserPermission).FirstOrDefaultAsync(u => u.Username == loginInfo.username && u.IsActive);
+        var user = await db.Users.Where(u => u.Username == loginInfo.username && u.IsActive).FirstOrDefaultAsync();
+
         if (user != null)
         {
             if (ValidatePassword(user.UserId, user.PasswordHash, loginInfo.password))

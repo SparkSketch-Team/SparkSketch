@@ -58,7 +58,7 @@ public class UserController : ApiController
 
     [HttpPost]
     [Route("AddUser")]
-    public async Task<JsonResult> AddUser([FromBody] UserInfo userInfo)
+    public async Task<JsonResult> AddUser([FromBody] CreateUserInfo userInfo)
     {
         try
         {
@@ -80,7 +80,7 @@ public class UserController : ApiController
 
     [HttpPost]
     [Route("EditUser")]
-    public async Task<JsonResult> EditUser([FromBody] UserInfo info)
+    public async Task<JsonResult> EditUser([FromBody] EditUserInfo info)
     {
         try
         {
@@ -92,7 +92,7 @@ public class UserController : ApiController
                 return FailMessage("Unauthorized attempt to edit another user's profile.");
             }
 
-            var response = await _userRepository.EditUser(info);
+            var response = await _userRepository.EditUser(info, currentUserId);
             if (response)
             {
                 return SuccessMessage(true);
