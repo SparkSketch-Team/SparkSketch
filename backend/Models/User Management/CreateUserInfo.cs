@@ -1,4 +1,4 @@
-public class UserInfo
+public class CreateUserInfo
 {
     public Guid UserId { get; set; }
     public string FirstName { get; set; } = null!;
