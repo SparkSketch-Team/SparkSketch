@@ -36,29 +36,9 @@ public class UserController : ApiController
         }
     }
 
-
-    [HttpGet]
-    [Route("GetSelf")]
-    public async Task<JsonResult> GetSelf()
-    {
-            try
-            {
-                var response = await _userRepository.GetSelf(HttpContext);
-                if (response == null)
-                {
-                    return FailMessage();
-                }
-                return SuccessMessage(response);
-            }
-            catch (Exception ex)
-            {
-                return FailMessage(ex.Message);
-            }
-    }
-
     [HttpPost]
     [Route("AddUser")]
-    public async Task<JsonResult> AddUser([FromBody] UserInfo userInfo)
+    public async Task<JsonResult> AddUser([FromBody] CreateUserInfo userInfo)
     {
         try
         {
@@ -79,27 +59,36 @@ public class UserController : ApiController
     }
 
     [HttpPost]
-    //[Authorize(Policy = "AdminOnly")]
     [Route("EditUser")]
-    public async Task<JsonResult> EditUser([FromBody] UserSummary info)
+    [Authorize]
+    public async Task<JsonResult> EditUser([FromBody] EditUserInfo info)
     {
-            try
+        try
+        {
+            // Get the current user's ID from the JWT claims
+            var currentUserId = User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId)?.Value;
+
+            if (currentUserId is null || currentUserId.IsNullOrEmpty())
             {
-                var response = await _userRepository.EditUser(info);
-                if (response)
-                {
-                    return SuccessMessage(true);
-                }
-                else
-                {
-                    return FailMessage("Edit User Failed");
-                }
+                return FailMessage("Unauthorized attempt to edit another user's profile.");
             }
-            catch (Exception ex)
+
+            var response = await _userRepository.EditUser(info, currentUserId);
+            if (response)
             {
-                return FailMessage(ex.Message);
+                return SuccessMessage(true);
             }
+            else
+            {
+                return FailMessage("Edit User Failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            return FailMessage(ex.Message);
+        }
     }
+
 
     [HttpPost]
     [AllowAnonymous]
@@ -158,54 +147,6 @@ public class UserController : ApiController
             return FailMessage(ex.Message);
         }
     }
-
-    [HttpPost]
-    //[Authorize(Policy = "AdminOnly")]
-    [Route("GetUsersDT")]
-    public async Task<JsonResult> GetUsersDT([FromBody] UserDTRequest dtRequest)
-    {
-        return SuccessMessage(await _userRepository.GetUsersDT(dtRequest));
-    }
-
-    [HttpGet]
-    //[Authorize(Policy = "AdminUser")]
-    [Route("GetUser")]
-    public async Task<JsonResult> GetUser(Guid userID)
-    {
-        try
-        {
-            var response = await _userRepository.GetUser(userID);
-            return SuccessMessage(response);
-        }
-        catch (Exception ex)
-        {
-            return FailMessage(ex.Message);
-        }
-
-            
-    }
-
-
-    [HttpGet]
-    [Route("Logout")]
-    public async Task<JsonResult> Logout()
-    {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        return SuccessMessage(true);
-    }
-
-    // [HttpPost]
-    // //[Authorize(Policy = "AdminUser")]
-    // [Route("HelpUserAi")]
-    // public async Task<JsonResult> GetUser([FromBody] ArraySegment<String> actions){
-    //     using (uRepo) {
-    //         return SuccessMessage(await uRepo.GetUserAi(actions));
-    //     }   
-    // }
-
-
-
-
 
 
 }
