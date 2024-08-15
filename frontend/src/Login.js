@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './Login.css';
-import Navbar from './NavBar';
 import Button from 'react-bootstrap/Button';
 import { FaUser } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
@@ -57,7 +56,6 @@ function Login() {
 
     return (
         <div className='App'>
-            <Navbar />
             <div className='Login-body'>
             <div className='wrapper'>
             <div className='form-box login'>
