@@ -22,7 +22,7 @@ function App() {
       <NavBar  />
       </nav>
       <header className='App-title'>
-        SPARKSKETCH
+        SPARKSKETCH [beta]
       </header>
         <div className="App-body">
           <p className='App-prompt'>
