@@ -66,7 +66,7 @@ public class UserRepository : BaseRepository, IUserRepository
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.Now.AddMinutes(30),
+            expires: DateTime.Now.AddDays(14),
             signingCredentials: creds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);

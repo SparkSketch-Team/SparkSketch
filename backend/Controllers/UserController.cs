@@ -80,6 +80,7 @@ public class UserController : ApiController
 
     [HttpPost]
     [Route("EditUser")]
+    [Authorize]
     public async Task<JsonResult> EditUser([FromBody] EditUserInfo info)
     {
         try
@@ -87,7 +88,7 @@ public class UserController : ApiController
             // Get the current user's ID from the JWT claims
             var currentUserId = User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId)?.Value;
 
-            if (currentUserId.IsNullOrEmpty())
+            if (currentUserId is null || currentUserId.IsNullOrEmpty())
             {
                 return FailMessage("Unauthorized attempt to edit another user's profile.");
             }
