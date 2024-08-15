@@ -212,13 +212,33 @@ public class UserRepository : BaseRepository, IUserRepository
             }
         }
 
-        // Update user properties
-        user.FirstName = userInfo.FirstName;
-        user.LastName = userInfo.LastName;
-        user.EmailAddress = userInfo.EmailAddress;
-        //user.IsActive = userInfo.IsActive;
-        // pfp
+        // Update User Properties
+        if (!userInfo.FirstName.IsNullOrEmpty())
+        {
+            user.FirstName = userInfo.FirstName;
+        }
+
+        if (!userInfo.LastName.IsNullOrEmpty())
+        {
+            user.LastName = userInfo.LastName;
+        }
+
+        if (!userInfo.EmailAddress.IsNullOrEmpty())
+        {
+            user.EmailAddress = userInfo.EmailAddress;
+        }
+
+        // Profile picture
+        if (!userInfo.ProfilePictureUrl.IsNullOrEmpty())
+        {
+            user.ProfilePictureUrl = userInfo.ProfilePictureUrl;
+        }
+
         // Bio
+        if (!userInfo.Bio.IsNullOrEmpty())
+        {
+            user.Bio = userInfo.Bio;
+        }
 
 
         db.Users.Update(user);
