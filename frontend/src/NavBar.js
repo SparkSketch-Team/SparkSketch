@@ -6,7 +6,10 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Avatar from 'react-avatar';
 import './App.css';
 
-
+const logout = () => {
+  localStorage.removeItem('token');
+  window.location.href = '/login'; 
+};
 
 
 function NavBar() {
@@ -36,7 +39,7 @@ function NavBar() {
                 <Nav.Link href='/profile'>
                   <Avatar name='Aids Shoe' size='35' round/>
                 </Nav.Link>
-                <Nav.Link className='Logout'>Log Out</Nav.Link>
+                <Nav.Link className='Logout' onClick={logout}>Log Out</Nav.Link>
               </Nav>
             </Navbar.Collapse>
         </Container>
