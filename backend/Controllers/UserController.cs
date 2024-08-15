@@ -36,26 +36,6 @@ public class UserController : ApiController
         }
     }
 
-
-    [HttpGet]
-    [Route("GetSelf")]
-    public async Task<JsonResult> GetSelf()
-    {
-            try
-            {
-                var response = await _userRepository.GetSelf(HttpContext);
-                if (response == null)
-                {
-                    return FailMessage();
-                }
-                return SuccessMessage(response);
-            }
-            catch (Exception ex)
-            {
-                return FailMessage(ex.Message);
-            }
-    }
-
     [HttpPost]
     [Route("AddUser")]
     public async Task<JsonResult> AddUser([FromBody] CreateUserInfo userInfo)
@@ -167,54 +147,6 @@ public class UserController : ApiController
             return FailMessage(ex.Message);
         }
     }
-
-    [HttpPost]
-    //[Authorize(Policy = "AdminOnly")]
-    [Route("GetUsersDT")]
-    public async Task<JsonResult> GetUsersDT([FromBody] UserDTRequest dtRequest)
-    {
-        return SuccessMessage(await _userRepository.GetUsersDT(dtRequest));
-    }
-
-    [HttpGet]
-    //[Authorize(Policy = "AdminUser")]
-    [Route("GetUser")]
-    public async Task<JsonResult> GetUser(Guid userID)
-    {
-        try
-        {
-            var response = await _userRepository.GetUser(userID);
-            return SuccessMessage(response);
-        }
-        catch (Exception ex)
-        {
-            return FailMessage(ex.Message);
-        }
-
-            
-    }
-
-
-    [HttpGet]
-    [Route("Logout")]
-    public async Task<JsonResult> Logout()
-    {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        return SuccessMessage(true);
-    }
-
-    // [HttpPost]
-    // //[Authorize(Policy = "AdminUser")]
-    // [Route("HelpUserAi")]
-    // public async Task<JsonResult> GetUser([FromBody] ArraySegment<String> actions){
-    //     using (uRepo) {
-    //         return SuccessMessage(await uRepo.GetUserAi(actions));
-    //     }   
-    // }
-
-
-
-
 
 
 }
