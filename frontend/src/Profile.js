@@ -20,7 +20,9 @@ function Profile() {
                 <p className='box'>--- <br></br>Sketches<br></br>
                 <button className='button' type='button'>Settings</button>
                 </p>
+                <br />
             </div>
+            <div className='bio'>Bio:</div>
         </div>
     )
 }

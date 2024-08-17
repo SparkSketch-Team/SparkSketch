@@ -14,6 +14,13 @@ html {background-color:black}
     justify-content: center;
 }
 
+.bio {
+    color: white;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 25px;
+    margin: 10px;
+    text-align: center;
+}
 .box {
     color: white;
     font-family: 'Ubuntu', sans-serif;
@@ -22,12 +29,31 @@ html {background-color:black}
     text-align: left;
 }
 
+.box-edit {
+    color: white;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 25px;
+    margin: 70px;
+    text-align: left;
+}
+
+input {
+    height: 35px;
+    width: 340px;
+}
+.input3 {
+    height: 100px;
+    width: 340px;
+}
+
 .button {
     background-color: rgb(88, 88, 88);
     color: white;
     border: none;
     width: 140px;
 }
+
+
 
 .title {
   color: darkgoldenrod;
@@ -40,6 +66,12 @@ html {background-color:black}
 
 .avatar {
     margin: 10px;
+}
+
+hr {
+    color: darkgoldenrod;
+    border-top: 5px solid;
+    margin: 0 60px;
 }
 
 
