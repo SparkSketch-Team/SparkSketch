@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+
+html {background-color:black}
+
+.App {
+  background: black;
+}
+
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.box {
+    color: white;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 25px;
+    margin: 10px;
+    text-align: left;
+}
+
+.button {
+    background-color: rgb(88, 88, 88);
+    color: white;
+    border: none;
+    width: 140px;
+}
+
+.App-title {
+  color: darkgoldenrod;
+  text-align: left;
+  font-size: 60px;
+  font-family: 'Ubuntu', sans-serif;
+  margin-top: 50px;
+  margin-left: 60px;
+}
+
+
