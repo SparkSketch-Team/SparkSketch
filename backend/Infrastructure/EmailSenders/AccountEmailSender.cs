@@ -59,7 +59,7 @@ public class AccountEmailSender : BaseEmailSender, IAccountEmailSender
             //Console.WriteLine("Account Email Sender ");
             var template = new StringBuilder();
 
-            ReadEmailTemplate("ForgotPassword", out template);
+            ReadEmailTemplate("Forgot_Password", out template);
 
             template.Replace("[{ResetID}]", detail.referenceId.ToString());
 

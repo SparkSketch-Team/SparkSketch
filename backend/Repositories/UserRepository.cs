@@ -329,15 +329,15 @@ public class UserRepository : BaseRepository, IUserRepository
         resetEmail.IsActive = true;
         db.Emails.Add(resetEmail);
 
-        //if (await (new AccountEmailSender().SubmitResetPasswordEmail(new AccountEmailDetail(user.EmailAddress, resetEmail.EmailID))))
-        //{
-        //    await db.SaveChangesAsync();
-        //}
-        //else
-        //{
-        //    Console.WriteLine("Email not sent");
-        //    return false;
-        //}
+        if (await (_emailSender.SubmitResetPasswordEmail(new AccountEmailDetail(user.EmailAddress, resetEmail.EmailID))))
+        {
+            await db.SaveChangesAsync();
+        }
+        else
+        {
+            Console.WriteLine("Email not sent");
+            return false;
+        }
 
         return false;
     }

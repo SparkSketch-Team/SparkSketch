@@ -20,10 +20,13 @@
     <PackageReference Include="OpenAI" Version="1.11.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.36.0" />
+	<EmbeddedResource Include="Infrastructure\EmailSenders\Templates\EmailWrapper.html" />
+	<EmbeddedResource Include="Infrastructure\EmailSenders\Templates\Forgot_Password.html" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Configuration\" />
+	
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>

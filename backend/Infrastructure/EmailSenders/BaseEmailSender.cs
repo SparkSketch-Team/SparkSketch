@@ -35,7 +35,7 @@ using Microsoft.Extensions.Options;
         {
         if (_mailSettings.Port == null)
         {
-            throw new Exception("Malconfigured Mail Settings");
+            throw new Exception("Misconfigured Mail Settings");
         }
             var ret = true;
 
@@ -73,9 +73,9 @@ using Microsoft.Extensions.Options;
                     }
                     catch (Exception ex)
                     {
-                        var exmessage = ex.Message;
                         var eString = ex.ToString();
                         ret = false;
+                        Console.WriteLine(eString);
 
                         System.Diagnostics.Debugger.Break();
                     }
@@ -102,46 +102,36 @@ using Microsoft.Extensions.Options;
             return true;
         }
 
-        protected string GetTemplate(string templateFileName)
+    protected string GetTemplate(string templateFileName)
+    {
+        try
         {
-            try
+            var assembly = typeof(BaseEmailSender).GetTypeInfo().Assembly;
+            string[] resourceNames = assembly.GetManifestResourceNames();
+            foreach (string resource in resourceNames)
             {
-                var assembly = typeof(BaseEmailSender).GetTypeInfo().Assembly;
-                // string[] resourceNames = assembly.GetManifestResourceNames();
-                // foreach (string resourceName in resourceNames)
-                // {
-                //     Console.WriteLine("Resource:");
-                //     Console.WriteLine(resourceName);
-                // }
-
-                using (var resource = assembly.GetManifestResourceStream($"Infrastructure.EmailSenders.Templates.{templateFileName}.html"))
-                {
-                    if (resource != null)
-                    {
-                        using (var reader = new StreamReader(resource, Encoding.UTF8))
-                        {
-                            return reader.ReadToEnd();
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception("Resource not found");
-                    }
-
-                }
+                Console.WriteLine("Resource:");
+                Console.WriteLine(resource);
             }
-            catch (Exception ex)
-            {
-                var debugMesssage = ex.Message;
-                var debugString = ex.ToString();
-                Console.WriteLine(debugMesssage);
-                Console.WriteLine(debugString);
 
-                return "";
-            }
+            var resourceName = $"backend.Infrastructure.EmailSenders.Templates.{templateFileName}.html"; // Adjusted to match console output
+            using Stream resourceStream = assembly.GetManifestResourceStream(resourceName)
+                                        ?? throw new Exception($"Resource '{resourceName}' not found.");
+
+            using StreamReader reader = new StreamReader(resourceStream, Encoding.UTF8);
+            return reader.ReadToEnd();
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.ToString());
+            return string.Empty;
+        }
+    }
 
-        protected void PerformURLSubstitutions(StringBuilder template)
+
+
+    protected void PerformURLSubstitutions(StringBuilder template)
         {
             //template.Replace("[{ApiUrl}]", _config["ApiUrl"]);
             //template.Replace("[{ClientUrl}]", _config["ClientUrl"]);
