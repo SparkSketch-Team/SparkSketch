@@ -89,6 +89,37 @@ public class UserController : ApiController
         }
     }
 
+    [HttpGet]
+    [Authorize]
+    [Route("GetSelf")]
+    public async Task<JsonResult> GetSelf()
+    {
+        try
+        {
+            // Get the current user's ID from the JWT claims
+            var currentUserId = User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId)?.Value;
+
+            if (currentUserId is null || currentUserId.IsNullOrEmpty())
+            {
+                return FailMessage("There is no user to get.");
+            }
+
+            var response = await _userRepository.GetSelf(currentUserId);
+            if (response != null)
+            {
+                return SuccessMessage(response);
+            }
+            else
+            {
+                return FailMessage("Edit User Failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            return FailMessage(ex.Message);
+        }
+    }
+
 
     [HttpPost]
     [AllowAnonymous]
