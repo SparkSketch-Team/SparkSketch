@@ -10,6 +10,10 @@ html {background-color:black}
   align-items: center;
 }
 
+.pic {
+  width: 60px;
+}
+
 .prompt {
   font-size: 19px;
 }

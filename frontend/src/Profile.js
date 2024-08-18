@@ -1,8 +1,8 @@
 import React from 'react';
 import NavBar from './NavBar';
 import './Profile.css';
-import Avatar from 'react-avatar';
 import { useNavigate } from 'react-router-dom';
+import Avatar from './Avatar';
 
 
 function Profile() {
@@ -12,8 +12,9 @@ function Profile() {
         <div className='App'> 
             <NavBar />
             <header className='title'>MY PROFILE</header>
+            <hr/>
             <div className='container'>
-                <div className='avatar'><Avatar name='Aids Shoe' round size='120'/></div>
+                <div className='avatar'><Avatar/></div>
                 <p className='box'>--- <br></br>Followers<br></br>
                 <button className='button' type='button' onClick={() => navigate('/edit')} >Edit Profile</button>
                 </p>
