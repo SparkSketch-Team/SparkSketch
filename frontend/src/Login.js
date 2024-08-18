@@ -83,7 +83,7 @@ function Login() {
                 </div>
                 <div className='Remember'>
                     <label>
-                        <input type='checkbox' />
+                        <input className='check' type='checkbox' />
                         Remember me
                     </label>
                     <p>
