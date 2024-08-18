@@ -17,7 +17,7 @@ function ViewPosts() {
     return(
         <div className='App'>
             <NavBar />
-            <h1 className='App-title'>Explore</h1>
+            <h1 className='App-title'>EXPLORE</h1>
             <ImageFeed />
         </div>
     );

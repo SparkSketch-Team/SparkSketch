@@ -212,19 +212,62 @@ public class UserRepository : BaseRepository, IUserRepository
             }
         }
 
-        // Update user properties
-        user.FirstName = userInfo.FirstName;
-        user.LastName = userInfo.LastName;
-        user.EmailAddress = userInfo.EmailAddress;
-        //user.IsActive = userInfo.IsActive;
-        // pfp
+        // Update User Properties
+        if (!string.IsNullOrEmpty(userInfo.FirstName))
+        {
+            user.FirstName = userInfo.FirstName;
+        }
+
+        if (!string.IsNullOrEmpty(userInfo.LastName))
+        {
+            user.LastName = userInfo.LastName;
+        }
+
+        if (!string.IsNullOrEmpty(userInfo.EmailAddress))
+        {
+            user.EmailAddress = userInfo.EmailAddress;
+        }
+
+
+        // Profile picture
+        if (!userInfo.ProfilePictureUrl.IsNullOrEmpty())
+        {
+            user.ProfilePictureUrl = userInfo.ProfilePictureUrl;
+        }
+
         // Bio
+        if (!userInfo.Bio.IsNullOrEmpty())
+        {
+            user.Bio = userInfo.Bio;
+        }
 
 
         db.Users.Update(user);
         await db.SaveChangesAsync();
         return true;
     }
+
+    public async Task<EditUserInfo> GetSelf(string userId)
+    {
+        var user = await db.Users.FirstOrDefaultAsync(u => u.UserId == Guid.Parse(userId));
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+
+        var editUserInfo = new EditUserInfo
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Username = user.Username,
+            EmailAddress = user.EmailAddress,
+            Bio = user.Bio,
+            ProfilePictureUrl = user.ProfilePictureUrl
+        };
+
+        return editUserInfo;
+    }
+
 
 
     public async Task<bool> ValidateUser(LoginInfo loginInfo)

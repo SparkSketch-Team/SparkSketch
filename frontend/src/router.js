@@ -8,6 +8,7 @@ import PrivateRoute from './PrivateRoute';
 import Forgot from './Forgot';
 import Reset from './Reset';
 import Profile from './Profile';
+import Edit from './Edit';
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
     {
       path: "/profile",
       element: <PrivateRoute element={<Profile />} />,
+    },
+    {
+      path: "/edit",
+      element: <PrivateRoute element={<Edit />} />,
     }
   ]);
 
