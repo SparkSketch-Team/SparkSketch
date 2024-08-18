@@ -63,6 +63,13 @@ form button {
     color: white;
 }
 
+.check {
+    width: 15px;
+    position: absolute;
+    bottom: 31%;
+    left: 135px;
+}
+
 .input-box .Icon {
     position: absolute;
     right: 20px;
