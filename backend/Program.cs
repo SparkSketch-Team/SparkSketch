@@ -83,6 +83,7 @@ class Program
         // Register Repositories
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IAiRepository, AiRepository>();
+        builder.Services.AddScoped<ISketchRepository, SketchRepository>();
 
         var app = builder.Build();
 
