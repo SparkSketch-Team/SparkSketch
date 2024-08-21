@@ -1,6 +1,7 @@
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -11,9 +12,10 @@ public class ImageUploadController : ApiController
 
     private readonly BlobServiceClient _blobServiceClient;
     private readonly string _containerName;
+    private readonly ISketchRepository _sketchRepository;
 
 
-    public ImageUploadController(IConfiguration configuration, ILogger<ImageUploadController> logger) : base(logger)
+    public ImageUploadController(IConfiguration configuration, ILogger<ImageUploadController> logger, ISketchRepository sketchRepository) : base(logger)
     {
 
         string storageConnectionString = configuration.GetConnectionString("AzureStorageConnectionString");
@@ -25,17 +27,27 @@ public class ImageUploadController : ApiController
         // Ensure the container exists
         var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
         blobContainerClient.CreateIfNotExists(PublicAccessType.Blob);
+
+        _sketchRepository = sketchRepository;
     }
 
     [HttpPost("upload")]
+    [Authorize]
     public async Task<IActionResult> UploadFile(IFormFile file)
     {
-
         _logger.LogInformation("Image Upload Called");
+
         if (file == null || file.Length == 0)
         {
             _logger.LogError("Image Upload Failed");
             return FailMessage("No file uploaded.");
+        }
+
+        var currentUserId = User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId)?.Value;
+        if (string.IsNullOrEmpty(currentUserId))
+        {
+            _logger.LogError("User not found");
+            return FailMessage("User not found.");
         }
 
         var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
@@ -46,56 +58,36 @@ public class ImageUploadController : ApiController
             await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = file.ContentType });
         }
 
-        _logger.LogInformation("Image upload successful");
-        var response = new { filePath = blobClient.Uri.ToString() };
+        // Create a new Sketch
+        var sketch = new Sketch
+        {
+            ArtistID = Guid.Parse(currentUserId),
+            MediaUrl = blobClient.Uri.ToString(),
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        // Save Sketch using the repository
+        var createdSketch = await _sketchRepository.CreateSketchAsync(sketch);
+
+        _logger.LogInformation("Image upload and sketch creation successful");
+
+        var response = new { filePath = blobClient.Uri.ToString(), sketchId = createdSketch.PostId };
         _logger.LogInformation($"Response: {JsonConvert.SerializeObject(response)}");
+
         return SuccessMessage(response);
     }
 
-    [HttpGet("download/{fileName}")]
-    public async Task<IActionResult> DownloadFile(string fileName)
+    [HttpGet("sketches")]
+    public async Task<IActionResult> GetSketches()
     {
-        _logger.LogInformation("Download File Called");
-        if (string.IsNullOrEmpty(fileName))
-        {
-            _logger.LogError("Download File Failed");
-            return FailMessage("File name cannot be null or empty.");
-        }
+        _logger.LogInformation("Fetching all sketches");
 
-        var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-        var blobClient = blobContainerClient.GetBlobClient(fileName);
+        var sketches = await _sketchRepository.GetAllSketchesAsync();
 
-        if (!await blobClient.ExistsAsync())
-        {
-            _logger.LogError("Download File Failed: Image not Found");
-            return NotFound("File not found.");
-        }
+        _logger.LogInformation("All sketches retrieved");
 
-        var blobDownloadInfo = await blobClient.DownloadAsync();
-
-        _logger.LogInformation("Image download successful");
-
-        return File(blobDownloadInfo.Value.Content, blobDownloadInfo.Value.ContentType, fileName);
-    }
-
-    [HttpGet("list")]
-    public async Task<IActionResult> ListFiles()
-    {
-
-        _logger.LogInformation("Download File Called");
-        var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-        var files = new List<string>();
-        var uriBuilder = new UriBuilder(_blobServiceClient.Uri);
-
-        await foreach (BlobItem blobItem in blobContainerClient.GetBlobsAsync())
-        {
-            uriBuilder.Path = $"{_containerName}/{blobItem.Name}";
-            files.Add(uriBuilder.ToString());
-        }
-
-        _logger.LogInformation("Files sent to user");
-
-        return SuccessMessage(files);
+        return SuccessMessage(sketches);
     }
 
 
