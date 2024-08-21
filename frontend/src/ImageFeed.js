@@ -1,11 +1,13 @@
 // src/components/ImageFeed.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './ImageFeed.css';  // Import the CSS file for styling
+import './ImageFeed.css';
+import { FcLike } from "react-icons/fc";
+import { FaRegComments } from "react-icons/fa";
+
 
 const ImageFeed = () => {
-    const [images, setImages] = useState([]);
-
+     const [images, setImages] = useState([]);
     useEffect(() => {
         axios.get(process.env.REACT_APP_API_URL + 'api/ImageUpload/list')
             .then(response => {
@@ -23,7 +25,13 @@ const ImageFeed = () => {
     return (
         <div className="image-feed">
             {images.map((url, index) => (
-                <img key={index} className="image-item" src={url} alt={`images-${index}`} />
+                <div className='interaction'>
+                    <button className='buttonimg'> 
+                        <img key={index} className="image-item" src={url} alt={`images-${index}`} id='img'/>
+                    </button>
+                    <FcLike className='like' type='button'/>
+                    <FaRegComments className='comment' type='button'/>
+                </div>
             ))}
         </div>
     );

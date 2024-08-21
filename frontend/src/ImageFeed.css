@@ -1,21 +1,48 @@
 /* src/components/ImageFeed.css */
 .image-feed {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    grid-gap: 30px;
-    padding: 10px;
-    margin: auto;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 2fr));
+    margin: 0px;
 }
 
 .image-item {
     width: 100%;
-    padding: 5px;
-    height: auto;
+    height: 400px;
     object-fit: cover;
-    border: 2px solid darkgoldenrod;
     border-radius: 10px;
 }
 
 .image-item:hover{
     cursor: pointer;
 }
+
+.buttonimg {
+    border-radius: 10px;
+    border: none;
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    background-color: black;
+}
+
+.interaction {
+    width: 100%;
+    border-radius: 10px;
+    height: 450px;
+}
+
+.like {
+    position: relative;
+    right: 36%;
+    font-size: 30px;
+    top: 1%;
+}
+
+.comment {
+    position: relative;
+    font-size: 30px;
+    top: 1%;
+    left: 36%;
+    color: white;
+}
+
