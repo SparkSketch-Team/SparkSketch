@@ -90,5 +90,22 @@ public class ImageUploadController : ApiController
         return SuccessMessage(sketches);
     }
 
+    [HttpDelete("delete/{postId}")]
+    public async Task<IActionResult> DeleteSketch(int postId)
+    {
+        _logger.LogInformation($"Deleting sketch with PostId: {postId}");
+
+        var isDeleted = await _sketchRepository.DeleteSketchAsync(postId);
+
+        if (!isDeleted)
+        {
+            _logger.LogError($"Sketch with PostId {postId} not found");
+            return NotFound($"Sketch with PostId {postId} not found");
+        }
+
+        _logger.LogInformation($"Sketch with PostId {postId} deleted successfully");
+        return SuccessMessage($"Sketch with PostId {postId} deleted successfully");
+    }
+
 
 }
