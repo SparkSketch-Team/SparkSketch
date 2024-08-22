@@ -18,6 +18,7 @@ function ViewPosts() {
         <div className='App'>
             <NavBar />
             <h1 className='App-title'>EXPLORE</h1>
+            <input placeholder='Search Artists' className='search'/>
             <ImageFeed />
         </div>
     );
