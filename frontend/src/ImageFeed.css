@@ -33,7 +33,7 @@
 
 .like {
     position: relative;
-    right: 36%;
+    right: 30%;
     font-size: 30px;
     top: 1%;
 }
@@ -42,7 +42,20 @@
     position: relative;
     font-size: 30px;
     top: 1%;
-    left: 36%;
+    left: 40%;
     color: white;
 }
 
+.profile {
+    border-radius: 180px;
+    background-color: transparent;
+    border: none;
+    position: relative;
+    width: 50px;
+    bottom: 87%;
+    left: 30%;
+}
+
+.avatar {
+    width: 100%;
+}

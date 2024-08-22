@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './ImageFeed.css';
+import Avatar from './Avatar.js';
 import { FcLike } from "react-icons/fc";
 import { FaRegComments } from "react-icons/fa";
 
@@ -31,6 +32,7 @@ const ImageFeed = () => {
                     </button>
                     <FcLike className='like' type='button'/>
                     <FaRegComments className='comment' type='button'/>
+                    <button className='profile'><Avatar className='avatar'/></button>
                 </div>
             ))}
         </div>
