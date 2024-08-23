@@ -34,8 +34,13 @@
 .like {
     position: relative;
     right: 30%;
-    font-size: 30px;
+    font-size: 28px;
     top: 1%;
+    color: white;
+}
+
+.like:hover {
+    color: red;
 }
 
 .comment {
@@ -77,8 +82,8 @@
 .modal-content {
     margin: auto;
     display: block;
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 800px;
+    max-height: 900px;
 }
 
 .close {
