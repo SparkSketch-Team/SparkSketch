@@ -37,11 +37,17 @@
     font-size: 28px;
     top: 1%;
     color: white;
+    transition: color 0.3s ease, scale 0.3s ease;
 }
 
 .like:hover {
     color: red;
 }
+
+.liked {
+    color: red;
+}
+
 
 .comment {
     position: relative;

@@ -49,8 +49,7 @@ const ImageFeed = () => {
                     <button className='buttonimg' onClick={() => handleImageClick(sketch.mediaUrl)}> 
                         <img className="image-item" src={sketch.mediaUrl} alt={`sketch-${sketch.postId}`} id='img'/>
                     </button>
-                    <FaHeart className='like' type='button' onClick={() => handleLikeClick(sketch.postId)}
-            style={{ color: likedPosts[sketch.postId] ? 'red' : 'white' }}/>
+                    <FaHeart className={`like ${likedPosts[sketch.postId] ? 'liked' : ''}`} type='button' onClick={() => handleLikeClick(sketch.postId)}/>
                     <FaRegComments className='comment' type='button'/>
                     <button className='profile'><Avatar className='avatar'/></button>
                 </div>
