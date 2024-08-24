@@ -8,29 +8,37 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
 
     useEffect(() => {
         if (isOpen && postId) {
-            // Fetch comments for the specific post
-            axios.get(`${process.env.REACT_APP_API_URL}api/Sketch/${postId}/comments`)
-                .then(response => {
-                    if (response.data.success) {
-                        setComments(response.data.comments);
-                    } else {
-                        console.error("Error fetching comments:", response.data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error("There was an error fetching the comments!", error);
-                });
+            const token = localStorage.getItem('token');
+            axios.get(`${process.env.REACT_APP_API_URL}api/Sketch/getCommentsByPost/${postId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (response.data.success) {
+                    setComments(response.data.results); // Adjusted based on the `SuccessMessage` structure
+                } else {
+                    console.error("Error fetching comments:", response.data.error);
+                }
+            })
+            .catch(error => {
+                console.error("There was an error fetching the comments!", error);
+            });
         }
     }, [isOpen, postId]);
+    
 
     const handleAddComment = () => {
-        // Post the new comment to the server
-        axios.post(`${process.env.REACT_APP_API_URL}api/Sketch/${postId}/comment`, {
-            comment: newComment
+        const token = localStorage.getItem('token');
+        axios.post(`${process.env.REACT_APP_API_URL}api/Sketch/addComment/${postId}`, newComment, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
         })
         .then(response => {
             if (response.data.success) {
-                setComments([...comments, response.data.comment]);
+                setComments([...comments, response.data.results]);
                 setNewComment('');
             } else {
                 console.error("Error adding comment:", response.data.error);
@@ -40,6 +48,7 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
             console.error("There was an error adding the comment!", error);
         });
     };
+    
 
     if (!isOpen) return null;
 

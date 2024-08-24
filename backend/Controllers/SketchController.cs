@@ -43,14 +43,14 @@ public class SketchController : ApiController {
         {
             return NotFound();
         }
-        return NoContent();
+        return SuccessMessage();
     }
 
     [HttpGet("getLikes/{postId}")]
     public async Task<IActionResult> GetLikes(int postId)
     {
         var likes = await _likeRepository.GetLikesByPostIdAsync(postId);
-        return Ok(likes);
+        return SuccessMessage(likes);
     }
 
     [HttpPost("addComment/{postId}")]
@@ -70,14 +70,14 @@ public class SketchController : ApiController {
         };
 
         var createdComment = await _commentRepository.CreateCommentAsync(comment);
-        return Ok(createdComment);
+        return SuccessMessage(createdComment);
     }
 
-    [HttpGet("getComments/{postId}")]
+    [HttpGet("getCommentsByPost/{postId}")]
     public async Task<IActionResult> GetCommentsByPost(int postId)
     {
         var comments = await _commentRepository.GetCommentsByPostIdAsync(postId);
-        return Ok(comments);
+        return SuccessMessage(comments);
     }
 
     //[HttpGet("user/{userId}/comments")]
@@ -95,6 +95,6 @@ public class SketchController : ApiController {
         {
             return NotFound();
         }
-        return NoContent();
+        return SuccessMessage();
     }
 }
