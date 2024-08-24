@@ -9,11 +9,13 @@ public class SketchController : ApiController {
     private readonly ISketchRepository _sketchRepository;
     private readonly ICommentRepository _commentRepository;
     private readonly ILikeRepository _likeRepository;
+    private readonly IUserRepository _userRepository;
 
-    public SketchController(ISketchRepository sketchRepository, ICommentRepository commentRepository, ILikeRepository likeRepository, ILogger<SketchController> logger) : base(logger) {
+    public SketchController(ISketchRepository sketchRepository, ICommentRepository commentRepository, ILikeRepository likeRepository, IUserRepository userRepository, ILogger<SketchController> logger) : base(logger) {
         _sketchRepository = sketchRepository;
         _commentRepository = commentRepository;
         _likeRepository = likeRepository;
+        _userRepository = userRepository;
     }
 
     [HttpPost("addLike/{postId}")]
@@ -62,11 +64,28 @@ public class SketchController : ApiController {
             return Unauthorized();
         }
 
+        var sketch = await _sketchRepository.GetSketchByIdAsync(postId);
+        if (sketch == null)
+        {
+            return NotFound("Sketch not found.");
+        }
+
+        // Retrieve the User associated with the CommenterID
+        var user = await _userRepository.GetUserByIdAsync(Guid.Parse(currentUserId));
+        if (user == null)
+        {
+            return NotFound("User not found.");
+        }
+
         var comment = new Comment
         {
             PostID = postId,
             CommenterID = Guid.Parse(currentUserId),
-            Content = content
+            Content = content,
+            Sketch = sketch,
+            User = user,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow 
         };
 
         var createdComment = await _commentRepository.CreateCommentAsync(comment);
