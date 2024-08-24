@@ -1,7 +1,9 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class SketchController : ApiController {
     private readonly ISketchRepository _sketchRepository;
@@ -14,7 +16,7 @@ public class SketchController : ApiController {
         _likeRepository = likeRepository;
     }
 
-    [HttpPost("{postId}/like")]
+    [HttpPost("addLike/{postId}")]
     public async Task<IActionResult> CreateLike(int postId)
     {
         var currentUserId = User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId)?.Value;
@@ -33,7 +35,7 @@ public class SketchController : ApiController {
         return Ok(createdLike);
     }
 
-    [HttpDelete("like/{likeId}")]
+    [HttpDelete("removeLike/{likeId}")]
     public async Task<IActionResult> RemoveLike(int likeId)
     {
         var result = await _likeRepository.RemoveLikeAsync(likeId);
@@ -44,14 +46,14 @@ public class SketchController : ApiController {
         return NoContent();
     }
 
-    [HttpGet("{postId}/likes")]
+    [HttpGet("getLikes/{postId}")]
     public async Task<IActionResult> GetLikes(int postId)
     {
         var likes = await _likeRepository.GetLikesByPostIdAsync(postId);
         return Ok(likes);
     }
 
-    [HttpPost("{postId}/comment")]
+    [HttpPost("addComment/{postId}")]
     public async Task<IActionResult> CreateComment(int postId, [FromBody] string content)
     {
         var currentUserId = User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId)?.Value;
@@ -71,21 +73,21 @@ public class SketchController : ApiController {
         return Ok(createdComment);
     }
 
-    [HttpGet("{postId}/comments")]
+    [HttpGet("getComments/{postId}")]
     public async Task<IActionResult> GetCommentsByPost(int postId)
     {
         var comments = await _commentRepository.GetCommentsByPostIdAsync(postId);
         return Ok(comments);
     }
 
-    [HttpGet("user/{userId}/comments")]
-    public async Task<IActionResult> GetCommentsByUser(Guid userId)
-    {
-        var comments = await _commentRepository.GetCommentsByUserIdAsync(userId);
-        return Ok(comments);
-    }
+    //[HttpGet("user/{userId}/comments")]
+    //public async Task<IActionResult> GetCommentsByUser(Guid userId)
+    //{
+    //    var comments = await _commentRepository.GetCommentsByUserIdAsync(userId);
+    //    return Ok(comments);
+    //}
 
-    [HttpDelete("comment/{commentId}")]
+    [HttpDelete("deleteComment/{commentId}")]
     public async Task<IActionResult> DeleteComment(int commentId)
     {
         var result = await _commentRepository.DeleteCommentAsync(commentId);

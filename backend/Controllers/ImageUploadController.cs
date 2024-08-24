@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class ImageUploadController : ApiController
 {
