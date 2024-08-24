@@ -13,6 +13,8 @@ const ImageFeed = () => {
     const [selectedImageUrl, setSelectedImageUrl] = useState('');
     const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState(null);
+    const [likedPosts, setLikedPosts] = useState({});
+
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_API_URL + 'api/ImageUpload/sketches')
@@ -28,6 +30,29 @@ const ImageFeed = () => {
             });
     }, []);
 
+    useEffect(() => {
+        // Fetch the like status for all sketches
+        sketches.forEach = (postId) => {
+            const token = localStorage.getItem('token');
+            axios.get(`${process.env.REACT_APP_API_URL}api/Sketch/getLikes/${postId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+        })
+                .then(response => {
+                    if (response.data.success) {
+                        setLikedPosts(prevLikedPosts => ({
+                            ...prevLikedPosts,
+                            [postId]: response.data.liked  // Assuming response.data.liked is a boolean
+                        }));
+                    }
+                })
+                .catch(error => {
+                    console.error("There was an error fetching like status!", error);
+                });
+        };
+    }, [sketches]);
+
     const handleImageClick = (url) => {
         setSelectedImageUrl(url);
         setIsModalOpen(true);
@@ -38,13 +63,50 @@ const ImageFeed = () => {
         setSelectedImageUrl('');
     };
 
-    const [likedPosts, setLikedPosts] = useState({});
+    
     const handleLikeClick = (postId) => {
-        setLikedPosts((prevLikedPosts) => ({
-          ...prevLikedPosts,
-          [postId]: !prevLikedPosts[postId], // Toggle like status
-        }));
-      };
+        const liked = likedPosts[postId];
+        const token = localStorage.getItem('token');
+
+        if (liked) {
+            // Unlike the post
+            axios.delete(`${process.env.REACT_APP_API_URL}api/Sketch/removeLike/${postId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    if (response.data.success) {
+                        setLikedPosts(prevLikedPosts => ({
+                            ...prevLikedPosts,
+                            [postId]: false
+                        }));
+                    }
+                })
+                .catch(error => {
+                    console.error("There was an error unliking the post!", error);
+                });
+            } else {
+                const token = localStorage.getItem('token');
+                // Like the post
+                axios.post(`${process.env.REACT_APP_API_URL}api/Sketch/addLike/${postId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+                    .then(response => {
+                        if (response.data.success) {
+                            setLikedPosts(prevLikedPosts => ({
+                                ...prevLikedPosts,
+                                [postId]: true
+                            }));
+                        }
+                    })
+                    .catch(error => {
+                        console.error("There was an error liking the post!", error);
+                    });
+            }
+        };
     
     const handleCommentClick = (postId) => {
         setSelectedPostId(postId);
