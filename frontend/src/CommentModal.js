@@ -7,9 +7,9 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
     const [newComment, setNewComment] = useState('');
 
     useEffect(() => {
-        if (isOpen) {
+        if (isOpen && postId) {
             // Fetch comments for the specific post
-            axios.get(`${process.env.REACT_APP_API_URL}api/comments/${postId}`)
+            axios.get(`${process.env.REACT_APP_API_URL}/api/Sketch/{postId}/comments/`)
                 .then(response => {
                     if (response.data.success) {
                         setComments(response.data.comments);
@@ -25,8 +25,7 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
 
     const handleAddComment = () => {
         // Post the new comment to the server
-        axios.post(`${process.env.REACT_APP_API_URL}api/comments`, {
-            postId,
+        axios.post(`${process.env.REACT_APP_API_URL}/api/Sketch/{postId}/comment`, {
             comment: newComment
         })
         .then(response => {
