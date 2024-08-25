@@ -24,7 +24,7 @@ public class SketchController : ApiController {
         var currentUserId = User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId)?.Value;
         if (string.IsNullOrEmpty(currentUserId))
         {
-            return Unauthorized();
+            return FailMessage("Unauthorized, your user Id is " + currentUserId + ", check ur db to confirm this is correct");
         }
 
         var like = new Like
