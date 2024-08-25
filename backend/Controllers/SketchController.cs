@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Authorize]
 [Route("api/[controller]")]
 public class SketchController : ApiController {
     private readonly ISketchRepository _sketchRepository;
@@ -18,6 +17,7 @@ public class SketchController : ApiController {
         _userRepository = userRepository;
     }
 
+    [Authorize]
     [HttpPost("addLike/{postId}")]
     public async Task<IActionResult> CreateLike(int postId)
     {
@@ -37,6 +37,7 @@ public class SketchController : ApiController {
         return Ok(createdLike);
     }
 
+    [Authorize]
     [HttpDelete("removeLike/{likeId}")]
     public async Task<IActionResult> RemoveLike(int likeId)
     {
@@ -48,6 +49,7 @@ public class SketchController : ApiController {
         return SuccessMessage();
     }
 
+    [Authorize]
     [HttpGet("getLikes/{postId}")]
     public async Task<IActionResult> GetLikes(int postId)
     {
@@ -55,6 +57,7 @@ public class SketchController : ApiController {
         return SuccessMessage(likes);
     }
 
+    [Authorize]
     [HttpPost("addComment/{postId}")]
     public async Task<IActionResult> CreateComment(int postId, [FromBody] string content)
     {
@@ -92,6 +95,7 @@ public class SketchController : ApiController {
         return SuccessMessage(createdComment);
     }
 
+    [Authorize]
     [HttpGet("getCommentsByPost/{postId}")]
     public async Task<IActionResult> GetCommentsByPost(int postId)
     {
