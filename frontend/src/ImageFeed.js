@@ -10,6 +10,7 @@ const ImageFeed = ({ searchTerm }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImageUrl, setSelectedImageUrl] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchSketches = async () => {
@@ -43,6 +44,14 @@ const ImageFeed = ({ searchTerm }) => {
         setSelectedImageUrl('');
     };
 
+    const handleProfileClick = (profile) => {
+        setIsProfileModalOpen(true);
+    };
+
+    const closeProfileModal = () => {
+        setIsProfileModalOpen(false);
+    };
+
     return (
         <div className="image-feed">
             {isLoading ? (
@@ -57,7 +66,7 @@ const ImageFeed = ({ searchTerm }) => {
                         </button>
                         <FcLike className='like' type='button'/>
                         <FaRegComments className='comment' type='button'/>
-                        <button className='profile'><Avatar className='avatar'/></button>
+                        <button className='profile' onClick={() => handleProfileClick(sketch.user)}><Avatar className='avatar'/></button>
                     </div>
                 ))
             )}
@@ -67,6 +76,20 @@ const ImageFeed = ({ searchTerm }) => {
                     <span className="close">&times;</span>
                     <img className="modal-content" src={selectedImageUrl} alt="Expanded Sketch"/>
                     <div className="caption">Sketch</div>
+                </div>
+            )}
+            {isProfileModalOpen && (
+                <div className="modal">
+                    <span className="close" onClick={closeProfileModal}>&times;</span>
+                    <div className="modal-content">
+                    <div className='container'>
+                        <div className='modalpfp'><Avatar/> Username</div>
+                        <p className='box1'>--- <br></br>Followers</p><p className='box1'>--- <br></br>Sketches<br></br>
+                        </p>
+                        <br />
+                    </div>
+                        <div>Bio:</div>
+                    </div>
                 </div>
             )}
         </div>

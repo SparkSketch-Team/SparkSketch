@@ -56,6 +56,11 @@
     left: 30%;
 }
 
+.modalpfp {
+    width: 100px;
+    position: relative;
+}
+
 .avatar {
     width: 100%;
 }
@@ -95,4 +100,19 @@
     text-align: center;
     color: #ccc;
     padding: 10px 20px;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.box1 {
+    color: black;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 25px;
+    margin: 10px;
+    text-align: left;
 }
