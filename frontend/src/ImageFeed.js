@@ -34,8 +34,8 @@ const ImageFeed = () => {
         // Fetch the like status for all sketches
         sketches.forEach = (postId) => {
             const token = localStorage.getItem('token');
-            axios.get(`${process.env.REACT_APP_API_URL}api/Sketch/getLikes/${postId}`, {
-                headers: {
+            axios.get(`${process.env.REACT_APP_API_URL}api/Sketch/getLikes/${postId}`, {},
+                {headers: {
                     Authorization: `Bearer ${token}`
                 }
         })
@@ -70,8 +70,8 @@ const ImageFeed = () => {
 
         if (liked) {
             // Unlike the post
-            axios.delete(`${process.env.REACT_APP_API_URL}api/Sketch/removeLike/${postId}`, {
-                headers: {
+            axios.delete(`${process.env.REACT_APP_API_URL}api/Sketch/removeLike/${postId}`, {},
+                {headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
@@ -89,8 +89,8 @@ const ImageFeed = () => {
             } else {
                 const token = localStorage.getItem('token');
                 // Like the post
-                axios.post(`${process.env.REACT_APP_API_URL}api/Sketch/addLike/${postId}`, {
-                    headers: {
+                axios.post(`${process.env.REACT_APP_API_URL}api/Sketch/addLike/${postId}`, {},
+                    {headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
