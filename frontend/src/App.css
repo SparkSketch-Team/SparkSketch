@@ -64,7 +64,7 @@ background-color: rgb(88, 88, 88);
 }
 
 .search {
-  margin: 10px;
+  margin-bottom: 20px;
   border-radius: 20px;
   border: darkgoldenrod solid 2px;
 }

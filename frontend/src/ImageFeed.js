@@ -82,10 +82,10 @@ const ImageFeed = ({ searchTerm }) => {
                 <div className="modal">
                     <span className="close" onClick={closeProfileModal}>&times;</span>
                     <div className="modal-content">
-                    <div className='container'>
+                    <div className='container1'>
                         <div className='modalpfp'><Avatar/> Username</div>
                         <p className='box1'>--- <br></br>Followers</p><p className='box1'>--- <br></br>Sketches<br></br>
-                        </p>
+                        </p><button className='add'>+ Add Friend</button>
                         <br />
                     </div>
                         <div>Bio:</div>
