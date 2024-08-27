@@ -12,7 +12,7 @@ public class SparkSketchContext : DbContext
     public DbSet<Prompt> Prompts { get; set; } = null!;
     public DbSet<Permission> Permissions { get; set; } = null!;
     public virtual DbSet<Email> Emails { get; set; } = null!;
-    public DbSet<Sketch> Sketchs { get; set; } = null!;
+    public DbSet<Sketch> Sketches { get; set; } = null!;
     public DbSet<Comment> Comments { get; set; } = null!;
     public DbSet<Like> Likes { get; set; } = null!;
     public DbSet<Follower> Followers { get; set; } = null!;
