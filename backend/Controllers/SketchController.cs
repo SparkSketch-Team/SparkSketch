@@ -85,8 +85,8 @@ public class SketchController : ApiController {
             PostID = postId,
             CommenterID = Guid.Parse(currentUserId),
             Content = content,
-            Sketch = sketch,
-            User = user,
+            //Sketch = sketch,
+            //User = user,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow 
         };

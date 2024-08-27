@@ -28,26 +28,32 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
     }, [isOpen, postId]);
     
 
-    const handleAddComment = () => {
+    const handleAddComment = async () => {
         const token = localStorage.getItem('token');
-        axios.post(`${process.env.REACT_APP_API_URL}api/Sketch/addComment/${postId}`, newComment, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => {
+    
+        try {
+            const response = await axios.post(
+                `${process.env.REACT_APP_API_URL}api/Sketch/addComment/${postId}`,
+                newComment,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+    
             if (response.data.success) {
                 setComments([...comments, response.data.results]);
                 setNewComment('');
             } else {
                 console.error("Error adding comment:", response.data.error);
             }
-        })
-        .catch(error => {
+        } catch (error) {
             console.error("There was an error adding the comment!", error);
-        });
+        }
     };
+    
     
 
     if (!isOpen) return null;
