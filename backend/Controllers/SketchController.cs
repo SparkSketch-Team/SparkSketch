@@ -126,5 +126,18 @@ public class SketchController : ApiController {
         }
     }
 
+    [HttpGet("{postId}/artist")]
+    public async Task<IActionResult> GetArtistBySketchPostId(int postId)
+    {
+        var user = _sketchRepository.GetUserBySketchPostId(postId);
+
+        if (user == null)
+        {
+            return FailMessage("Artist not found for the provided Post ID.");
+        }
+
+        return SuccessMessage(user);
+    }
+
 
 }

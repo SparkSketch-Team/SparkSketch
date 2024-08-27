@@ -5,4 +5,5 @@ public interface ISketchRepository
     Task<List<Sketch>> GetAllSketchesAsync();
     Task<bool> DeleteSketchAsync(int postId);
     Task<List<Sketch>> GetSketchesByUsernameAsync(string username);
+    Task<User?> GetUserBySketchPostId(int postId);
 }

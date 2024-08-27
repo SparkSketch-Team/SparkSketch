@@ -53,4 +53,15 @@ public class SketchRepository : BaseRepository, ISketchRepository
                        .ToListAsync();
     }
 
+    public async Task<User?> GetUserBySketchPostId(int postId)
+    {
+        return await db.Sketches
+                       .Where(s => s.PostId == postId)
+                       .Join(db.Users,
+                             s => s.ArtistID,
+                             u => u.UserId,
+                             (s, u) => u)
+                       .FirstOrDefaultAsync();
+    }
+
 }
