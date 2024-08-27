@@ -84,6 +84,8 @@ class Program
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IAiRepository, AiRepository>();
         builder.Services.AddScoped<ISketchRepository, SketchRepository>();
+        builder.Services.AddScoped<ILikeRepository, LikeRepository>();
+        builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
         var app = builder.Build();
 

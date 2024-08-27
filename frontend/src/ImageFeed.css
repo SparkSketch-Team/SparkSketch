@@ -1,21 +1,98 @@
 /* src/components/ImageFeed.css */
 .image-feed {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    grid-gap: 30px;
-    padding: 10px;
-    margin: auto;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 2fr));
+    margin: 0px;
 }
 
 .image-item {
     width: 100%;
-    padding: 5px;
-    height: auto;
+    height: 400px;
     object-fit: cover;
-    border: 2px solid darkgoldenrod;
     border-radius: 10px;
 }
 
 .image-item:hover{
     cursor: pointer;
+}
+
+.buttonimg {
+    border-radius: 10px;
+    border: none;
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    background-color: black;
+}
+
+.interaction {
+    width: 100%;
+    border-radius: 10px;
+    height: 450px;
+}
+
+.like {
+    position: relative;
+    right: 30%;
+    font-size: 30px;
+    top: 1%;
+}
+
+.comment {
+    position: relative;
+    font-size: 30px;
+    top: 1%;
+    left: 40%;
+    color: white;
+}
+
+.profile {
+    border-radius: 180px;
+    background-color: transparent;
+    border: none;
+    position: relative;
+    width: 50px;
+    bottom: 87%;
+    left: 30%;
+}
+
+.avatar {
+    width: 100%;
+}
+
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.caption {
+    text-align: center;
+    color: #ccc;
+    padding: 10px 20px;
 }

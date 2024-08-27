@@ -78,18 +78,6 @@ public class ImageUploadController : ApiController
         return SuccessMessage(response);
     }
 
-    [HttpGet("sketches")]
-    public async Task<IActionResult> GetSketches()
-    {
-        _logger.LogInformation("Fetching all sketches");
-
-        var sketches = await _sketchRepository.GetAllSketchesAsync();
-
-        _logger.LogInformation("All sketches retrieved");
-
-        return SuccessMessage(sketches);
-    }
-
     [HttpDelete("delete/{postId}")]
     public async Task<IActionResult> DeleteSketch(int postId)
     {
