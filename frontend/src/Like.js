@@ -40,7 +40,7 @@ const LikeButton = ({ postId }) => {
                 },
             })
             .then(response => {
-                if (response.data.success) {
+                if (response.status === 200) {
                     setLiked(false);
                 }
             })
@@ -55,7 +55,7 @@ const LikeButton = ({ postId }) => {
                 },
             })
             .then(response => {
-                if (response.data.success) {
+                if (response.status === 200) {
                     setLiked(true);
                 }
             })
