@@ -13,7 +13,6 @@ const ImageFeed = () => {
     const [selectedImageUrl, setSelectedImageUrl] = useState('');
     const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState(null);
-    const [likedPosts, setLikedPosts] = useState({});
 
 
     useEffect(() => {
@@ -29,29 +28,6 @@ const ImageFeed = () => {
                 console.error("There was an error fetching the sketches!", error);
             });
     }, []);
-
-    useEffect(() => {
-        // Fetch the like status for all sketches
-        sketches.forEach = (postId) => {
-            const token = localStorage.getItem('token');
-            axios.get(`${process.env.REACT_APP_API_URL}api/Sketch/getLikes/${postId}`, {},
-                {headers: {
-                    Authorization: `Bearer ${token}`
-                }
-        })
-                .then(response => {
-                    if (response.data.success) {
-                        setLikedPosts(prevLikedPosts => ({
-                            ...prevLikedPosts,
-                            [postId]: response.data.liked  // Assuming response.data.liked is a boolean
-                        }));
-                    }
-                })
-                .catch(error => {
-                    console.error("There was an error fetching like status!", error);
-                });
-        };
-    }, [sketches]);
 
     const handleImageClick = (url) => {
         setSelectedImageUrl(url);
@@ -80,8 +56,7 @@ const ImageFeed = () => {
                     <button className='buttonimg' onClick={() => handleImageClick(sketch.mediaUrl)}> 
                         <img className="image-item" src={sketch.mediaUrl} alt={`sketch-${sketch.postId}`} id='img'/>
                     </button>
-                    <LikeButton postId={sketch.postId}
-                    initialLiked={likedPosts[sketch.postId] || false}/>
+                    <LikeButton postId={sketch.postId}/>
                     <FaRegComments className='comment' type='button' onClick={() => handleCommentClick(sketch.postId)}/>
                     <button className='profile'><Avatar className='avatar'/></button>
                 </div>
