@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './ImageFeed.css';
 import Avatar from './Avatar.js';
-import { FaHeart } from "react-icons/fa6";
 import { FaRegComments } from "react-icons/fa";
 import 'animate.css';
 import CommentModal from './CommentModal';
+import LikeButton from './Like.js';
 
 const ImageFeed = () => {
     const [sketches, setSketches] = useState([]);
@@ -62,51 +62,6 @@ const ImageFeed = () => {
         setIsModalOpen(false);
         setSelectedImageUrl('');
     };
-
-    
-    const handleLikeClick = (postId) => {
-        const liked = likedPosts[postId];
-        const token = localStorage.getItem('token');
-
-        if (liked) {
-            // Unlike the post
-            axios.delete(`${process.env.REACT_APP_API_URL}api/Sketch/removeLike/${postId}`, {},
-                {headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-                .then(response => {
-                    if (response.data.success) {
-                        setLikedPosts(prevLikedPosts => ({
-                            ...prevLikedPosts,
-                            [postId]: false
-                        }));
-                    }
-                })
-                .catch(error => {
-                    console.error("There was an error unliking the post!", error);
-                });
-            } else {
-                const token = localStorage.getItem('token');
-                // Like the post
-                axios.post(`${process.env.REACT_APP_API_URL}api/Sketch/addLike/${postId}`, {},
-                    {headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-                    .then(response => {
-                        if (response.data.success) {
-                            setLikedPosts(prevLikedPosts => ({
-                                ...prevLikedPosts,
-                                [postId]: true
-                            }));
-                        }
-                    })
-                    .catch(error => {
-                        console.error("There was an error liking the post!", error);
-                    });
-            }
-        };
     
     const handleCommentClick = (postId) => {
         setSelectedPostId(postId);
@@ -125,8 +80,8 @@ const ImageFeed = () => {
                     <button className='buttonimg' onClick={() => handleImageClick(sketch.mediaUrl)}> 
                         <img className="image-item" src={sketch.mediaUrl} alt={`sketch-${sketch.postId}`} id='img'/>
                     </button>
-                    <FaHeart className={`like ${likedPosts[sketch.postId] ? 'liked' : ''}`} type='button' 
-                    onClick={() => handleLikeClick(sketch.postId)}/>
+                    <LikeButton postId={sketch.postId}
+                    initialLiked={likedPosts[sketch.postId] || false}/>
                     <FaRegComments className='comment' type='button' onClick={() => handleCommentClick(sketch.postId)}/>
                     <button className='profile'><Avatar className='avatar'/></button>
                 </div>
