@@ -34,7 +34,7 @@ public class SketchController : ApiController {
         };
 
         var createdLike = await _likeRepository.CreateLikeAsync(like);
-        return Ok(createdLike);
+        return SuccessMessage(createdLike);
     }
 
     [Authorize]
@@ -44,7 +44,7 @@ public class SketchController : ApiController {
         var result = await _likeRepository.RemoveLikeAsync(likeId);
         if (!result)
         {
-            return NotFound();
+            return FailMessage();
         }
         return SuccessMessage();
     }
@@ -103,12 +103,12 @@ public class SketchController : ApiController {
         return SuccessMessage(comments);
     }
 
-    //[HttpGet("user/{userId}/comments")]
-    //public async Task<IActionResult> GetCommentsByUser(Guid userId)
-    //{
-    //    var comments = await _commentRepository.GetCommentsByUserIdAsync(userId);
-    //    return Ok(comments);
-    //}
+    [HttpGet("user/{userId}/comments")]
+    public async Task<IActionResult> GetCommentsByUser(Guid userId)
+    {
+        var comments = await _commentRepository.GetCommentsByUserIdAsync(userId);
+        return SuccessMessage(comments);
+    }
 
     [HttpDelete("deleteComment/{commentId}")]
     public async Task<IActionResult> DeleteComment(int commentId)
@@ -116,8 +116,40 @@ public class SketchController : ApiController {
         var result = await _commentRepository.DeleteCommentAsync(commentId);
         if (!result)
         {
-            return NotFound();
+            return FailMessage();
         }
-        return SuccessMessage();
+        return SuccessMessage(true);
     }
+
+    [HttpGet("sketches")]
+    public async Task<IActionResult> GetSketches([FromQuery] string? username)
+    {
+        if (string.IsNullOrEmpty(username))
+        {
+            _logger.LogInformation("Fetching all sketches");
+
+            var allSketches = await _sketchRepository.GetAllSketchesAsync();
+
+            _logger.LogInformation("All sketches retrieved");
+
+            return SuccessMessage(allSketches);
+        }
+        else
+        {
+            _logger.LogInformation($"Searching sketches for username: {username}");
+
+            var filteredSketches = await _sketchRepository.GetSketchesByUsernameAsync(username);
+
+            if (filteredSketches == null || filteredSketches.Count == 0)
+            {
+                return FailMessage("No sketches found for the given username");
+            }
+
+            _logger.LogInformation($"Found {filteredSketches.Count} sketches for username: {username}");
+
+            return SuccessMessage(filteredSketches);
+        }
+    }
+
+
 }

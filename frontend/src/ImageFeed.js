@@ -7,28 +7,36 @@ import { FaRegComments } from "react-icons/fa";
 import 'animate.css';
 import CommentModal from './CommentModal';
 
-const ImageFeed = () => {
+const ImageFeed = ({ searchTerm }) => {
     const [sketches, setSketches] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImageUrl, setSelectedImageUrl] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
     const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [likedPosts, setLikedPosts] = useState({});
 
-
     useEffect(() => {
-        axios.get(process.env.REACT_APP_API_URL + 'api/ImageUpload/sketches')
-            .then(response => {
+        const fetchSketches = async () => {
+            try {
+                const response = await axios.get(process.env.REACT_APP_API_URL + 'api/Sketch/sketches', {
+                    params: { username: searchTerm }
+                });
                 if (response.data.success) {
                     setSketches(response.data.results);
                 } else {
                     console.error("Error fetching sketches:", response.data.error);
+                    setSketches([]);
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error("There was an error fetching the sketches!", error);
-            });
-    }, []);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchSketches();
+    }, [searchTerm]);
 
     useEffect(() => {
         // Fetch the like status for all sketches
@@ -120,12 +128,17 @@ const ImageFeed = () => {
 
     return (
         <div className="image-feed">
-            {sketches.map((sketch) => (
-                <div key={sketch.postId} className='interaction'>
-                    <button className='buttonimg' onClick={() => handleImageClick(sketch.mediaUrl)}> 
-                        <img className="image-item" src={sketch.mediaUrl} alt={`sketch-${sketch.postId}`} id='img'/>
-                    </button>
-                    <FaHeart className={`like ${likedPosts[sketch.postId] ? 'liked' : ''}`} type='button' 
+            {isLoading ? (
+                <p>Loading...</p>
+            ) : sketches.length === 0 ? (
+                <p>No Sketches Found</p>
+            ) : (
+                sketches.map((sketch) => (
+                    <div key={sketch.postId} className='interaction'>
+                        <button className='buttonimg' onClick={() => handleImageClick(sketch.mediaUrl)}> 
+                            <img className="image-item" src={sketch.mediaUrl} alt={`sketch-${sketch.postId}`} id='img'/>
+                        </button>
+                        <FaHeart className={`like ${likedPosts[sketch.postId] ? 'liked' : ''}`} type='button' 
                     onClick={() => handleLikeClick(sketch.postId)}/>
                     <FaRegComments className='comment' type='button' onClick={() => handleCommentClick(sketch.postId)}/>
                     <button className='profile'><Avatar className='avatar'/></button>
@@ -136,7 +149,6 @@ const ImageFeed = () => {
                 onClose={closeCommentModal}
                 postId={selectedPostId}
             />
-
             {isModalOpen && (
                 <div className="modal" onClick={closeModal}>
                     <span className="close">&times;</span>
