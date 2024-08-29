@@ -134,16 +134,26 @@ const ImageFeed = ({ searchTerm }) => {
                 <p>No Sketches Found</p>
             ) : (
                 sketches.map((sketch) => (
-                    <div key={sketch.postId} className='interaction'>
-                        <button className='buttonimg' onClick={() => handleImageClick(sketch.mediaUrl)}> 
-                            <img className="image-item" src={sketch.mediaUrl} alt={`sketch-${sketch.postId}`} id='img'/>
+                    <div key={sketch.postId} className="interaction">
+                        <button className="buttonimg" onClick={() => handleImageClick(sketch.mediaUrl)}>
+                            <img className="image-item" src={sketch.mediaUrl} alt={`sketch-${sketch.postId}`} id="img" />
                         </button>
-                        <FaHeart className={`like ${likedPosts[sketch.postId] ? 'liked' : ''}`} type='button' 
-                    onClick={() => handleLikeClick(sketch.postId)}/>
-                    <FaRegComments className='comment' type='button' onClick={() => handleCommentClick(sketch.postId)}/>
-                    <button className='profile'><Avatar className='avatar'/></button>
-                </div>
-            ))}
+                        <FaHeart
+                            className={`like ${likedPosts[sketch.postId] ? 'liked' : ''}`}
+                            type="button"
+                            onClick={() => handleLikeClick(sketch.postId)}
+                        />
+                        <FaRegComments
+                            className="comment"
+                            type="button"
+                            onClick={() => handleCommentClick(sketch.postId)}
+                        />
+                        <button className="profile">
+                            <Avatar className="avatar" />
+                        </button>
+                    </div>
+                ))
+            )}
             <CommentModal
                 isOpen={isCommentModalOpen}
                 onClose={closeCommentModal}
@@ -152,11 +162,11 @@ const ImageFeed = ({ searchTerm }) => {
             {isModalOpen && (
                 <div className="modal" onClick={closeModal}>
                     <span className="close">&times;</span>
-                    <img className="modal-content" src={selectedImageUrl} alt="Expanded Sketch"/>
+                    <img className="modal-content" src={selectedImageUrl} alt="Expanded Sketch" />
                 </div>
             )}
         </div>
     );
-};
+};    
 
 export default ImageFeed;
