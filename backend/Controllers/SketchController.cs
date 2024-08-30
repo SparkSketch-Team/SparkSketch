@@ -1,4 +1,5 @@
 
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,11 +38,18 @@ public class SketchController : ApiController {
         return SuccessMessage(createdLike);
     }
 
-    [Authorize]
-    [HttpDelete("removeLike/{likeId}")]
-    public async Task<IActionResult> RemoveLike(int likeId)
+    [HttpDelete("removeLike/{postId}")]
+    public async Task<IActionResult> RemoveLike(int postId)
     {
-        var result = await _likeRepository.RemoveLikeAsync(likeId);
+        // Get the current user's ID from the claims
+        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+
+        var result = await _likeRepository.RemoveLikeAsync(postId, Guid.Parse(userId));
         if (!result)
         {
             return FailMessage();
