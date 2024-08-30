@@ -85,7 +85,7 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
                 <div className="comments-list">
                     {comments.map((comments, index) => (
                         <div key={index} className="comment-item">
-                            {comments.content}
+                            <span className='comtext'>{comments.content}</span>
                             <RiDeleteBinLine onClick={() => handleDeleteComment(comments.commentID)} className="delete-button">
                             &times;</RiDeleteBinLine>
                         </div>
