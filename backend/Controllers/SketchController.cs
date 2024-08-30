@@ -46,7 +46,7 @@ public class SketchController : ApiController {
 
         if (string.IsNullOrEmpty(userId))
         {
-            return Unauthorized();
+            return FailMessage();
         }
 
         var result = await _likeRepository.RemoveLikeAsync(postId, Guid.Parse(userId));

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CommentModal.css';
 import axios from 'axios';
+import { RiDeleteBinLine } from "react-icons/ri";
 
 const CommentModal = ({ isOpen, onClose, postId }) => {
     const [comments, setComments] = useState([]);
@@ -16,9 +17,7 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
             })
             .then(response => {
                 if (response.data.success) {
-                    console.log("response", response.data.results);
                     setComments(response.data.results); // Adjusted based on the `SuccessMessage` structure
-                    console.log("comments", comments);
                 } else {
                     console.error("Error fetching comments:", response.data.error);
                 }
@@ -48,7 +47,6 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
             if (response.data.success) {
                 setComments([...comments, response.data.results]);
                 setNewComment('');
-                console.log("please", newComment, comments);
             } else {
                 console.error("Error adding comment:", response.data.error);
             }
@@ -57,7 +55,25 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
         }
     };
     
-    
+    const handleDeleteComment = async (commentId) => {
+        const token = localStorage.getItem('token');
+        
+        try {
+            const response = await axios.delete(`${process.env.REACT_APP_API_URL}api/Sketch/deleteComment/${commentId}`, {},
+                {headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (response.data.success) {
+                setComments(comments.filter(comments => comments.commentID !== commentId));
+            } else {
+                console.error("Error deleting comment:", response.data.error);
+            }
+        } catch (error) {
+            console.error("There was an error deleting the comment!", error);
+        }
+    };
 
     if (!isOpen) return null;
 
@@ -70,6 +86,8 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
                     {comments.map((comments, index) => (
                         <div key={index} className="comment-item">
                             {comments.content}
+                            <RiDeleteBinLine onClick={() => handleDeleteComment(comments.commentID)} className="delete-button">
+                            &times;</RiDeleteBinLine>
                         </div>
                     ))}
                 </div>

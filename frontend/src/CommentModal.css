@@ -60,3 +60,19 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
+.delete-button {
+    color: black;
+    vertical-align: text-top;
+    font-size: 20px;
+    border: none;
+    border-radius: 180px;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    right: 100px;
+}
+
+.delete-button:hover {
+    cursor: pointer;
+}
