@@ -49,7 +49,7 @@ public class SketchController : ApiController {
         return SuccessMessage();
     }
 
-    [Authorize]
+    // [Authorize]
     [HttpGet("getLikes/{postId}")]
     public async Task<IActionResult> GetLikes(int postId)
     {

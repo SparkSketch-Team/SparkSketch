@@ -16,7 +16,7 @@ const ImageFeed = () => {
 
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_API_URL + 'api/Sketch/sketches')
+        axios.get(process.env.REACT_APP_API_URL + 'api/ImageUpload/sketches')
             .then(response => {
                 if (response.data.success) {
                     setSketches(response.data.results);
