@@ -16,7 +16,9 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
             })
             .then(response => {
                 if (response.data.success) {
+                    console.log("response", response.data.results);
                     setComments(response.data.results); // Adjusted based on the `SuccessMessage` structure
+                    console.log("comments", comments);
                 } else {
                     console.error("Error fetching comments:", response.data.error);
                 }
@@ -46,6 +48,7 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
             if (response.data.success) {
                 setComments([...comments, response.data.results]);
                 setNewComment('');
+                console.log("please", newComment, comments);
             } else {
                 console.error("Error adding comment:", response.data.error);
             }
@@ -61,12 +64,12 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
     return (
         <div className="comment-modal-overlay">
             <div className="comment-modal">
-                <button className="close-button" onClick={onClose}>X</button>
+                <button className="close-button" onClick={onClose}>&times;</button>
                 <h3>Comments</h3>
                 <div className="comments-list">
-                    {comments.map((comment, index) => (
+                    {comments.map((comments, index) => (
                         <div key={index} className="comment-item">
-                            {comment.text}
+                            {comments.content}
                         </div>
                     ))}
                 </div>
