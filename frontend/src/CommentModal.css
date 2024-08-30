@@ -21,15 +21,15 @@
 .close-button {
     background: none;
     border: none;
-    font-size: 20px;
+    font-size: 30px;
     cursor: pointer;
     position: relative;
-    bottom: 10px;
+    bottom: 20px;
     left: 170px;
 }
 
 .comments-list {
-    max-height: 300px;
+    max-height: 900px;
     overflow-y: auto;
     margin-bottom: 10px;
 }
@@ -37,6 +37,7 @@
 .comment-item {
     padding: 10px;
     border-bottom: 1px solid #ddd;
+    color: black;
 }
 
 .comment-input {
