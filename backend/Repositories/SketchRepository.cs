@@ -57,4 +57,17 @@ public class SketchRepository : BaseRepository, ISketchRepository
         await db.SaveChangesAsync();
         return true;
     }
+
+    public async Task<List<Sketch>> GetSketchesByUsernameAsync(string username)
+    {
+        return await db.Sketches
+                       .Join(db.Users,
+                             s => s.ArtistID,
+                             u => u.UserId,
+                             (s, u) => new { Sketch = s, User = u })
+                       .Where(joined => joined.User.Username.Contains(username))
+                       .Select(joined => joined.Sketch)
+                       .ToListAsync();
+    }
+
 }
