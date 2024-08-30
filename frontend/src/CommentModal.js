@@ -16,7 +16,9 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
             })
             .then(response => {
                 if (response.data.success) {
+                    console.log("response", response.data.results);
                     setComments(response.data.results); // Adjusted based on the `SuccessMessage` structure
+                    console.log("comments", comments);
                 } else {
                     console.error("Error fetching comments:", response.data.error);
                 }
@@ -67,7 +69,7 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
                 <div className="comments-list">
                     {comments.map((comments, index) => (
                         <div key={index} className="comment-item">
-                            {comments.text}
+                            {comments.content}
                         </div>
                     ))}
                 </div>
