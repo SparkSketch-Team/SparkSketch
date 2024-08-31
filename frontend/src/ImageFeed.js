@@ -16,6 +16,7 @@ const ImageFeed = ({ searchTerm }) => {
     const [selectedImageUrl, setSelectedImageUrl] = useState('');
     const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState(null);
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchSketches = async () => {
@@ -38,7 +39,6 @@ const ImageFeed = ({ searchTerm }) => {
 
         fetchSketches();
     }, [searchTerm]);
-
 
     useEffect(() => {
         const fetchSketches = async () => {
@@ -103,6 +103,12 @@ const ImageFeed = ({ searchTerm }) => {
     const closeCommentModal = () => {
         setIsCommentModalOpen(false);
         setSelectedPostId(null);
+    const handleProfileClick = (profile) => {
+        setIsProfileModalOpen(true);
+    };
+
+    const closeProfileModal = () => {
+        setIsProfileModalOpen(false);
     };
 
     return (
@@ -119,7 +125,7 @@ const ImageFeed = ({ searchTerm }) => {
                         </button>
                         <LikeButton postId={sketch.postId} liked={likedPosts[sketch.postId]} />
                         <FaRegComments className='comment' type='button' onClick={() => handleCommentClick(sketch.postId)}/>
-                        <button className='profile'><Avatar className='avatar'/></button>
+                        <button className='profile' onClick={() => handleProfileClick(sketch.user)}><Avatar className='avatar'/></button>
                     </div>
                 ))
             )}
@@ -133,6 +139,20 @@ const ImageFeed = ({ searchTerm }) => {
                 <div className="modal" onClick={closeModal}>
                     <span className="close">&times;</span>
                     <img className="modal-content" src={selectedImageUrl} alt="Expanded Sketch"/>
+                </div>
+            )}
+            {isProfileModalOpen && (
+                <div className="modal">
+                    <span className="close" onClick={closeProfileModal}>&times;</span>
+                    <div className="modal-content">
+                    <div className='container1'>
+                        <div className='modalpfp'><Avatar/> Username</div>
+                        <p className='box1'>--- <br></br>Followers</p><p className='box1'>--- <br></br>Sketches<br></br>
+                        </p><button className='add'>+ Add Friend</button>
+                        <br />
+                    </div>
+                        <div>Bio:</div>
+                    </div>
                 </div>
             )}
         </div>
