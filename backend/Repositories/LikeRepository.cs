@@ -26,6 +26,19 @@ public class LikeRepository : BaseRepository, ILikeRepository
         return true;
     }
 
+    public async Task<bool> RemoveLikeAsync(int postId, Guid userId)
+    {
+        var like = await db.Likes.FirstOrDefaultAsync(l => l.PostID == postId && l.UserID == userId);
+        if (like == null)
+        {
+            return false;
+        }
+
+        db.Likes.Remove(like);
+        await db.SaveChangesAsync();
+        return true;
+    }
+
     public async Task<List<Like>> GetLikesByPostIdAsync(int postId)
     {
         return await db.Likes

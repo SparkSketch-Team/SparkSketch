@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CommentModal.css';
 import axios from 'axios';
+import { RiDeleteBinLine } from "react-icons/ri";
 
 const CommentModal = ({ isOpen, onClose, postId }) => {
     const [comments, setComments] = useState([]);
@@ -54,19 +55,39 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
         }
     };
     
-    
+    const handleDeleteComment = async (commentId) => {
+        const token = localStorage.getItem('token');
+        
+        try {
+            const response = await axios.delete(`${process.env.REACT_APP_API_URL}api/Sketch/deleteComment/${commentId}`, {},
+                {headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (response.data.success) {
+                setComments(comments.filter(comments => comments.commentID !== commentId));
+            } else {
+                console.error("Error deleting comment:", response.data.error);
+            }
+        } catch (error) {
+            console.error("There was an error deleting the comment!", error);
+        }
+    };
 
     if (!isOpen) return null;
 
     return (
         <div className="comment-modal-overlay">
             <div className="comment-modal">
-                <button className="close-button" onClick={onClose}>X</button>
+                <button className="close-button" onClick={onClose}>&times;</button>
                 <h3>Comments</h3>
                 <div className="comments-list">
-                    {comments.map((comment, index) => (
+                    {comments.map((comments, index) => (
                         <div key={index} className="comment-item">
-                            {comment.text}
+                            <span className='comtext'>{comments.content}</span>
+                            <RiDeleteBinLine onClick={() => handleDeleteComment(comments.commentID)} className="delete-button">
+                            &times;</RiDeleteBinLine>
                         </div>
                     ))}
                 </div>

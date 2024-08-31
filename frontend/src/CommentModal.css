@@ -21,15 +21,15 @@
 .close-button {
     background: none;
     border: none;
-    font-size: 20px;
+    font-size: 30px;
     cursor: pointer;
     position: relative;
-    bottom: 10px;
+    bottom: 20px;
     left: 170px;
 }
 
 .comments-list {
-    max-height: 300px;
+    max-height: 900px;
     overflow-y: auto;
     margin-bottom: 10px;
 }
@@ -37,6 +37,9 @@
 .comment-item {
     padding: 10px;
     border-bottom: 1px solid #ddd;
+    color: black;
+    width: 200px;
+    margin: auto;
 }
 
 .comment-input {
@@ -58,4 +61,25 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.delete-button {
+    color: black;
+    vertical-align: text-top;
+    font-size: 20px;
+    border: none;
+    border-radius: 180px;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: calc(50% + 100px);
+}
+
+.delete-button:hover {
+    cursor: pointer;
+}
+
+.comtext {
+    overflow-wrap: break-word;
+    justify-content: center;
 }
