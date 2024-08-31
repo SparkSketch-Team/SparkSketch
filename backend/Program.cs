@@ -1,7 +1,10 @@
 using System.Security.Cryptography.Xml;
+using System.Text;
 using backend.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 class Program
 {
@@ -25,21 +28,46 @@ class Program
         // Use Dependency Injection for AccountEmailSender
         builder.Services.AddTransient<IAccountEmailSender, AccountEmailSender>();
 
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnAuthenticationFailed = context =>
+                {
+                    Console.WriteLine("OnAuthenticationFailed: " + context.Exception.Message);
+                    return Task.CompletedTask;
+                },
+                OnTokenValidated = context =>
+                {
+                    Console.WriteLine("OnTokenValidated: " + context.SecurityToken);
+                    return Task.CompletedTask;
+                }
+            };
+        });
+
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie(options =>
-            {
-                options.Cookie.Name = "coordinatwosAuthToken";
-                options.ExpireTimeSpan = TimeSpan.FromHours(24);
-                options.SlidingExpiration = true;
-                options.AccessDeniedPath = "/Forbidden";
-                //can add options to redirect: https://bitbucket.org/counterpart-biz/srs-portal-code/src/9e07a3df132fbc22568ff037df44a614b28f9e17/SRSWebPortal/Program.cs?at=master#Program.cs-75,78
-            });
+
 
 
         builder.Services.AddCors(options =>
@@ -55,6 +83,9 @@ class Program
         // Register Repositories
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IAiRepository, AiRepository>();
+        builder.Services.AddScoped<ISketchRepository, SketchRepository>();
+        builder.Services.AddScoped<ILikeRepository, LikeRepository>();
+        builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
         var app = builder.Build();
 
@@ -71,7 +102,7 @@ class Program
         app.UseCors("AllowReactApp");
         app.UseRouting();
 
-
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.UseEndpoints(endpoints =>

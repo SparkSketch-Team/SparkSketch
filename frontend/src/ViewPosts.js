@@ -1,25 +1,24 @@
-import React, {useEffect } from 'react';
+import React, { useState } from 'react';
 import NavBar from './NavBar';
-import axios from 'axios';
+import SearchBar from './SearchBar';
 import ImageFeed from './ImageFeed';
-import './App.css'
+import './App.css';
 
 function ViewPosts() {
-    useEffect(() => {
-        axios.get(process.env.REACT_APP_API_URL + 'api/ImageUpload/list')
-            .then(response => {
-                  //  setImages(response.data);
-             })
-            .catch(error => {
-                console.error("There was an error fetching the images!", error);
-            });
-         }, []);
-    return(
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    return (
         <div className='App'>
             <NavBar />
-            <h1 className='App-title'>Explore</h1>
-            <ImageFeed />
+            <h1 className='App-title'>EXPLORE</h1>
+            <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
+            <ImageFeed searchTerm={searchTerm} />
         </div>
     );
- }
+}
+
 export default ViewPosts;

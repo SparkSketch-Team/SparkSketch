@@ -3,82 +3,53 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.CodeDom.Compiler;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ApiController
 {
     private readonly IUserRepository _userRepository;
+    private readonly IConfiguration _config;
 
-    public UserController(IUserRepository userRepository, ILogger<UserController> logger) : base(logger)
+    public UserController(IUserRepository userRepository, IConfiguration config, ILogger<UserController> logger) : base(logger)
     {
         _userRepository = userRepository;
+        _config = config;
     }
 
     [HttpPost]
     [Route("Login")]
     public async Task<JsonResult> Login([FromBody] LoginInfo loginInfo)
     {
-        //Console.WriteLine("Login");
-        var context = HttpContext;
-
-        Random random = new Random();
-        await Task.Delay(random.Next(1000, 5000));
-
-        if (await _userRepository.ValidateUser(loginInfo))
+        var token = await _userRepository.Login(loginInfo);
+        if (!string.IsNullOrEmpty(token))
         {
-            var claims = await _userRepository.GetUserClaims(loginInfo);
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            await context.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(identity)
-            );
-
-            var user = context.User;
-            var claimsT = context.User.Claims;
-            var uid = context.User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId);
-
-            return SuccessMessage(true);
+            return SuccessMessage(token);
         }
         else
         {
-            //Console.WriteLine("Not Validated");
-            return FailMessage();
+            return FailMessage("Failed to Login");
         }
-
     }
-
-    // [HttpGet]
-    // [Route("GetSelf")]
-    // public async Task<JsonResult> GetSelf(){
-    //     using (aRepo){
-    //         try {
-    //             var response = await aRepo.GetSelf(HttpContext);
-    //             if(response == null) {
-    //                 return FailMessage();
-    //             }
-    //             return SuccessMessage(response);
-    //         } catch (Exception ex) {
-    //             return FailMessage(ex.Message);
-    //         }
-    //     }
-    // }
 
     [HttpPost]
     [Route("AddUser")]
-    public async Task<JsonResult> AddUser([FromBody] UserInfo userInfo)
+    public async Task<JsonResult> AddUser([FromBody] CreateUserInfo userInfo)
     {
         try
         {
-            var response = await _userRepository.AddUser(userInfo);
-            if (response != null)
+            var token = await _userRepository.RegisterAndLoginUser(userInfo);
+            if (!string.IsNullOrEmpty(token))
             {
-                return SuccessMessage(response);
+                return SuccessMessage(token);
             }
             else
             {
-                return FailMessage("Adding User Failed");
+                return FailMessage("Failed to Login");
             }
         }
         catch (Exception ex)
@@ -88,27 +59,67 @@ public class UserController : ApiController
     }
 
     [HttpPost]
-    //[Authorize(Policy = "AdminOnly")]
     [Route("EditUser")]
-    public async Task<JsonResult> EditUser([FromBody] UserSummary info)
+    [Authorize]
+    public async Task<JsonResult> EditUser([FromBody] EditUserInfo info)
     {
-            try
+        try
+        {
+            // Get the current user's ID from the JWT claims
+            var currentUserId = User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId)?.Value;
+
+            if (currentUserId is null || currentUserId.IsNullOrEmpty())
             {
-                var response = await _userRepository.EditUser(info);
-                if (response)
-                {
-                    return SuccessMessage(true);
-                }
-                else
-                {
-                    return FailMessage("Edit User Failed");
-                }
+                return FailMessage("Unauthorized attempt to edit another user's profile.");
             }
-            catch (Exception ex)
+
+            var response = await _userRepository.EditUser(info, currentUserId);
+            if (response)
             {
-                return FailMessage(ex.Message);
+                return SuccessMessage(true);
             }
+            else
+            {
+                return FailMessage("Edit User Failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            return FailMessage(ex.Message);
+        }
     }
+
+    [HttpGet]
+    [Authorize]
+    [Route("GetSelf")]
+    public async Task<JsonResult> GetSelf()
+    {
+        try
+        {
+            // Get the current user's ID from the JWT claims
+            var currentUserId = User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId)?.Value;
+
+            if (currentUserId is null || currentUserId.IsNullOrEmpty())
+            {
+                return FailMessage("There is no user to get.");
+            }
+
+            var response = await _userRepository.GetSelf(currentUserId);
+            if (response != null)
+            {
+                return SuccessMessage(response);
+            }
+            else
+            {
+                return FailMessage("Edit User Failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            return FailMessage(ex.Message);
+        }
+    }
+
 
     [HttpPost]
     [AllowAnonymous]
@@ -167,45 +178,6 @@ public class UserController : ApiController
             return FailMessage(ex.Message);
         }
     }
-
-    [HttpPost]
-    //[Authorize(Policy = "AdminOnly")]
-    [Route("GetUsersDT")]
-    public async Task<JsonResult> GetUsersDT([FromBody] UserDTRequest dtRequest)
-    {
-        return SuccessMessage(await _userRepository.GetUsersDT(dtRequest));
-    }
-
-    [HttpGet]
-    //[Authorize(Policy = "AdminUser")]
-    [Route("GetUser")]
-    public async Task<JsonResult> GetUser(Guid userID)
-    {
-
-            return SuccessMessage(await _userRepository.GetUser(userID));
-    }
-
-
-    [HttpGet]
-    [Route("Logout")]
-    public async Task<JsonResult> Logout()
-    {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        return SuccessMessage(true);
-    }
-
-    // [HttpPost]
-    // //[Authorize(Policy = "AdminUser")]
-    // [Route("HelpUserAi")]
-    // public async Task<JsonResult> GetUser([FromBody] ArraySegment<String> actions){
-    //     using (uRepo) {
-    //         return SuccessMessage(await uRepo.GetUserAi(actions));
-    //     }   
-    // }
-
-
-
-
 
 
 }

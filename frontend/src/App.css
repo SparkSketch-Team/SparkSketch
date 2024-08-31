@@ -10,6 +10,10 @@ html {background-color:black}
   align-items: center;
 }
 
+.pic {
+  width: 60px;
+}
+
 .prompt {
   font-size: 19px;
 }
@@ -28,7 +32,6 @@ html {background-color:black}
   padding: 60px 40px;
   display: inline-flex;
 }
-
 
 .App-prompt {
 padding-left: 125px;
@@ -56,11 +59,18 @@ background-color: rgb(88, 88, 88);
   margin-top: 50px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.Logout {
+  margin-top: 5px;
 }
+
+.search {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  border: darkgoldenrod solid 2px;
+  width: 100%;
+  max-width: 370px;
+}
+
+
+
