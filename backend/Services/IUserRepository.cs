@@ -11,6 +11,7 @@ public interface IUserRepository
     Task<Guid> AddUser(CreateUserInfo userInfo);
     Task<bool> EditUser(EditUserInfo userInfo, string userId);
     Task<EditUserInfo> GetSelf(string userId);
+    Task<User> GetUserByIdAsync(Guid userId);
     Task<bool> ValidateUser(LoginInfo loginInfo);
     Task<bool> Validate(ValidateUserInformation info);
     Task<bool> SendValidationEmail(User user, bool saveChanges);

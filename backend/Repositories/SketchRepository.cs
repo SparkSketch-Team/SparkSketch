@@ -8,6 +8,23 @@ public class SketchRepository : BaseRepository, ISketchRepository
 
     }
 
+    public async Task<Sketch> GetSketchByIdAsync(int postId)
+    {
+        var sketch = await db.Sketches
+            .Include(s => s.user)
+            .Include(s => s.Comments) 
+            .Include(s => s.Likes) 
+            .FirstOrDefaultAsync(s => s.PostId == postId);
+
+        if (sketch == null)
+        {
+            throw new Exception("Sketch not found");
+        }
+
+        return sketch;
+    }
+
+
     public async Task<Sketch> CreateSketchAsync(Sketch sketch)
     {
         db.Sketches.Add(sketch);

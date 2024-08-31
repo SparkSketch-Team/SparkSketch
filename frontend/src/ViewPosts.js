@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import NavBar from './NavBar';
+import SearchBar from './SearchBar';
 import ImageFeed from './ImageFeed';
-import './App.css'
+import './App.css';
 
 function ViewPosts() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -10,18 +11,14 @@ function ViewPosts() {
         setSearchTerm(event.target.value);
     };
 
-    return(
+    return (
         <div className='App'>
             <NavBar />
             <h1 className='App-title'>EXPLORE</h1>
-            <input 
-                placeholder='Search Artists' 
-                className='search' 
-                value={searchTerm}
-                onChange={handleSearchChange}
-            />
+            <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
             <ImageFeed searchTerm={searchTerm} />
         </div>
     );
- }
+}
+
 export default ViewPosts;

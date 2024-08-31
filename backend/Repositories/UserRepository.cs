@@ -268,6 +268,17 @@ public class UserRepository : BaseRepository, IUserRepository
         return editUserInfo;
     }
 
+    public async Task<User> GetUserByIdAsync(Guid userId)
+    {
+        var user = await db.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+
+        return user;
+    }
+
 
 
     public async Task<bool> ValidateUser(LoginInfo loginInfo)

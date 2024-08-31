@@ -25,7 +25,7 @@ function Edit() {
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}` // Include the JWT token in the request headers
+                        Authorization: `Bearer ${token}`
                     }
                 }
             );
