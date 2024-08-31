@@ -103,6 +103,8 @@ const ImageFeed = ({ searchTerm }) => {
     const closeCommentModal = () => {
         setIsCommentModalOpen(false);
         setSelectedPostId(null);
+    };
+    
     const handleProfileClick = (profile) => {
         setIsProfileModalOpen(true);
     };
