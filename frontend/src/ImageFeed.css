@@ -86,8 +86,9 @@
 .modal-content {
     margin: auto;
     display: block;
-    max-width: 800px;
-    max-height: 900px;
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
 }
 
 .close {
