@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Post from './Post';
+//import Post from './Post';
 import './ImageFeed.css';
 import Avatar from './Avatar.js';
 import { FaRegComments } from "react-icons/fa";
