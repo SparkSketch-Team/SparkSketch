@@ -1,6 +1,5 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.Extensions.Hosting;
+using System.ComponentModel.DataAnnotations;
 
 public class Comment
 {
@@ -16,7 +15,7 @@ public class Comment
     [Required]
     public Guid CommenterID { get; set; }
 
-    [ForeignKey("UserID")]
+    [ForeignKey("CommenterID")] // Update to match the property name
     public User User { get; set; }
 
     [Required]

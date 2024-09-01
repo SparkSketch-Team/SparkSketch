@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Azure.Core;
 using backend.Services;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 public class UserRepository : BaseRepository, IUserRepository
 {
@@ -33,129 +35,76 @@ public class UserRepository : BaseRepository, IUserRepository
                 claims.Add(new Claim(SparkSketchClaims.PermissionLevel, user.UserPermission.PermissionLevel.ToString()));
             }
 
-            //var userPermission = await db.Permissions.Where(p => p.PermissionId == user.UserPermission.PermissionId).ToListAsync();
-
-            //claims.Add(new Claim(CoordinatwosClaims.PermissionLevel, userPermission[0].PermissionLevel.ToString()));
-
         }
         return claims.ToArray();
     }
 
-    public async Task<UserDTSummary> GetUsersDT(UserDTRequest userDTRequest)
+    public async Task<string> Login(LoginInfo loginInfo)
     {
-        DTRequest dtRequest = userDTRequest.dTRequest;
-        // var usersQuery = db.Users.Include(x => x).AsQueryable();
-        var usersQuery = db.Users.Include(u => u.UserPermission).AsQueryable();
-        var recordsTotal = await usersQuery.CountAsync();
+        Random random = new Random();
+        await Task.Delay(random.Next(1000, 5000));
 
-        if (dtRequest.search != null && dtRequest.search.Length > 0)
+        if(await ValidateUser(loginInfo))
         {
-            var searchTerms = dtRequest.search.ToLower().Split(' ');
-            foreach (var searchTerm in searchTerms)
+            var claims = await this.GetUserClaims(loginInfo);
+
+            var token = GenerateJwtToken(claims);
+
+            return token;
+        } else
+        {
+            return "";
+        }
+    }
+
+    private string GenerateJwtToken(IEnumerable<Claim> claims)
+    {
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.Now.AddDays(14),
+            signingCredentials: creds);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public async Task<string> RegisterAndLoginUser(CreateUserInfo userInfo)
+    {
+            try
             {
-                usersQuery = usersQuery.Where(x => x.FirstName.ToLower().Contains(searchTerm) ||
-                x.LastName.ToLower().Contains(searchTerm));
+                // Register the user
+                var newUserId = await AddUser(userInfo);
+
+                // Prepare login information
+                var loginInfo = new LoginInfo
+                {
+                    username = userInfo.Username,
+                    password = userInfo.Password
+                };
+
+                // Attempt to log in the user
+                var loginToken = await Login(loginInfo);
+
+                if (string.IsNullOrEmpty(loginToken))
+                {
+                    throw new Exception("Registration succeeded but login failed.");
+                }
+
+                // Commit transaction if both registration and login succeed
+                return loginToken;
             }
-        }
-
-        // if (dTRequest.isActive != null) {
-
-        // }
-
-        // if (dTRequest.role != null) {
-
-        // }
-
-        switch (dtRequest.orderColumn)
-        {
-            case 0:
-                if (dtRequest.orderIsAscending)
-                {
-                    usersQuery = usersQuery.OrderBy(x => x.FirstName).ThenBy(x => x.LastName);
-                }
-                else
-                {
-                    usersQuery = usersQuery.OrderByDescending(x => x.FirstName).ThenByDescending(x => x.LastName);
-                }
-                break;
-            case 1:
-                if (dtRequest.orderIsAscending)
-                {
-                    usersQuery = usersQuery.OrderBy(x => x.EmailAddress);
-                }
-                else
-                {
-                    usersQuery = usersQuery.OrderByDescending(x => x.EmailAddress);
-                }
-                break;
-            case 2:
-                if (dtRequest.orderIsAscending)
-                {
-                    usersQuery = usersQuery.OrderBy(x => x.UserPermission.PermissionLevel);
-                }
-                else
-                {
-                    usersQuery = usersQuery.OrderByDescending(x => x.UserPermission.PermissionLevel);
-                }
-                break;
-            case 3:
-                if (dtRequest.orderIsAscending)
-                {
-                    usersQuery = usersQuery.OrderBy(x => x.IsActive);
-                }
-                else
-                {
-                    usersQuery = usersQuery.OrderByDescending(x => x.IsActive);
-                }
-                break;
-        }
-        var recordsFiltered = await usersQuery.CountAsync();
-        //Console.WriteLine("Getting Users Summaries");
-        var users = await usersQuery.Skip(dtRequest.start).Take(dtRequest.length).Select(x => UserSummary.Assemble(x)).ToListAsync();
-
-        return new UserDTSummary()
-        {
-            data = users,
-            recordsFiltered = recordsFiltered,
-            recordsTotal = recordsTotal,
-            draw = dtRequest.draw
-        };
-
+            catch (Exception ex)
+            {
+                // Log exception here using a logging framework
+                throw new Exception($"Failed to register and login user: {ex.Message}");
+            }
     }
 
-    public async Task<UserSummary?> GetUser(Guid userId)
-    {
-        var user = await db.Users.Include(x => x.UserPermission).Where(x => x.UserId == userId).FirstOrDefaultAsync();
-        if (user != null)
-        {
-            return UserSummary.Assemble(user);
-        }
-        return null;
-    }
-
-    public async Task<UserSummary?> GetUserAi(String firstName)
-    {
-        var myUser = await db.Users.Include(x => x.UserPermission).Where(x => x.FirstName == firstName).FirstOrDefaultAsync();
-        if (myUser != null)
-        {
-            Console.WriteLine(UserSummary.Assemble(myUser).userSummary.emailAddress);
-            return UserSummary.Assemble(myUser);
-        }
-        return null;
-    }
-
-    // public async Task<UserSummary?> GetActionsAi(ArraySegment<String> actions)
-    // {
-    //     var myUser = await db.Users.Include(x => x.UserPermission).Where(x => x.FirstName == firstName).FirstOrDefaultAsync();
-    //     if (myUser != null)
-    //     {
-    //         Console.WriteLine(UserSummary.Assemble(myUser).userSummary.emailAddress);
-    //         return UserSummary.Assemble(myUser);
-    //     }
-    //     return null;
-    // }
-
-    public async Task<Guid> AddUser(UserInfo userInfo)
+    public async Task<Guid> AddUser(CreateUserInfo userInfo)
     {
         using (var dbT = db.Database.BeginTransaction())
         {
@@ -231,45 +180,111 @@ public class UserRepository : BaseRepository, IUserRepository
 
         }
     }
+  
 
-    // public async Task<UserSummary> GetSelf(HttpContext httpContext){
-    //     return await UserSummary.AssembleSelf(httpContext);
-    // } 
-
-    public async Task<bool> EditUser(UserSummary userInfo)
+    public async Task<bool> EditUser(EditUserInfo userInfo, string userId)
     {
-        var user = await db.Users.Include(u => u.UserPermission).Where(x => x.UserId == userInfo.userID).FirstOrDefaultAsync();
+        // Check if the User Exists
+        var user = await db.Users.Include(u => u.UserPermission)
+            .FirstOrDefaultAsync(x => x.UserId == Guid.Parse(userId));
         if (user == null)
         {
             throw new Exception("Unable to find user");
         }
-        var numTimesEmailUsed = await db.Users.Include(u => u.UserPermission).Where(x => x.EmailAddress == userInfo.userSummary.emailAddress).CountAsync();
-        if (numTimesEmailUsed > 1 || (numTimesEmailUsed > 0 && userInfo.userSummary.emailAddress != user.EmailAddress))
+
+        // If new email is different, check that it isn't in use
+        if (userInfo.EmailAddress != user.EmailAddress)
         {
-            throw new Exception("Email address already in use");
+            var emailExists = await db.Users.AnyAsync(x => x.EmailAddress == userInfo.EmailAddress);
+            if (emailExists)
+            {
+                throw new Exception("Email address already in use");
+            }
         }
-        var permission = await db.Permissions.FirstOrDefaultAsync(p => p.PermissionId == (int)userInfo.role);
 
-        if (permission == null)
+        // If new Username is different, check that it isn't in use
+        if (userInfo.EmailAddress != user.Username)
         {
-            throw new Exception("Invalid Permission Level");
+            var usernameExists = await db.Users.AnyAsync(x => x.Username == userInfo.EmailAddress);
+            if (usernameExists)
+            {
+                throw new Exception("Username already in use");
+            }
         }
 
-        // Step 3: If permission does not exist, create a new one
+        // Update User Properties
+        if (!string.IsNullOrEmpty(userInfo.FirstName))
+        {
+            user.FirstName = userInfo.FirstName;
+        }
 
-        user.FirstName = userInfo.userSummary.firstName;
-        user.LastName = userInfo.userSummary.lastName;
-        user.EmailAddress = userInfo.userSummary.emailAddress;
-        user.IsActive = userInfo.userSummary.isActive;
-        user.UserPermission = permission;
+        if (!string.IsNullOrEmpty(userInfo.LastName))
+        {
+            user.LastName = userInfo.LastName;
+        }
 
+        if (!string.IsNullOrEmpty(userInfo.EmailAddress))
+        {
+            user.EmailAddress = userInfo.EmailAddress;
+        }
+
+
+        // Profile picture
+        if (!userInfo.ProfilePictureUrl.IsNullOrEmpty())
+        {
+            user.ProfilePictureUrl = userInfo.ProfilePictureUrl;
+        }
+
+        // Bio
+        if (!userInfo.Bio.IsNullOrEmpty())
+        {
+            user.Bio = userInfo.Bio;
+        }
+
+
+        db.Users.Update(user);
         await db.SaveChangesAsync();
         return true;
     }
 
+    public async Task<EditUserInfo> GetSelf(string userId)
+    {
+        var user = await db.Users.FirstOrDefaultAsync(u => u.UserId == Guid.Parse(userId));
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+
+        var editUserInfo = new EditUserInfo
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Username = user.Username,
+            EmailAddress = user.EmailAddress,
+            Bio = user.Bio,
+            ProfilePictureUrl = user.ProfilePictureUrl
+        };
+
+        return editUserInfo;
+    }
+
+    public async Task<User> GetUserByIdAsync(Guid userId)
+    {
+        var user = await db.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+
+        return user;
+    }
+
+
+
     public async Task<bool> ValidateUser(LoginInfo loginInfo)
     {
-        var user = await db.Users.Include(u => u.UserPermission).FirstOrDefaultAsync(u => u.Username == loginInfo.username && u.IsActive);
+        var user = await db.Users.Where(u => u.Username == loginInfo.username && u.IsActive).FirstOrDefaultAsync();
+
         if (user != null)
         {
             if (ValidatePassword(user.UserId, user.PasswordHash, loginInfo.password))

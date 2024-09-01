@@ -38,6 +38,16 @@ form .input-box {
     border-radius: 40px; 
 }
 
+form button {
+    width: 100%;
+    height: 45px;
+    background: darkgoldenrod;
+    border-radius: 40px;
+    border: none;
+    outline: none;
+    color: white;
+}
+
 .input-box input {
     height: 100%;
     width: 100%;
@@ -51,6 +61,13 @@ form .input-box {
 
 .input-box input::placeholder {
     color: white;
+}
+
+.check {
+    width: 15px;
+    position: absolute;
+    bottom: 31%;
+    left: 135px;
 }
 
 .input-box .Icon {
@@ -77,5 +94,11 @@ form .input-box {
 .Remember {
     color: darkgoldenrod;
     margin: 20px 0;
+}
+
+.link {
+    color: rgb(66, 151, 255);
+    background-color: transparent;
+    border: none;
 }
 

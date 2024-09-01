@@ -14,12 +14,19 @@ const FileUpload = () => {
 
   const onFileUpload = () => {
     const formData = new FormData();
+    const token = process.env.REACT_APP_MOCK_JWT_TOKEN;
     formData.append('file', selectedFile);
 
     console.log('Selected file:', selectedFile);
     console.log('FormData:', formData);
 
-    axios.post(process.env.REACT_APP_API_URL + 'api/ImageUpload/upload', formData)
+    axios.post(process.env.REACT_APP_API_URL + 'api/ImageUpload/upload', formData,
+    {
+      headers: {
+          Authorization: `Bearer ${token}` // Include the JWT token in the request headers
+      }
+  }
+)
     .then(response => {
       console.log('File successfully uploaded:', response.data.results);
       document.location.href='/link'; 

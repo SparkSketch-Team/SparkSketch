@@ -45,14 +45,11 @@ namespace backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("CommentID");
 
-                    b.HasIndex("PostID");
+                    b.HasIndex("CommenterID");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("PostID");
 
                     b.ToTable("Comments");
                 });
@@ -268,7 +265,7 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Sketchs");
+                    b.ToTable("Sketches");
                 });
 
             modelBuilder.Entity("User", b =>
@@ -308,7 +305,7 @@ namespace backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserPermissionPermissionId")
+                    b.Property<int?>("UserPermissionPermissionId")
                         .HasColumnType("int");
 
                     b.Property<string>("Username")
@@ -345,15 +342,15 @@ namespace backend.Migrations
 
             modelBuilder.Entity("Comment", b =>
                 {
-                    b.HasOne("Sketch", "Sketch")
+                    b.HasOne("User", "User")
                         .WithMany("Comments")
-                        .HasForeignKey("PostID")
+                        .HasForeignKey("CommenterID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("User", "User")
+                    b.HasOne("Sketch", "Sketch")
                         .WithMany("Comments")
-                        .HasForeignKey("UserID")
+                        .HasForeignKey("PostID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -435,9 +432,7 @@ namespace backend.Migrations
                 {
                     b.HasOne("Permission", "UserPermission")
                         .WithMany()
-                        .HasForeignKey("UserPermissionPermissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserPermissionPermissionId");
 
                     b.Navigation("UserPermission");
                 });
