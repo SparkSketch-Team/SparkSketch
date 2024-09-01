@@ -17,6 +17,7 @@ const ImageFeed = ({ searchTerm }) => {
     const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
 
     useEffect(() => {
         const fetchSketches = async () => {
@@ -105,12 +106,35 @@ const ImageFeed = ({ searchTerm }) => {
         setSelectedPostId(null);
     };
     
-    const handleProfileClick = (profile) => {
+    const handleProfileClick = (user) => {
+        setSelectedUser(user);
+        console.log(selectedUser);
         setIsProfileModalOpen(true);
     };
 
     const closeProfileModal = () => {
         setIsProfileModalOpen(false);
+        setSelectedUser(null);
+    };
+
+    const addFriend = async () => {
+        try {
+            const response = await fetch(`/api/Friend/Add`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userId: selectedUser.id }),
+            });
+            if (response.ok) {
+                alert(`${selectedUser.username} has been added as a friend!`);
+            } else {
+                alert('Failed to add friend. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error adding friend:', error);
+            alert('An error occurred. Please try again.');
+        }
     };
 
     return (
@@ -148,9 +172,9 @@ const ImageFeed = ({ searchTerm }) => {
                     <span className="close" onClick={closeProfileModal}>&times;</span>
                     <div className="modal-content">
                     <div className='container1'>
-                        <div className='modalpfp'><Avatar/> Username</div>
+                        <div className='modalpfp'><Avatar/> {selectedUser.username}</div>
                         <p className='box1'>--- <br></br>Followers</p><p className='box1'>--- <br></br>Sketches<br></br>
-                        </p><button className='add'>+ Add Friend</button>
+                        </p><button className='add' onClick={addFriend}>+ Add Friend</button>
                         <br />
                     </div>
                         <div>Bio:</div>
