@@ -120,6 +120,30 @@ public class UserController : ApiController
         }
     }
 
+    [HttpGet]
+    [Authorize]
+    [Route("GetUserById")]
+    public async Task<JsonResult> GetUserById(Guid userId)
+    {
+        try
+        {
+            // Attempt to retrieve the user by their ID
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return FailMessage("User not found");
+            }
+
+            return SuccessMessage(user);
+        }
+        catch (Exception ex)
+        {
+            return FailMessage(ex.Message);
+        }
+    }
+
+
+
 
     [HttpPost]
     [AllowAnonymous]
