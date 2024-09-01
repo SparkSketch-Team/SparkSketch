@@ -26,6 +26,7 @@ html {background-color:black}
 }
 
 .App-body {
+  width: 80%;
   font-family: 'Roboto';
   text-align: center;
   align-items: center;
