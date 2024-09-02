@@ -106,10 +106,20 @@ const ImageFeed = ({ searchTerm }) => {
         setSelectedPostId(null);
     };
     
-    const handleProfileClick = (user) => {
-        setSelectedUser(user);
-        console.log(selectedUser);
-        setIsProfileModalOpen(true);
+    const handleProfileClick = async (userId) => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}api/User/getUserbyId`, {
+                params: { userId }  // Pass the userId as a parameter
+            });
+            if (response.data.success) {
+                setSelectedUser(response.data.user);  // Set the selected user's data
+                setIsProfileModalOpen(true);
+            } else {
+                console.error("Error fetching user data:", response.data.error);
+            }
+        } catch (error) {
+            console.error("There was an error fetching the user data!", error);
+        }
     };
 
     const closeProfileModal = () => {
@@ -151,7 +161,7 @@ const ImageFeed = ({ searchTerm }) => {
                         </button>
                         <LikeButton postId={sketch.postId} liked={likedPosts[sketch.postId]} />
                         <FaRegComments className='comment' type='button' onClick={() => handleCommentClick(sketch.postId)}/>
-                        <button className='profile' onClick={() => handleProfileClick(sketch.user)}><Avatar className='avatar'/></button>
+                        <button className='profile' onClick={() => handleProfileClick(sketch.user.id)}><Avatar className='avatar'/></button>
                     </div>
                 ))
             )}
@@ -167,13 +177,13 @@ const ImageFeed = ({ searchTerm }) => {
                     <img className="modal-content" src={selectedImageUrl} alt="Expanded Sketch"/>
                 </div>
             )}
-            {isProfileModalOpen && (
+            {isProfileModalOpen && selectedUser && (
                 <div className="modal">
                     <span className="close" onClick={closeProfileModal}>&times;</span>
                     <div className="modal-content">
                     <div className='container1'>
                         <div className='modalpfp'><Avatar/> {selectedUser.username}</div>
-                        <p className='box1'>--- <br></br>Followers</p><p className='box1'>--- <br></br>Sketches<br></br>
+                        <p className='box1'>--- <br/>Followers</p><p className='box1'>--- <br/>Sketches<br/>
                         </p><button className='add' onClick={addFriend}>+ Add Friend</button>
                         <br />
                     </div>
