@@ -108,8 +108,13 @@ const ImageFeed = ({ searchTerm }) => {
     
     const handleProfileClick = async (userId) => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}api/User/getUserbyId`, {
-                params: { userId }  // Pass the userId as a parameter
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/GetUserById`, {
+                params: {
+                    userId: userId
+                },
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
             });
             if (response.data.success) {
                 setSelectedUser(response.data.user);  // Set the selected user's data
