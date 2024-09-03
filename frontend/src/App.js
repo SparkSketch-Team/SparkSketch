@@ -15,19 +15,21 @@ function App() {
       localStorage.setItem('token', apiUrl);
     }
   }, []);
+const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const current = new Date();
+let months = (current.getMonth());
+let month = monthNames[months];
+const date = `${current.getDate()} ${current.getFullYear()}`;
 
   return (
     <body className="App">
       <nav>
       <NavBar  />
       </nav>
-      <header className='App-title'>
-        SPARKSKETCH [beta]
+      <header className='App-title1'>
+      {month} {date}
       </header>
         <div className="App-body">
-          <p className='App-prompt'>
-            Today's Prompt:
-          </p>
           <p>
           <PromptFetcher />
           </p>

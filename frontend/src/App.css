@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Carrois+Gothic&display=swap');
 
 html {background-color:black}
 
@@ -15,10 +15,18 @@ html {background-color:black}
 }
 
 .prompt {
-  font-size: 19px;
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-size: 25px;
+  font-family: "Carrois Gothic", system-ui;
+  background-color: rgb(74, 74, 75);
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 .App-body {
+  width: 80%;
   font-family: 'Roboto';
   text-align: center;
   align-items: center;
@@ -26,9 +34,7 @@ html {background-color:black}
   font-size: calc(8px + 1vmin);
   color: white;
   row-gap: 20px;
-  border: 2px solid white;
-  margin: auto;
-  margin-top: 40px;
+  margin-top: -30px;
   padding: 60px 40px;
   display: inline-flex;
 }
@@ -43,19 +49,28 @@ background-color: rgb(88, 88, 88);
 }
 
 .App-upload {
-  padding: 25px;
-  margin-top: 100px;
-  margin-left: 450px;
-  margin-right: 450px;
-  border: 0px;
-  border-radius: 25px
+  border: none;
+  border-radius: 10px;
+  padding: 8px;
+  background-color: darkgoldenrod;
+  color: white;
 }
 
-.App-title {
+.App-title1 {
+  text-transform: uppercase;
   color: darkgoldenrod;
   text-align: center;
   font-size: 60px;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Carrois Gothic", system-ui;
+  margin-top: 200px;
+}
+
+.App-title {
+  text-transform: uppercase;
+  color: darkgoldenrod;
+  text-align: center;
+  font-size: 60px;
+  font-family: "Carrois Gothic", system-ui;
   margin-top: 50px;
 }
 
@@ -70,6 +85,11 @@ background-color: rgb(88, 88, 88);
   border: darkgoldenrod solid 2px;
   width: 100%;
   max-width: 370px;
+}
+
+.file {
+margin-left: 80px ;
+margin-bottom: 20px;
 }
 
 
