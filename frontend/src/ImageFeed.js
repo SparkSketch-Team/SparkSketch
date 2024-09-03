@@ -27,8 +27,6 @@ const ImageFeed = ({ searchTerm }) => {
                 });
                 if (response.data.success) {
                     setSketches(response.data.results);
-                    console.log(response.data.results);
-                    console.log(sketches);
                 } else {
                     console.error("Error fetching sketches:", response.data.error);
                     setSketches([]);
@@ -51,7 +49,6 @@ const ImageFeed = ({ searchTerm }) => {
                 });
                 if (response.data.success) {
                     setSketches(response.data.results);
-                    console.log(response.data.results);
                 } else {
                     console.error("Error fetching sketches:", response.data.error);
                     setSketches([]);
