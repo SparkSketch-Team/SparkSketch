@@ -92,7 +92,6 @@ const ImageFeed = ({ searchTerm }) => {
     };
 
     const handleProfileClick = async (userId) => {
-        console.log("Profile clicked for user ID:", selectedUser);
         try {
             const response = await axios.get(
                 `${process.env.REACT_APP_API_URL}api/User/GetUserById`, 
@@ -118,12 +117,12 @@ const ImageFeed = ({ searchTerm }) => {
 
     const addFriend = async () => {
         try {
-            const response = await fetch(`/api/Friend/Add`, {
+            const response = await fetch(`api/Friend/Add`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userId: selectedUser.id }),
+                body: JSON.stringify({ userId: selectedUser.userId }),
             });
             if (response.ok) {
                 alert(`${selectedUser.username} has been added as a friend!`);
