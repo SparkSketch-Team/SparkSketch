@@ -42,28 +42,6 @@ const ImageFeed = ({ searchTerm }) => {
     }, [searchTerm]);
 
     useEffect(() => {
-        const fetchSketches = async () => {
-            try {
-                const response = await axios.get(process.env.REACT_APP_API_URL + 'api/Sketch/sketches', {
-                    params: { username: searchTerm }
-                });
-                if (response.data.success) {
-                    setSketches(response.data.results);
-                } else {
-                    console.error("Error fetching sketches:", response.data.error);
-                    setSketches([]);
-                }
-            } catch (error) {
-                console.error("There was an error fetching the sketches!", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchSketches();
-    }, [searchTerm]);
-
-    useEffect(() => {
         sketches.forEach((sketch) => {
             const postId = sketch.postId;
             const token = localStorage.getItem('token');
@@ -106,6 +84,10 @@ const ImageFeed = ({ searchTerm }) => {
         setSelectedPostId(null);
     };
     
+    const closeProfileModal = () => {
+        setIsProfileModalOpen(false);
+    };
+
     const handleProfileClick = async (userId) => {
         console.log("Profile clicked for user ID:", userId);
         try {
@@ -121,8 +103,8 @@ const ImageFeed = ({ searchTerm }) => {
                 }
             );
             if (response.data.success) {
-                setSelectedUser(response.data.user);
-                 console.log(selectedUser);  // Set the selected user's data
+                setSelectedUser(response.data.results);
+                console.log(selectedUser); // Set the selected user's data
                 setIsProfileModalOpen(true);
             } else {
                 console.error("Error fetching user data:", response.data.error);
@@ -130,11 +112,6 @@ const ImageFeed = ({ searchTerm }) => {
         } catch (error) {
             console.error("There was an error fetching the user data!", error);
         }
-    };
-
-    const closeProfileModal = () => {
-        setIsProfileModalOpen(false);
-        setSelectedUser(null);
     };
 
     const addFriend = async () => {
@@ -187,12 +164,12 @@ const ImageFeed = ({ searchTerm }) => {
                     <img className="modal-content" src={selectedImageUrl} alt="Expanded Sketch"/>
                 </div>
             )}
-            {isProfileModalOpen && (
+            {isProfileModalOpen && selectedUser && (
                 <div className="modal">
                     <span className="close" onClick={closeProfileModal}>&times;</span>
                     <div className="modal-content">
                     <div className='container1'>
-                        <div className='modalpfp'><Avatar/> username</div>
+                        <div className='modalpfp'><Avatar/> {selectedUser.username}</div>
                         <p className='box1'>--- <br/>Followers</p><p className='box1'>--- <br/>Sketches<br/>
                         </p><button className='add' onClick={addFriend}>+ Add Friend</button>
                         <br />
