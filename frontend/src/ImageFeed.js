@@ -86,10 +86,13 @@ const ImageFeed = ({ searchTerm }) => {
     
     const closeProfileModal = () => {
         setIsProfileModalOpen(false);
+        if (selectedUser != (null)) {
+            setSelectedUser(null);
+        }
     };
 
     const handleProfileClick = async (userId) => {
-        console.log("Profile clicked for user ID:", userId);
+        console.log("Profile clicked for user ID:", selectedUser);
         try {
             const response = await axios.get(
                 `${process.env.REACT_APP_API_URL}api/User/GetUserById`, 
@@ -103,8 +106,7 @@ const ImageFeed = ({ searchTerm }) => {
                 }
             );
             if (response.data.success) {
-                setSelectedUser(response.data.results);
-                console.log(selectedUser); // Set the selected user's data
+                setSelectedUser(response.data.results); // Set the selected user's data
                 setIsProfileModalOpen(true);
             } else {
                 console.error("Error fetching user data:", response.data.error);
