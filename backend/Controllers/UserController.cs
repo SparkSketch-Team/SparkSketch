@@ -143,8 +143,6 @@ public class UserController : ApiController
     }
 
 
-
-
     [HttpPost]
     [AllowAnonymous]
     [Route("Validate")]
