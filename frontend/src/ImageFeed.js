@@ -121,7 +121,8 @@ const ImageFeed = ({ searchTerm }) => {
                 }
             );
             if (response.data.success) {
-                setSelectedUser(response.data.user);  // Set the selected user's data
+                setSelectedUser(response.data.user);
+                 console.log(selectedUser);  // Set the selected user's data
                 setIsProfileModalOpen(true);
             } else {
                 console.error("Error fetching user data:", response.data.error);
@@ -186,12 +187,12 @@ const ImageFeed = ({ searchTerm }) => {
                     <img className="modal-content" src={selectedImageUrl} alt="Expanded Sketch"/>
                 </div>
             )}
-            {isProfileModalOpen && selectedUser && (
+            {isProfileModalOpen && (
                 <div className="modal">
                     <span className="close" onClick={closeProfileModal}>&times;</span>
                     <div className="modal-content">
                     <div className='container1'>
-                        <div className='modalpfp'><Avatar/> {selectedUser.username}</div>
+                        <div className='modalpfp'><Avatar/> username</div>
                         <p className='box1'>--- <br/>Followers</p><p className='box1'>--- <br/>Sketches<br/>
                         </p><button className='add' onClick={addFriend}>+ Add Friend</button>
                         <br />
