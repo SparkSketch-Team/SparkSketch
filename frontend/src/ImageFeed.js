@@ -27,6 +27,8 @@ const ImageFeed = ({ searchTerm }) => {
                 });
                 if (response.data.success) {
                     setSketches(response.data.results);
+                    console.log(response.data.results);
+                    console.log(sketches);
                 } else {
                     console.error("Error fetching sketches:", response.data.error);
                     setSketches([]);
@@ -49,6 +51,7 @@ const ImageFeed = ({ searchTerm }) => {
                 });
                 if (response.data.success) {
                     setSketches(response.data.results);
+                    console.log(response.data.results);
                 } else {
                     console.error("Error fetching sketches:", response.data.error);
                     setSketches([]);
@@ -107,15 +110,19 @@ const ImageFeed = ({ searchTerm }) => {
     };
     
     const handleProfileClick = async (userId) => {
+        console.log("Profile clicked for user ID:", userId);
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/GetUserById`, {
-                params: {
-                    userId: userId
-                },
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+            const response = await axios.get(
+                `${process.env.REACT_APP_API_URL}api/User/GetUserById`, 
+                {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    params: {
+                        userId: userId  // Send userId as a query parameter
+                    }
                 }
-            });
+            );
             if (response.data.success) {
                 setSelectedUser(response.data.user);  // Set the selected user's data
                 setIsProfileModalOpen(true);
@@ -166,7 +173,7 @@ const ImageFeed = ({ searchTerm }) => {
                         </button>
                         <LikeButton postId={sketch.postId} liked={likedPosts[sketch.postId]} />
                         <FaRegComments className='comment' type='button' onClick={() => handleCommentClick(sketch.postId)}/>
-                        <button className='profile' onClick={() => sketch.artistId && handleProfileClick(sketch.artistId)}><Avatar className='avatar'/></button>
+                        <button className='profile' onClick={() => handleProfileClick(sketch.artistID)}><Avatar className='avatar'/></button>
                     </div>
                 ))
             )}

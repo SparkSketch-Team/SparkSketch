@@ -123,7 +123,7 @@ public class UserController : ApiController
     [HttpGet]
     [Authorize]
     [Route("GetUserById")]
-    public async Task<JsonResult> GetUserById(Guid userId)
+    public async Task<JsonResult> GetUserById([FromQuery] Guid userId)
     {
         try
         {
