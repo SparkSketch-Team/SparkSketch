@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import axios from 'axios';
 
@@ -40,9 +39,9 @@ const FileUpload = () => {
 
   return (
     <div>
-      <p className='App-prompt'>Finished Drawing?</p>
-      <input type="file" onChange={onFileChange} />
-      <Button variant='warning' onClick={onFileUpload}>Upload!</Button>
+      <input type="file" onChange={onFileChange} className='file'/>
+      <br></br>
+      <button className='App-upload' onClick={onFileUpload}>Upload</button>
 
       {showSnackbar && (
         <Alert variant="danger" onClose={() => setShowSnackbar(false)} dismissible>
