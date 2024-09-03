@@ -166,7 +166,7 @@ const ImageFeed = ({ searchTerm }) => {
                         </button>
                         <LikeButton postId={sketch.postId} liked={likedPosts[sketch.postId]} />
                         <FaRegComments className='comment' type='button' onClick={() => handleCommentClick(sketch.postId)}/>
-                        <button className='profile' onClick={() => sketch.user && sketch.user.id && handleProfileClick(sketch.user.id)}><Avatar className='avatar'/></button>
+                        <button className='profile' onClick={() => sketch.artistId && handleProfileClick(sketch.artistId)}><Avatar className='avatar'/></button>
                     </div>
                 ))
             )}
