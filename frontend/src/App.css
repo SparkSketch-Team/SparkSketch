@@ -20,7 +20,6 @@ html {background-color:black}
   font-weight: bold;
   font-size: 25px;
   font-family: "Carrois Gothic", system-ui;
-  background-color: rgb(74, 74, 75);
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -54,13 +53,14 @@ background-color: rgb(88, 88, 88);
   padding: 8px;
   background-color: darkgoldenrod;
   color: white;
+  font-size: 20px;
 }
 
 .App-title1 {
   text-transform: uppercase;
   color: darkgoldenrod;
   text-align: center;
-  font-size: 60px;
+  font-size: 50px;
   font-family: "Carrois Gothic", system-ui;
   margin-top: 200px;
 }
@@ -88,8 +88,8 @@ background-color: rgb(88, 88, 88);
 }
 
 .file {
-margin-left: 80px ;
 margin-bottom: 20px;
+width: 225px;
 }
 
 
