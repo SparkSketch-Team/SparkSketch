@@ -32,7 +32,7 @@ function Login() {
             if (response.ok) {
                 const result = await response.json();
                 console.log(result);
-                if (result.results) {
+                if (result.success === true) {
                     // Store the JWT token
                     localStorage.setItem('token', result.results);
                     console.log('Login successful');
