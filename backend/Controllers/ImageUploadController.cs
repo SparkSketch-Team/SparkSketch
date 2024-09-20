@@ -22,7 +22,7 @@ public class ImageUploadController : ApiController
         _blobServiceClient = new BlobServiceClient(storageConnectionString);
 
         // You can set your container name here
-        _containerName = "uploadedfiles";
+        _containerName = "sparksketchposts";
 
         // Ensure the container exists
         var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
