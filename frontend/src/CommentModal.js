@@ -45,8 +45,12 @@ const CommentModal = ({ isOpen, onClose, postId }) => {
             );
     
             if (response.data.success) {
+                if (response.data.results.content === "") {
+                    return;
+                } else {
                 setComments([...comments, response.data.results]);
                 setNewComment('');
+                }
             } else {
                 console.error("Error adding comment:", response.data.error);
             }

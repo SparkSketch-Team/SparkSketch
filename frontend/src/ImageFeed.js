@@ -42,28 +42,6 @@ const ImageFeed = ({ searchTerm }) => {
     }, [searchTerm]);
 
     useEffect(() => {
-        const fetchSketches = async () => {
-            try {
-                const response = await axios.get(process.env.REACT_APP_API_URL + 'api/Sketch/sketches', {
-                    params: { username: searchTerm }
-                });
-                if (response.data.success) {
-                    setSketches(response.data.results);
-                } else {
-                    console.error("Error fetching sketches:", response.data.error);
-                    setSketches([]);
-                }
-            } catch (error) {
-                console.error("There was an error fetching the sketches!", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchSketches();
-    }, [searchTerm]);
-
-    useEffect(() => {
         sketches.forEach((sketch) => {
             const postId = sketch.postId;
             const token = localStorage.getItem('token');
@@ -106,8 +84,14 @@ const ImageFeed = ({ searchTerm }) => {
         setSelectedPostId(null);
     };
     
+    const closeProfileModal = () => {
+        setIsProfileModalOpen(false);
+        if (selectedUser != (null)) {
+            setSelectedUser(null);
+        }
+    };
+
     const handleProfileClick = async (userId) => {
-        console.log("Profile clicked for user ID:", userId);
         try {
             const response = await axios.get(
                 `${process.env.REACT_APP_API_URL}api/User/GetUserById`, 
@@ -121,8 +105,9 @@ const ImageFeed = ({ searchTerm }) => {
                 }
             );
             if (response.data.success) {
-                setSelectedUser(response.data.results);  // Set the selected user's data
+                setSelectedUser(response.data.results); // Set the selected user's data
                 setIsProfileModalOpen(true);
+                console.log(response.data.results);
             } else {
                 console.error("Error fetching user data:", response.data.error);
             }
@@ -131,20 +116,15 @@ const ImageFeed = ({ searchTerm }) => {
         }
     };
 
-    const closeProfileModal = () => {
-        setIsProfileModalOpen(false);
-        setSelectedUser(null);
-    };
-
     const addFriend = async () => {
         try {
-            const response = await fetch(`/api/Friend/Add`, {
+            const response = await fetch(`api/Friend/Add`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userId: selectedUser.id }),
+                body: JSON.stringify({ userId: selectedUser.userId }),
             });
             if (response.ok) {
                 alert(`${selectedUser.username} has been added as a friend!`);
@@ -193,11 +173,11 @@ const ImageFeed = ({ searchTerm }) => {
                     <div className="modal-content">
                     <div className='container1'>
                         <div className='modalpfp'><Avatar/> {selectedUser.username}</div>
-                        <p className='box1'>--- <br/>Followers</p><p className='box1'>--- <br/>Sketches<br/>
+                        <p className='box1'>{selectedUser.followers} <br/>Followers</p><p className='box1'>{selectedUser.sketches} <br/>Sketches<br/>
                         </p><button className='add' onClick={addFriend}>+ Add Friend</button>
                         <br />
                     </div>
-                        <div>Bio:</div>
+                        <div>Bio: {selectedUser.bio}</div>
                     </div>
                 </div>
             )}

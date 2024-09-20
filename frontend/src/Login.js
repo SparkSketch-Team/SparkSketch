@@ -32,7 +32,7 @@ function Login() {
             if (response.ok) {
                 const result = await response.json();
                 console.log(result);
-                if (result.results) {
+                if (result.success === true) {
                     // Store the JWT token
                     localStorage.setItem('token', result.results);
                     console.log('Login successful');
@@ -56,11 +56,14 @@ function Login() {
 
     return (
         <div className='App'>
+         <p>
+            <a className='create' href='/register'>Create an Account</a>
+        </p>
+            <div className='App-title'><sup>[beta]</sup> SparkSketch</div>
             <div className='Login-body'>
             <div className='wrapper'>
             <div className='form-box login'>
             <form onSubmit={handleLogin}>
-                <h1 className='App-title'>Login</h1>
                 <div className='input-box'>
                     <input
                         type='text'
@@ -95,9 +98,6 @@ function Login() {
                 </Button>
                 {errorMessage && <p className='error'>{errorMessage}</p>}
                 <div className='Register'>
-                    <p>
-                        Don't have an account? <a href='/register'>Register</a>
-                    </p>
                 </div>
             </form>
             </div>

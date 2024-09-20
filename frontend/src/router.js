@@ -13,7 +13,7 @@ import Edit from './Edit';
 export const router = createBrowserRouter([
   {
       path: "/",
-      element: <App />,
+      element: <Login />,
       errorElement: <ErrorPage />,
   },
   {
