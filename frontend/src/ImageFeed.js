@@ -121,7 +121,7 @@ const ImageFeed = ({ searchTerm }) => {
                 }
             );
             if (response.data.success) {
-                setSelectedUser(response.data.user);  // Set the selected user's data
+                setSelectedUser(response.data.results);  // Set the selected user's data
                 setIsProfileModalOpen(true);
             } else {
                 console.error("Error fetching user data:", response.data.error);
@@ -141,6 +141,7 @@ const ImageFeed = ({ searchTerm }) => {
             const response = await fetch(`/api/Friend/Add`, {
                 method: 'POST',
                 headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ userId: selectedUser.id }),
