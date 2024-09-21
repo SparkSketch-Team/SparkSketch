@@ -4,6 +4,8 @@ import './DrawingCanvas.css';
 const DrawingCanvas = ({ onClose }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
+  const ctxRef = useRef(null);
+
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentColor, setCurrentColor] = useState('#000000');
   const [currentOpacity, setCurrentOpacity] = useState(1);
@@ -12,33 +14,34 @@ const DrawingCanvas = ({ onClose }) => {
   const [timeLeft, setTimeLeft] = useState(300);
   const [undoStack, setUndoStack] = useState([]);
 
-  const [isMouseDown, setIsMouseDown] = useState(false);
-  const [lastClickTime, setLastClickTime] = useState(0);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    ctxRef.current = ctx;
+
+    // Set initial canvas size
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    // Set initial background to white
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }, []);
 
   const handleMouseDown = (e) => {
-    setIsMouseDown(true);
-    setLastClickTime(Date.now());
-    if (currentTool === 'pencil') {
-      startDrawing(e);
-    }
-  };
-
-  const handleMouseUp = (e) => {
-    setIsMouseDown(false);
-    if (currentTool === 'pencil') {
-      stopDrawing();
-    } else if (currentTool === 'paintbucket' || currentTool === 'eyedropper') {
-      // Only perform action if it's a quick click (less than 200ms)
-      if (Date.now() - lastClickTime < 200) {
-        handleCanvasClick(e);
-      }
-    }
+    startDrawing(e);
   };
 
   const handleMouseMove = (e) => {
-    if (currentTool === 'pencil' && isMouseDown) {
-      draw(e);
-    }
+    draw(e);
+  };
+
+  const handleMouseUp = () => {
+    stopDrawing();
+  };
+
+  const handleMouseOut = () => {
+    stopDrawing();
   };
 
   useEffect(() => {
@@ -47,9 +50,6 @@ const DrawingCanvas = ({ onClose }) => {
         const { width, height } = containerRef.current.getBoundingClientRect();
         canvasRef.current.width = width;
         canvasRef.current.height = height;
-        const ctx = canvasRef.current.getContext('2d');
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, width, height);
       }
     };
 
@@ -83,9 +83,7 @@ const DrawingCanvas = ({ onClose }) => {
 
   const stopDrawing = () => {
     setIsDrawing(false);
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    ctx.beginPath();
+    ctxRef.current.beginPath();
   };
 
   const draw = (e) => {
@@ -102,6 +100,7 @@ const DrawingCanvas = ({ onClose }) => {
 
     if (currentTool === 'eraser') {
       ctx.globalCompositeOperation = 'destination-out';
+      ctx.strokeStyle = 'rgba(0,0,0,1)';
     } else {
       ctx.globalCompositeOperation = 'source-over';
       ctx.strokeStyle = `${currentColor}${Math.round(currentOpacity * 255).toString(16).padStart(2, '0')}`;
@@ -113,6 +112,55 @@ const DrawingCanvas = ({ onClose }) => {
     ctx.moveTo(x, y);
   };
 
+  //!Alternate version of drawing
+  // const draw = (e) => {
+  //   if (!isDrawing) return;
+
+  //   const canvas = canvasRef.current;
+  //   const ctx = canvas.getContext('2d');
+  //   const rect = canvas.getBoundingClientRect();
+  //   const x = e.clientX - rect.left;
+  //   const y = e.clientY - rect.top;
+
+  //   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  //   const radius = currentSize / 2;
+
+  //   for (let dx = -radius; dx < radius; dx++) {
+  //     for (let dy = -radius; dy < radius; dy++) {
+  //       const distance = Math.sqrt(dx*dx + dy*dy);
+  //       if (distance < radius) {
+  //         const pixelX = Math.round(x + dx);
+  //         const pixelY = Math.round(y + dy);
+  //         const index = (pixelY * canvas.width + pixelX) * 4;
+
+  //         if (currentTool === 'eraser') {
+  //           // Set pixel to fully transparent
+  //           imageData.data[index + 3] = 0;
+  //         } else {
+  //           // Draw with current color and opacity
+  //           const [r, g, b] = hexToRgb(currentColor);
+  //           const a = Math.round(currentOpacity * 255);
+  //           imageData.data[index] = r;
+  //           imageData.data[index + 1] = g;
+  //           imageData.data[index + 2] = b;
+  //           imageData.data[index + 3] = a;
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   ctx.putImageData(imageData, 0, 0);
+  // };
+
+  // // Helper function to convert hex to RGB
+  // const hexToRgb = (hex) => {
+  //   const r = parseInt(hex.slice(1, 3), 16);
+  //   const g = parseInt(hex.slice(3, 5), 16);
+  //   const b = parseInt(hex.slice(5, 7), 16);
+  //   return [r, g, b];
+  // };
+
+
   const saveCanvasState = () => {
     const canvas = canvasRef.current;
     setUndoStack(prevStack => [...prevStack, canvas.toDataURL()]);
@@ -121,7 +169,7 @@ const DrawingCanvas = ({ onClose }) => {
   const clearCanvas = () => {
     saveCanvasState();
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
+    const ctx = ctxRef.current;
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   };
@@ -157,19 +205,15 @@ const DrawingCanvas = ({ onClose }) => {
     const stack = [[x, y]];
     const targetColor = getPixel(imageData, x, y);
     const fillColorRgba = hexToRgba(fillColor, currentOpacity);
-  
     while (stack.length > 0) {
       const [x, y] = stack.pop();
       if (x < 0 || x >= width || y < 0 || y >= height) continue;
       if (!colorMatch(getPixel(imageData, x, y), targetColor)) continue;
-  
       setPixel(imageData, x, y, fillColorRgba);
       stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
     }
-  
     ctx.putImageData(imageData, 0, 0);
   };
-  
   const hexToRgba = (hex, opacity) => {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
@@ -177,19 +221,19 @@ const DrawingCanvas = ({ onClose }) => {
     const a = Math.round(opacity * 255);
     return [r, g, b, a];
   };
-  
+
   const colorMatch = (color1, color2) => {
     return color1[0] === color2[0] &&
-           color1[1] === color2[1] &&
-           color1[2] === color2[2] &&
-           Math.abs(color1[3] - color2[3]) < 5;
+      color1[1] === color2[1] &&
+      color1[2] === color2[2] &&
+      Math.abs(color1[3] - color2[3]) < 5;
   };
-  
+
   const getPixel = (imageData, x, y) => {
     const index = (y * imageData.width + x) * 4;
     return imageData.data.slice(index, index + 4);
   };
-  
+
   const setPixel = (imageData, x, y, color) => {
     const index = (y * imageData.width + x) * 4;
     imageData.data.set(color, index);
@@ -211,7 +255,8 @@ const DrawingCanvas = ({ onClose }) => {
     if (currentTool === 'eyedropper') {
       handleEyeDropper(e);
     } else if (currentTool === 'paintbucket') {
-      const rect = canvasRef.current.getBoundingClientRect();
+      const canvas = canvasRef.current;
+      const rect = canvas.getBoundingClientRect();
       const x = Math.floor(e.clientX - rect.left);
       const y = Math.floor(e.clientY - rect.top);
       floodFill(x, y, currentColor);
@@ -236,10 +281,8 @@ const DrawingCanvas = ({ onClose }) => {
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
-          onMouseOut={() => {
-            setIsMouseDown(false);
-            if (currentTool === 'pencil') stopDrawing();
-          }}
+          onMouseOut={handleMouseOut}
+          onClick={handleCanvasClick}
         />
       </div>
       <div className="tools">
