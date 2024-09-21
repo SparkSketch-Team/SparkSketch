@@ -5,12 +5,25 @@ import DrawingCanvas from './DrawingCanvas';
 
 const FileUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [showDrawingCanvas, setShowDrawingCanvas] = useState(false);
 
+
   const onFileChange = event => {
-    setSelectedFile(event.target.files[0]);
+    const file = event.target.files[0];
+    setSelectedFile(file);
+
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result); 
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
   };
 
   const onFileUpload = () => {
@@ -43,6 +56,11 @@ const FileUpload = () => {
     <div>
       <input type="file" onChange={onFileChange} className='file' />
       <br></br>
+      {imagePreview && ( // Render the image preview
+        <div>
+          <img src={imagePreview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '300px' }} />
+        </div>
+      )}
 
       <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
         <button className='App-upload' onClick={onFileUpload}>Upload</button>
