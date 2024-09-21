@@ -1,109 +1,147 @@
+.App-upload {
+  border: none;
+  border-radius: 10px;
+  padding: 8px 16px;
+  background-color: darkgoldenrod;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.canvas-container {
+  background-color: black;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 3px solid darkgoldenrod;
+  flex-grow: 1;
+  position: relative;
+  margin: 0; /* Remove any margin */
+  padding: 0; /* Remove any padding */
+}
+
+.canvas-container canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block; /* Ensure the canvas is a block-level element */
+}
+
+.color-palette {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+}
+
+.color-option {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid darkgoldenrod;
+}
+
 .game-container {
-    background-color: #333333;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    max-width: 650px;
-    margin: 20px auto;
-  }
-  
-  .header {
-    color: darkgoldenrod;
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    font-family: "Carrois Gothic", system-ui;
-  }
-  
-  .canvas-container {
-    background-color: white;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 3px solid darkgoldenrod;
-  }
-  
-  .tools {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-  
-  .color-palette {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 5px;
-  }
-  
-  .color-option {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid darkgoldenrod;
-  }
-  
-  .drawing-tools {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  
-  .tool-btn {
-    background-color: darkgoldenrod;
-    border: none;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  
-  .tool-btn:hover {
-    opacity: 0.8;
-  }
-  
-  .timer {
-    text-align: right;
-    color: darkgoldenrod;
-    font-size: 18px;
-    margin-bottom: 10px;
-    font-family: "Carrois Gothic", system-ui;
-  }
-  
-  .size-slider {
-    width: 100px;
-    margin: 0 10px;
-    background: #d3d3d3;
-    outline: none;
-    opacity: 0.7;
-    transition: opacity .2s;
-  }
-  
-  .size-slider:hover {
-    opacity: 1;
-  }
-  
-  .size-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    background: darkgoldenrod;
-    cursor: pointer;
-    border-radius: 50%;
-  }
-  
-  .size-slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: darkgoldenrod;
-    cursor: pointer;
-    border-radius: 50%;
-  }
-  
-  .size-label {
-    color: darkgoldenrod;
-    font-size: 14px;
-    font-family: "Carrois Gothic", system-ui;
-  }
+  background-color: #333333;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+  width: 80vw;
+}
+
+.header {
+  color: darkgoldenrod;
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-family: "Carrois Gothic", system-ui;
+}
+
+
+
+.tools {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+
+
+.drawing-tools {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.tool-btn {
+  background-color: darkgoldenrod;
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.tool-btn:hover {
+  opacity: 0.8;
+}
+
+.timer {
+  text-align: right;
+  color: darkgoldenrod;
+  font-size: 18px;
+  margin-bottom: 10px;
+  font-family: "Carrois Gothic", system-ui;
+}
+
+.size-slider {
+  width: 100px;
+  margin: 0 10px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity .2s;
+}
+
+.size-slider:hover {
+  opacity: 1;
+}
+
+.size-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: darkgoldenrod;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.size-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: darkgoldenrod;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.size-label {
+  color: darkgoldenrod;
+  font-size: 14px;
+  font-family: "Carrois Gothic", system-ui;
+}

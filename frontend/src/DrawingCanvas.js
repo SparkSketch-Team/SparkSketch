@@ -3,6 +3,7 @@ import './DrawingCanvas.css';
 
 const DrawingCanvas = ({ onClose }) => {
   const canvasRef = useRef(null);
+  const containerRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentColor, setCurrentColor] = useState('#000000');
   const [currentTool, setCurrentTool] = useState('pencil');
@@ -10,10 +11,21 @@ const DrawingCanvas = ({ onClose }) => {
   const [timeLeft, setTimeLeft] = useState(300);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const resizeCanvas = () => {
+      if (containerRef.current && canvasRef.current) {
+        const { width, height } = containerRef.current.getBoundingClientRect();
+        canvasRef.current.width = width;
+        canvasRef.current.height = height;
+        const ctx = canvasRef.current.getContext('2d');
+        ctx.fillStyle = 'transparent';
+        ctx.fillRect(0, 0, width, height);
+      }
+    };
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    return () => window.removeEventListener('resize', resizeCanvas);
   }, []);
 
   useEffect(() => {
@@ -89,11 +101,9 @@ const DrawingCanvas = ({ onClose }) => {
     <div className="game-container">
       <div className="timer">Time left: {timeLeft}s</div>
       <div className="header">HEY, IT'S TIME TO DRAW!</div>
-      <div className="canvas-container">
+      <div className="canvas-container" ref={containerRef}>
         <canvas
           ref={canvasRef}
-          width={600}
-          height={400}
           onMouseDown={startDrawing}
           onMouseMove={draw}
           onMouseUp={stopDrawing}
@@ -126,8 +136,10 @@ const DrawingCanvas = ({ onClose }) => {
           <button className="tool-btn" onClick={clearCanvas}>🗑️</button>
         </div>
       </div>
-      <button className="App-upload" onClick={saveImage}>Save Image</button>
-      <button className="App-upload" onClick={onClose} style={{ marginLeft: '10px' }}>Close</button>
+      <div className="button-container">
+        <button className="App-upload" onClick={saveImage}>Save Image</button>
+        <button className="App-upload" onClick={onClose}>Close</button>
+      </div>
     </div>
   );
 };
