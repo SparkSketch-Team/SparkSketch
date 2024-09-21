@@ -42,7 +42,8 @@ public class SketchController : ApiController {
     public async Task<IActionResult> RemoveLike(int postId)
     {
         // Get the current user's ID from the claims
-        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        var userId = User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId)?.Value;
+
 
         if (string.IsNullOrEmpty(userId))
         {
