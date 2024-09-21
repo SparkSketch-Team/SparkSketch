@@ -13,6 +13,11 @@ class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.WebHost.ConfigureKestrel(serverOptions =>
+        {
+            serverOptions.ListenAnyIP(5227); // This makes Kestrel listen on all IP addresses (0.0.0.0)
+        });
+
         builder.Logging.ClearProviders();
         builder.Logging.AddConsole();
         builder.Logging.AddDebug();
@@ -27,6 +32,10 @@ class Program
 
         // Use Dependency Injection for AccountEmailSender
         builder.Services.AddTransient<IAccountEmailSender, AccountEmailSender>();
+
+        var jwtKey = builder.Configuration["Jwt:Key"];
+        Console.WriteLine($"JWT Key: {(string.IsNullOrEmpty(jwtKey) ? "Empty or Null" : jwtKey)}");
+
 
         builder.Services.AddAuthentication(options =>
         {
@@ -98,7 +107,11 @@ class Program
             app.UseHsts();
         }
 
-        app.UseHttpsRedirection();
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseHttpsRedirection();
+        }
+
         app.UseCors("AllowReactApp");
         app.UseRouting();
 
