@@ -164,7 +164,7 @@ const ImageFeed = ({ searchTerm }) => {
 
     const addFriend = async () => {
         try {
-            const response = await fetch(`api/Friend/Add`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}api/Friend/Add`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,

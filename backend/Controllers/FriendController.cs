@@ -17,24 +17,27 @@ public class FriendController : ApiController
         _friendRepository = friendRepository;
     }
 
-    // POST: api/Friend/Add
     [HttpPost("Add")]
-    public async Task<IActionResult> AddFriend([FromBody] Guid followedUserId)
+    public async Task<IActionResult> AddFriend([FromBody] String followedUserId)
     {
+        _logger.LogInformation("AddFriend called.");
         var currentUserId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
 
         if (currentUserId == null)
         {
+            _logger.LogError("CurrentUserId is null.");
             return Unauthorized();
         }
 
-        var isAdded = await _friendRepository.AddFriend(Guid.Parse(currentUserId), followedUserId);
+        var isAdded = await _friendRepository.AddFriend(Guid.Parse(currentUserId), Guid.Parse(followedUserId));
 
         if (!isAdded)
         {
+            _logger.LogError("Failed to add friend.");
             return FailMessage("Failed to add friend.");
         }
 
+        _logger.LogInformation("Friend added successfully.");
         return SuccessMessage("Friend added successfully.");
     }
 
