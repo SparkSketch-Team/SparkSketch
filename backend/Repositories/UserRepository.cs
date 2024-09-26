@@ -41,18 +41,18 @@ public class UserRepository : BaseRepository, IUserRepository
 
     public async Task<string> Login(LoginInfo loginInfo)
     {
-        Random random = new Random();
-        await Task.Delay(random.Next(1000, 5000));
+        var taskDelay = Task.Delay(1000);
 
-        if(await ValidateUser(loginInfo))
+        if (await ValidateUser(loginInfo))
         {
             var claims = await this.GetUserClaims(loginInfo);
 
             var token = GenerateJwtToken(claims);
-
+            await taskDelay;
             return token;
         } else
         {
+            await taskDelay;
             return "";
         }
     }
