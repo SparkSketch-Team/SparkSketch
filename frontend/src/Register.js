@@ -145,6 +145,7 @@ function Register() {
                             <div className='Remember'>
                                 <label>
                                     <input
+                                        className='check2'
                                         type='checkbox'
                                         name='agreedToTerms'
                                         checked={formData.agreedToTerms}
