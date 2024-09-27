@@ -170,7 +170,9 @@ const ImageFeed = ({ searchTerm }) => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userId: selectedUser.userId }),
+                body: JSON.stringify({ // Ensure the body is stringified to JSON
+                    followedUserId: selectedUser.userId.toString(),
+                }),
             });
             if (response.ok) {
                 alert(`${selectedUser.username} has been added as a friend!`);
