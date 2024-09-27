@@ -4,6 +4,7 @@ using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -22,7 +23,7 @@ public class ImageUploadController : ApiController
         _blobServiceClient = new BlobServiceClient(storageConnectionString);
 
         // You can set your container name here
-        _containerName = "uploadedfiles";
+        _containerName = "sparksketchposts";
 
         // Ensure the container exists
         var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
@@ -32,9 +33,19 @@ public class ImageUploadController : ApiController
     }
 
     [HttpPost("upload")]
-    [Authorize]
+    //[Authorize]
     public async Task<IActionResult> UploadFile(IFormFile file)
     {
+
+        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return FailMessage("Error: No User Logged In");
+            _logger.LogInformation("Upload File, no user detected");
+        }
+
+
         _logger.LogInformation("Image Upload Called");
 
         if (file == null || file.Length == 0)
