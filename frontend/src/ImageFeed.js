@@ -164,13 +164,15 @@ const ImageFeed = ({ searchTerm }) => {
 
     const addFriend = async () => {
         try {
-            const response = await fetch(`api/Friend/Add`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}api/Friend/Add`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userId: selectedUser.userId }),
+                body: JSON.stringify({ // Ensure the body is stringified to JSON
+                    followedUserId: selectedUser.userId.toString(),
+                }),
             });
             if (response.ok) {
                 alert(`${selectedUser.username} has been added as a friend!`);
