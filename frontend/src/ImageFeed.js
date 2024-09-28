@@ -7,6 +7,8 @@ import { FaRegComments } from "react-icons/fa";
 import 'animate.css';
 import CommentModal from './CommentModal';
 import LikeButton from './Like.js';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ImageFeed = ({ searchTerm }) => {
     const [sketches, setSketches] = useState([]);
@@ -173,9 +175,13 @@ const ImageFeed = ({ searchTerm }) => {
                 body: JSON.stringify({ userId: selectedUser.userId }),
             });
             if (response.ok) {
-                alert(`${selectedUser.username} has been added as a friend!`);
+                toast.success(`${selectedUser.username} has been added as a friend!`, {
+                    position: "top-left"
+                });
             } else {
-                alert('Failed to add friend. Please try again.');
+                toast.error('Failed to add friend. Please try again.', {
+                    position: "top-left"
+                });
             }
         } catch (error) {
             console.error('Error adding friend:', error);
@@ -202,6 +208,7 @@ const ImageFeed = ({ searchTerm }) => {
                         />
                         <FaRegComments className='comment' type='button' onClick={() => handleCommentClick(sketch.postId)}/>
                         <button className='profile' onClick={() => handleProfileClick(sketch.artistID)}><Avatar className='avatar'/></button>
+                        <ToastContainer />
                     </div>
                 ))
             )}
