@@ -44,8 +44,8 @@ public class SketchRepository : BaseRepository, ISketchRepository
         return await db.Sketches.ToListAsync();
     }
 
-
-    public async Task<bool> DeleteSketchAsync(int postId) // New method implementation
+    // This probably needs to be reworked
+     public async Task<bool> DeleteSketchAsync(int postId) 
     {
         var sketch = await db.Sketches.FindAsync(postId);
         if (sketch == null)

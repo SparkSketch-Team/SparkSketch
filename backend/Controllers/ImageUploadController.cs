@@ -89,6 +89,7 @@ public class ImageUploadController : ApiController
         return SuccessMessage(response);
     }
 
+
     [HttpDelete("delete/{postId}")]
     public async Task<IActionResult> DeleteSketch(int postId)
     {

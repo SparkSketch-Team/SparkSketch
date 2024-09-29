@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+// Probably need to rework this data structure, make sure this is compliant with Entity Frameworks
 public class Sketch {
 
     [Key]
