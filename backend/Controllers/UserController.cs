@@ -7,18 +7,33 @@ using System.CodeDom.Compiler;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs;
+using Microsoft.Extensions.Configuration;
 
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ApiController
 {
+    private readonly BlobServiceClient _blobServiceClient;
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _config;
+    private readonly string _containerName;
 
     public UserController(IUserRepository userRepository, IConfiguration config, ILogger<UserController> logger) : base(logger)
     {
         _userRepository = userRepository;
         _config = config;
+
+        string storageConnectionString = _config.GetConnectionString("AzureStorageConnectionString");
+        _blobServiceClient = new BlobServiceClient(storageConnectionString);
+
+        // You can set your container name here
+        _containerName = "profilePictures";
+
+        // Ensure the container exists
+        var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+        blobContainerClient.CreateIfNotExists(PublicAccessType.Blob);
     }
 
     [HttpPost]
@@ -61,7 +76,7 @@ public class UserController : ApiController
     [HttpPost]
     [Route("EditUser")]
     [Authorize]
-    public async Task<JsonResult> EditUser([FromBody] EditUserInfo info)
+    public async Task<JsonResult> EditUser([FromBody] EditUserInfo info, IFormFile? profilePicture)
     {
         try
         {
@@ -73,7 +88,25 @@ public class UserController : ApiController
                 return FailMessage("Unauthorized attempt to edit another user's profile.");
             }
 
-            var response = await _userRepository.EditUser(info, currentUserId);
+            string profilePictureUrl = null;
+            if (profilePicture != null && profilePicture.Length > 0)
+            {
+
+                var fileName = $"{currentUserId}{Path.GetExtension(profilePicture.FileName)}";
+
+
+                var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+                var blobClient = blobContainerClient.GetBlobClient(fileName);
+                using (var stream = profilePicture.OpenReadStream())
+                {
+                    await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = profilePicture.ContentType });
+                }
+
+                profilePictureUrl = blobClient.Uri.ToString();
+
+            }
+
+            var response = await _userRepository.EditUser(info, currentUserId, profilePictureUrl);
             if (response)
             {
                 return SuccessMessage(true);
