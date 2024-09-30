@@ -7,12 +7,32 @@ function Edit() {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [bio, setBio] = useState('');
-    const [profilePictureUrl, setProfilePictureUrl] = useState('');
+    const [profilePictureUrl, setProfilePictureUrl] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
 
     const handleSave = async () => {
         const token = localStorage.getItem('token');
         
         try {
+            let updatedprofilePictureUrl = profilePictureUrl;
+
+            if (selectedFile) {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+
+                const uploadResponse = await axios.post(
+                    `${process.env.REACT_APP_API_URL}api/User/EditUser/profilePictureUrl`,
+                    formData,
+                    { 
+                        headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data',
+                        }
+                    }
+                );
+                updatedprofilePictureUrl = uploadResponse.data.imageUrl;
+            }
+
             const response = await axios.post(
                 `${process.env.REACT_APP_API_URL}api/User/EditUser`,
                 {
@@ -21,7 +41,7 @@ function Edit() {
                     username: username,
                     emailAddress: email,
                     bio: bio,
-                    profilePictureUrl: profilePictureUrl
+                    profilePictureUrl: updatedprofilePictureUrl,
                 },
                 {
                     headers: {
@@ -38,8 +58,11 @@ function Edit() {
     };
 
     const handleImageChange = (e) => {
-        // Handle image selection, for now, just simulate it as a string URL
-        setProfilePictureUrl('path/to/selected/image.jpg');
+               const file = e.target.files[0];
+        if (file) {
+            setSelectedFile(file);
+            setProfilePictureUrl(URL.createObjectURL(file));
+        }
     };
 
     return (
@@ -50,8 +73,11 @@ function Edit() {
             <div className='container'>
                 <p className='box-edit'>Change Picture
                     <br/>
-                    <button onClick={handleImageChange}>Choose Image</button>
+                    <input type='file' onClick={handleImageChange} />
                     <br/>
+                    {profilePictureUrl && (
+                        <img src={profilePictureUrl} alt='Profile Preview' width={100} height={100} />
+                    )}
                     <br/>
                     Email
                     <br/>
