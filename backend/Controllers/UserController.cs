@@ -29,7 +29,7 @@ public class UserController : ApiController
         _blobServiceClient = new BlobServiceClient(storageConnectionString);
 
         // You can set your container name here
-        _containerName = "profilePictures";
+        _containerName = "profilepictures";
 
         // Ensure the container exists
         var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
@@ -93,6 +93,10 @@ public class UserController : ApiController
             {
 
                 var fileName = $"{currentUserId}{Path.GetExtension(profilePicture.FileName)}";
+                fileName = fileName.Replace(" ", "").Replace(":", "").Replace("\\", "").Replace("/", "");
+                _logger.LogInformation($"Generated file name: {fileName}");
+
+
 
 
                 var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_containerName);

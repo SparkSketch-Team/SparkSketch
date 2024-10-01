@@ -261,7 +261,6 @@ public class UserRepository : BaseRepository, IUserRepository
             Username = user.Username,
             EmailAddress = user.EmailAddress,
             Bio = user.Bio,
-            ProfilePictureUrl = user.ProfilePictureUrl
         };
 
         return editUserInfo;
