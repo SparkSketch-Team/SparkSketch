@@ -21,7 +21,7 @@ function Edit() {
                 formData.append('file', selectedFile);
 
                 const uploadResponse = await axios.post(
-                    `${process.env.REACT_APP_API_URL}api/User/EditUser/profilePictureUrl`,
+                    `${process.env.REACT_APP_API_URL}api/User/EditUser`,
                     formData,
                     { 
                         headers: {
