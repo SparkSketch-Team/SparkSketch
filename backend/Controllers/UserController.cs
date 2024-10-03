@@ -268,5 +268,28 @@ public class UserController : ApiController
         }
     }
 
+    [HttpGet]
+    [Route("GetUserProfilePicture/{userId}")]
+    public async Task<JsonResult> GetUserProfilePicture(string userId)
+    {
+        try
+        {
+            var response = await _userRepository.GetUserByIdAsync(Guid.Parse(userId));
+            if (response == null)
+            {
+                return FailMessage("User not found");
+            }
+
+            return SuccessMessage(response.ProfilePictureUrl);
+
+
+
+        }
+        catch (Exception ex)
+        {
+            return FailMessage(ex.Message);
+        }
+    }
+
 
 }

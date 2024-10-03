@@ -2,21 +2,21 @@ import React, { useState, useEffect } from "react";
 import './Avatar.css';
 import placeholder from '../src/Blankpfp.jpg';
 
-function Avatar() {
+function Avatar({ userId }) {
   const [profilePictureUrl, setProfilePictureUrl] = useState(null);
 
   useEffect(() => {
-    // Fetch the profile picture from the backend when the component mounts
+    // Fetch the profile picture from the backend using the provided userId
     const fetchProfilePicture = async () => {
       try {
-        const response = await fetch('/api/User/GetSelfProfilePicture', {
+        const response = await fetch(`/api/User/GetUserProfilePicture/${userId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming the token is stored in localStorage
           }
         });
         const data = await response.json();
-        
+
         if (data.success) {
           setProfilePictureUrl(data.results); // Set profile picture URL
         } else {
@@ -27,8 +27,10 @@ function Avatar() {
       }
     };
 
-    fetchProfilePicture();
-  }, []); // Empty dependency array ensures this runs once after component mounts
+    if (userId) {
+      fetchProfilePicture();
+    }
+  }, [userId]); // Re-fetch when the userId changes
 
   return (
     <img 
