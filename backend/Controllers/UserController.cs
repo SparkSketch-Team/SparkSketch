@@ -76,7 +76,7 @@ public class UserController : ApiController
     [HttpPost]
     [Route("EditUser")]
     [Authorize]
-    public async Task<JsonResult> EditUser([FromBody] EditUserInfo info, IFormFile? profilePicture)
+    public async Task<JsonResult> EditUser([FromForm] EditUserInfo info, IFormFile? profilePicture)
     {
         try
         {
@@ -89,7 +89,7 @@ public class UserController : ApiController
             }
 
             string profilePictureUrl = null;
-            if (profilePicture != null && profilePicture.Length > 0)
+            if (profilePicture != null)
             {
 
                 var fileName = $"{currentUserId}{Path.GetExtension(profilePicture.FileName)}";

@@ -7,48 +7,36 @@ function Edit() {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [bio, setBio] = useState('');
-    const [profilePictureUrl, setProfilePictureUrl] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
 
     const handleSave = async () => {
         const token = localStorage.getItem('token');
-        
+
         try {
-            let updatedprofilePictureUrl = profilePictureUrl;
+            const formData = new FormData();
 
+            // Append user information
+            formData.append('firstName', null); // or ''
+            formData.append('lastName', null);  // or ''
+            formData.append('username', username);
+            formData.append('emailAddress', email);
+            formData.append('bio', bio);
+
+            // Append profile picture if selected
             if (selectedFile) {
-                const formData = new FormData();
-                formData.append('file', selectedFile);
-
-                const uploadResponse = await axios.post(
-                    `${process.env.REACT_APP_API_URL}api/User/EditUser`,
-                    formData,
-                    { 
-                        headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data',
-                        }
-                    }
-                );
-                updatedprofilePictureUrl = uploadResponse.data.imageUrl;
+                formData.append('profilePicture', selectedFile); // 'profilePicture' matches the IFormFile param name
             }
 
             const response = await axios.post(
                 `${process.env.REACT_APP_API_URL}api/User/EditUser`,
-                {
-                    firstName: null, // or ''
-                    lastName: null,  // or ''
-                    username: username,
-                    emailAddress: email,
-                    bio: bio,
-                    profilePictureUrl: updatedprofilePictureUrl,
-                },
+                formData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
-                    }
+                    },
                 }
             );
+
             console.log('Profile updated successfully:', response.data);
             // Optionally handle success (e.g., navigate to another page, show a success message)
         } catch (error) {
@@ -58,10 +46,9 @@ function Edit() {
     };
 
     const handleImageChange = (e) => {
-               const file = e.target.files[0];
+        const file = e.target.files[0];
         if (file) {
             setSelectedFile(file);
-            setProfilePictureUrl(URL.createObjectURL(file));
         }
     };
 
@@ -73,10 +60,10 @@ function Edit() {
             <div className='container'>
                 <p className='box-edit'>Change Picture
                     <br/>
-                    <input type='file' onClick={handleImageChange} />
+                    <input type='file' onChange={handleImageChange} />
                     <br/>
-                    {profilePictureUrl && (
-                        <img src={profilePictureUrl} alt='Profile Preview' width={100} height={100} />
+                    {selectedFile && (
+                        <img src={URL.createObjectURL(selectedFile)} alt='Profile Preview' width={100} height={100} />
                     )}
                     <br/>
                     Email
