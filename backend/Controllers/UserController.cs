@@ -238,5 +238,35 @@ public class UserController : ApiController
         }
     }
 
+    [HttpGet]
+    [Authorize]
+    [Route("GetSelfProfilePicture")]
+    public async Task<JsonResult> GetSelfProfilePicture()
+    {
+        try
+        {
+
+            var currentUserId = User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId)?.Value;
+
+            if (currentUserId is null || currentUserId.IsNullOrEmpty())
+            {
+                return FailMessage("There is no user to get.");
+            }
+            var response = await _userRepository.GetUserByIdAsync(Guid.Parse(currentUserId));
+            if (response == null)
+            {
+                return FailMessage("User not found");
+            }
+
+            return SuccessMessage(response.ProfilePictureUrl);
+
+
+
+        } catch (Exception ex)
+        {
+            return FailMessage(ex.Message);
+        }
+    }
+
 
 }
