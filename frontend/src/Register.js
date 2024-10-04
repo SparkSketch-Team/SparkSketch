@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './Login.css';
 import './Register.css';
 import Button from 'react-bootstrap/Button';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Register() {
     const [formData, setFormData] = useState({
@@ -12,8 +14,6 @@ function Register() {
         agreedToTerms: false,
     });
 
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState(false);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -28,12 +28,16 @@ function Register() {
 
         // Basic validation
         if (!formData.agreedToTerms) {
-            setError('You must agree to the terms & conditions.');
+            toast.error('You must agree to the terms & conditions.', {
+                position: "top-center"
+            });
             return;
         }
 
         if (formData.password !== formData.confirmPassword) {
-            setError('Passwords do not match.');
+            toast.error('Passwords do not match.', {
+                position: 'top-center'
+            });
             return;
         }
 
@@ -58,7 +62,9 @@ function Register() {
                 const data = await response.json();
 
                 if (!data.success) {
-                    throw new Error(data.error);
+                    toast.error('data error', {
+                        position: 'top-center'
+                    });
                 }
 
                 localStorage.setItem('token', data.results);
@@ -71,8 +77,9 @@ function Register() {
                 confirmPassword: '',
                 agreedToTerms: false,
                 });
-                setError('');
-                setSuccess(true);
+                toast.success("Registration Successful!", {
+                    position: 'top-center'
+                });
 
                 // Redirect to prompting page after successful registration
                 setTimeout(() => {
@@ -81,15 +88,15 @@ function Register() {
 
 
             } else {
-                throw new Error('Registration failed.');
+                toast.error('Registration Failed.', {
+                    position: 'top-center'
+                });
             }
         } catch (err) {
             setFormData({
                 password: '',
                 confirmPassword: '',
                 });
-            setError(err.message);
-            setSuccess(false);
         }
     };
 
@@ -100,8 +107,6 @@ function Register() {
                     <div className='form-box login'>
                         <form onSubmit={handleSubmit}>
                             <h1 className='App-title'>Register</h1>
-                            {error && <div className='error-message'>{error}</div>}
-                            {success && <div className='success-message'>Registration successful!</div>}
                             <div className='input-box'>
                                 <input
                                     type='email'
@@ -164,6 +169,7 @@ function Register() {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 }
