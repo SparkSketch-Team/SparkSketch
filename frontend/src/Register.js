@@ -62,9 +62,10 @@ function Register() {
                 const data = await response.json();
 
                 if (!data.success) {
-                    toast.error('data error', {
+                    toast.error(`${data.results}`, {
                         position: 'top-center'
                     });
+                    return;
                 }
 
                 localStorage.setItem('token', data.results);
