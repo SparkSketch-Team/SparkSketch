@@ -58,6 +58,19 @@ public class SketchRepository : BaseRepository, ISketchRepository
         return true;
     }
 
+    public async Task<bool> ArchiveSketchAsync(int postId)
+    {
+        var sketch = await db.Sketches.FindAsync(postId);
+        if (sketch == null)
+        {
+            return false;
+        }
+
+        sketch.IsArchived = true;
+        await db.SaveChangesAsync();
+        return true;
+    }
+
     public async Task<List<Sketch>> GetSketchesByUsernameAsync(string username)
     {
         return await db.Sketches

@@ -1,3 +1,4 @@
+using Azure.Storage.Blobs.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -23,6 +24,8 @@ public class Sketch {
     public ICollection<Comment> Comments { get; set; }
 
     public ICollection<Like> Likes { get; set; }
+
+    public bool IsArchived { get; set; } = false;
 
    // public ICollection<PostTag> PostTags { get; set; }
 

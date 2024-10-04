@@ -107,5 +107,22 @@ public class ImageUploadController : ApiController
         return SuccessMessage($"Sketch with PostId {postId} deleted successfully");
     }
 
+    [HttpDelete("archive/{postId}")]
+    public async Task<IActionResult> ArchiveSketch(int postId)
+    {
+        _logger.LogInformation($"Archiving sketch with PostId: {postId}");
+
+        var isArchived = await _sketchRepository.ArchiveSketchAsync(postId);
+
+        if (!isArchived)
+        {
+            _logger.LogError($"Sketch with PostId {postId} not found");
+            return NotFound($"Sketch with PostId {postId} not found");
+        }
+
+        _logger.LogInformation($"Sketch with PostId {postId} archived successfully");
+        return SuccessMessage($"Sketch with PostId {postId} archived successfully");
+    }
+
 
 }
