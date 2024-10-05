@@ -128,6 +128,27 @@ public class UserController : ApiController
 
     [HttpGet]
     [Authorize]
+    [Route("GetSelfUserId")]
+    public async Task<JsonResult> GetSelfUserId()
+    {
+        try
+        {
+            var currentUserId = User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId)?.Value;
+
+            if (currentUserId is null || currentUserId.IsNullOrEmpty())
+            {
+                return FailMessage("There is no user to get.");
+            }
+            return SuccessMessage(currentUserId);
+        }
+        catch (Exception e)
+        {
+            return FailMessage(e.Message);
+        }
+    }
+
+    [HttpGet]
+    [Authorize]
     [Route("GetSelf")]
     public async Task<JsonResult> GetSelf()
     {

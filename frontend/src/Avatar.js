@@ -9,7 +9,7 @@ function Avatar({ userId }) {
     // Fetch the profile picture from the backend using the provided userId
     const fetchProfilePicture = async () => {
       try {
-        const response = await fetch(`/api/User/GetUserProfilePicture/${userId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}api/User/GetUserProfilePicture/${userId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming the token is stored in localStorage

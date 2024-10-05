@@ -37,12 +37,12 @@ public class ImageUploadController : ApiController
     public async Task<IActionResult> UploadFile(IFormFile file)
     {
 
-        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        var userId = User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId)?.Value;
 
         if (string.IsNullOrEmpty(userId))
         {
-            return FailMessage("Error: No User Logged In");
             _logger.LogInformation("Upload File, no user detected");
+            return FailMessage("Error: No User Logged In");
         }
 
 
