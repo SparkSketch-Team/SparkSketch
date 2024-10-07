@@ -30,7 +30,7 @@ useEffect(() => {
   return (
     <div className='prompt'>
       <div><strong></strong> {data.theme}</div>
-      <div><strong>Prompt:</strong> {data.promptText}</div>
+      <div><strong></strong> {data.promptText}</div>
     </div>
   );
 };

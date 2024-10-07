@@ -1,0 +1,19 @@
+.navbar.custom {
+    background-color: black;
+}
+
+.navbar-custom .navbar-brand {
+    color: rgb(255, 192, 0);
+}
+
+.navbar-custom .navbar-text {
+    color: white;
+}
+
+.navbar-custom .navbar-text:hover {
+    color: rgb(255, 192, 0);
+}
+
+.navbar-custom .navbar-brand:hover {
+    color: rgb(255, 192, 0);
+}

@@ -41,28 +41,74 @@ const ImageFeed = ({ searchTerm }) => {
         fetchSketches();
     }, [searchTerm]);
 
+
     useEffect(() => {
-        sketches.forEach((sketch) => {
-            const postId = sketch.postId;
-            const token = localStorage.getItem('token');
-            axios.get(`${process.env.REACT_APP_API_URL}api/Sketch/getLikes/${postId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
+        const fetchLikesForAllPosts = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const likesData = {};
+
+                for (let sketch of sketches) {
+                    const response = await axios.get(`${process.env.REACT_APP_API_URL}api/Sketch/getLikes/${sketch.postId}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    });
+                    
+                    if (response.data.success && response.data.results.length > 0) {
+                    
+                        likesData[sketch.postId] = true;
+                    } else {
+    
+                        likesData[sketch.postId] = false;
+                    }
                 }
-            })
-            .then(response => {
-                if (response.data.success) {
-                    setLikedPosts(prevLikedPosts => ({
-                        ...prevLikedPosts,
-                        [postId]: response.data.liked
-                    }));
-                }
-            })
-            .catch(error => {
-                console.error("There was an error fetching like status!", error);
-            });
-        });
+    
+                setLikedPosts(likesData); 
+            } catch (error) {
+                console.error("Error fetching likes for posts:", error);
+            }
+        };
+    
+        if (sketches.length > 0) {
+            fetchLikesForAllPosts();
+        }
     }, [sketches]);
+    
+
+    
+    const handleLikeClick = async (postId, isLiked) => {
+        const token = localStorage.getItem('token');
+        if (isLiked) {
+            try {
+                await axios.delete(`${process.env.REACT_APP_API_URL}api/Sketch/removeLike/${postId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                });
+                setLikedPosts(prevState => ({
+                    ...prevState,
+                    [postId]: false
+                }));
+            } catch (error) {
+                console.error("Error unliking the post:", error);
+            }
+        } else {
+            try {
+                await axios.post(`${process.env.REACT_APP_API_URL}api/Sketch/addLike/${postId}`, {}, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                });
+                setLikedPosts(prevState => ({
+                    ...prevState,
+                    [postId]: true
+                }));
+            } catch (error) {
+                console.error("Error liking the post:", error);
+            }
+        }
+    };
 
     const handleImageClick = (url) => {
         setSelectedImageUrl(url);
@@ -149,7 +195,11 @@ const ImageFeed = ({ searchTerm }) => {
                         <button className='buttonimg' onClick={() => handleImageClick(sketch.mediaUrl)}> 
                             <img className="image-item" src={sketch.mediaUrl} alt={`sketch-${sketch.postId}`} id='img'/>
                         </button>
-                        <LikeButton postId={sketch.postId} liked={likedPosts[sketch.postId]} />
+                        <LikeButton 
+                            postId={sketch.postId} 
+                            liked={likedPosts[sketch.postId] || false} // Pass down the liked state
+                            onLikeClick={handleLikeClick} // Pass down the like handler
+                        />
                         <FaRegComments className='comment' type='button' onClick={() => handleCommentClick(sketch.postId)}/>
                         <button className='profile' onClick={() => handleProfileClick(sketch.artistID)}><Avatar className='avatar'/></button>
                     </div>
