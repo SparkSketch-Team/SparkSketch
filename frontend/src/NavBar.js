@@ -23,16 +23,18 @@ function NavBar() {
             'Authorization': `Bearer ${token}`,
           }
         });
-        if (response.data && response.data.userId) {
-          setUserId(response.data.userId);
+        // Assuming the response has the structure { "results": "fa81cf90-2862-461b-ad8a-2c6999dbf230", "success": true, "error": null }
+        if (response.data && response.data.success) {
+          setUserId(response.data.results);
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
     };
-
+  
     fetchUserId();
   }, []);
+  
 
   return (
     <div>
