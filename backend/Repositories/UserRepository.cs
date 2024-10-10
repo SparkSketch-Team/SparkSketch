@@ -182,7 +182,7 @@ public class UserRepository : BaseRepository, IUserRepository
     }
   
 
-    public async Task<bool> EditUser(EditUserInfo userInfo, string userId)
+    public async Task<bool> EditUser(EditUserInfo userInfo, string userId, string? profilePictureUrl)
     {
         // Check if the User Exists
         var user = await db.Users.Include(u => u.UserPermission)
@@ -229,10 +229,9 @@ public class UserRepository : BaseRepository, IUserRepository
         }
 
 
-        // Profile picture
-        if (!userInfo.ProfilePictureUrl.IsNullOrEmpty())
+        if (!string.IsNullOrEmpty(profilePictureUrl))
         {
-            user.ProfilePictureUrl = userInfo.ProfilePictureUrl;
+            user.ProfilePictureUrl = profilePictureUrl;
         }
 
         // Bio
@@ -262,7 +261,6 @@ public class UserRepository : BaseRepository, IUserRepository
             Username = user.Username,
             EmailAddress = user.EmailAddress,
             Bio = user.Bio,
-            ProfilePictureUrl = user.ProfilePictureUrl
         };
 
         return editUserInfo;

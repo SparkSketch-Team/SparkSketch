@@ -209,8 +209,7 @@ const ImageFeed = ({ searchTerm }) => {
                             onLikeClick={handleLikeClick} // Pass down the like handler
                         />
                         <FaRegComments className='comment' type='button' onClick={() => handleCommentClick(sketch.postId)}/>
-                        <button className='profile' onClick={() => handleProfileClick(sketch.artistID)}><Avatar className='avatar'/></button>
-                        <ToastContainer />
+                        <button className='profile' onClick={() => handleProfileClick(sketch.artistID)}><Avatar className='avatar' userId={sketch.artistID}/></button>
                     </div>
                 ))
             )}
@@ -231,7 +230,7 @@ const ImageFeed = ({ searchTerm }) => {
                     <span className="close" onClick={closeProfileModal}>&times;</span>
                     <div className="modal-content">
                     <div className='container1'>
-                        <div className='modalpfp'><Avatar/> {selectedUser.username}</div>
+                        <div className='modalpfp'><Avatar userId={selectedUser.userId}/> {selectedUser.username}</div>
                         <p className='box1'>{selectedUser.followers} <br/>Followers</p><p className='box1'>{selectedUser.sketches} <br/>Sketches<br/>
                         </p><button className='add' onClick={addFriend}>+ Add Friend</button>
                         <br />

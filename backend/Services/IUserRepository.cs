@@ -9,7 +9,7 @@ public interface IUserRepository
     Task<string> Login(LoginInfo loginInfo);
     Task<string> RegisterAndLoginUser(CreateUserInfo userInfo);
     Task<Guid> AddUser(CreateUserInfo userInfo);
-    Task<bool> EditUser(EditUserInfo userInfo, string userId);
+    Task<bool> EditUser(EditUserInfo userInfo, string userId, string? profilePictureUrl);
     Task<EditUserInfo> GetSelf(string userId);
     Task<User> GetUserByIdAsync(Guid userId);
     Task<bool> ValidateUser(LoginInfo loginInfo);
