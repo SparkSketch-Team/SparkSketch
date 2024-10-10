@@ -57,7 +57,7 @@ public class UserController : ApiController
             return FailMessage(ex.Message);
         }
     }
-
+    
     [HttpPost]
     [Route("EditUser")]
     [Authorize]

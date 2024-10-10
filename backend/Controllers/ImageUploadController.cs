@@ -37,7 +37,7 @@ public class ImageUploadController : ApiController
     public async Task<IActionResult> UploadFile(IFormFile file)
     {
 
-        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        var userId = User.Claims.FirstOrDefault(c => c.Type == SparkSketchClaims.UserId)?.Value;
 
         if (string.IsNullOrEmpty(userId))
         {
