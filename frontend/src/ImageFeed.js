@@ -7,6 +7,8 @@ import { FaRegComments } from "react-icons/fa";
 import 'animate.css';
 import CommentModal from './CommentModal';
 import LikeButton from './Like.js';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ImageFeed = ({ searchTerm }) => {
     const [sketches, setSketches] = useState([]);
@@ -164,18 +166,24 @@ const ImageFeed = ({ searchTerm }) => {
 
     const addFriend = async () => {
         try {
-            const response = await fetch(`api/Friend/Add`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}api/Friend/Add`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userId: selectedUser.userId }),
+                body: JSON.stringify({ // Ensure the body is stringified to JSON
+                    followedUserId: selectedUser.userId.toString(),
+                }),
             });
             if (response.ok) {
-                alert(`${selectedUser.username} has been added as a friend!`);
+                toast.success(`${selectedUser.username} has been added as a friend!`, {
+                    position: "top-left"
+                });
             } else {
-                alert('Failed to add friend. Please try again.');
+                toast.error('Failed to add friend. Please try again.', {
+                    position: "top-left"
+                });
             }
         } catch (error) {
             console.error('Error adding friend:', error);
@@ -201,7 +209,7 @@ const ImageFeed = ({ searchTerm }) => {
                             onLikeClick={handleLikeClick} // Pass down the like handler
                         />
                         <FaRegComments className='comment' type='button' onClick={() => handleCommentClick(sketch.postId)}/>
-                        <button className='profile' onClick={() => handleProfileClick(sketch.artistID)}><Avatar className='avatar'/></button>
+                        <button className='profile' onClick={() => handleProfileClick(sketch.artistID)}><Avatar className='avatar' userId={sketch.artistID}/></button>
                     </div>
                 ))
             )}
@@ -222,7 +230,7 @@ const ImageFeed = ({ searchTerm }) => {
                     <span className="close" onClick={closeProfileModal}>&times;</span>
                     <div className="modal-content">
                     <div className='container1'>
-                        <div className='modalpfp'><Avatar/> {selectedUser.username}</div>
+                        <div className='modalpfp'><Avatar userId={selectedUser.userId}/> {selectedUser.username}</div>
                         <p className='box1'>{selectedUser.followers} <br/>Followers</p><p className='box1'>{selectedUser.sketches} <br/>Sketches<br/>
                         </p><button className='add' onClick={addFriend}>+ Add Friend</button>
                         <br />

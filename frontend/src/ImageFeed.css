@@ -63,10 +63,13 @@
     width: 15%;
     bottom: 87%;
     left: 30%;
+    height: 50px;
+    width: 60px;
 }
 
 .modalpfp {
     width: 100px;
+    height: 100px;
     position: relative;
     margin: 10px;
 }

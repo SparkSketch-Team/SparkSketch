@@ -13,6 +13,7 @@ public class FriendRepository : BaseRepository, IFriendRepository
 
     public async Task<bool> AddFriend(Guid userId, Guid friendId)
     {
+
         var follower = new Follower
         {
             FollowedUserID = friendId,
@@ -21,9 +22,9 @@ public class FriendRepository : BaseRepository, IFriendRepository
         };
 
         db.Followers.Add(follower);
-
         return await db.SaveChangesAsync() > 0;
     }
+
 
     public async Task<bool> RemoveFriend(Guid userId, Guid friendId)
     {
@@ -45,5 +46,13 @@ public class FriendRepository : BaseRepository, IFriendRepository
             .Where(f => f.FollowingUserID == userId)
             .Select(f => f.User)  // Assuming that Follower.User refers to the followed User entity
             .ToListAsync();
+    }
+
+    public async Task<bool> CheckExistingFriendship(Guid userId, Guid friendId)
+    {
+        var existingFollower = await db.Followers
+            .FirstOrDefaultAsync(f => f.FollowingUserID == userId && f.FollowedUserID == friendId);
+
+        return existingFollower != null;
     }
 }

@@ -1,59 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import NavBar from './NavBar';
 import './Profile.css';
 import { useNavigate } from 'react-router-dom';
 import Avatar from './Avatar';
+import axios from 'axios';
 
 function Profile() {
     const navigate = useNavigate();
-    const [userData, setUserData] = useState(null);
-    const [error, setError] = useState('');
+    const [userId, setUserId] = useState(null);
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    throw new Error('No token found. Please login.');
-                }
-
-                const response = await fetch(`${process.env.REACT_APP_API_URL}api/User/GetSelf`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error('No Response');
-                }
-
-                const data = await response.json();
-                if (data.success) {
-                    setUserData(data.results);
-                } else {
-                    throw new Error(data.error || 'Failed to fetch user data');
-                }
-            } catch (err) {
-                setError(err.message);
-                // If there's an authentication error, redirect to login
-                if (err.message === 'No token found. Please login.') {
-                    navigate('/login');
-                }
-            }
-        };
-
-        fetchUserData();
-    }, [navigate]);
-
-    if (error) {
-        return <div className="error-message">{error}</div>;
-    }
-
-    if (!userData) {
-        return <div>Loading...</div>;
-    }
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const token = localStorage.getItem('token'); // Assuming you're storing the token in localStorage
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}api/User/GetSelfUserId`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+        // Assuming the response has the structure { "results": "fa81cf90-2862-461b-ad8a-2c6999dbf230", "success": true, "error": null }
+        if (response.data && response.data.success) {
+          setUserId(response.data.results);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+  
+    fetchUserId();
+  }, []);
 
     return (
         <div className='App'> 
@@ -61,10 +36,9 @@ function Profile() {
             <header className='title'>MY PROFILE</header>
             <hr/>
             <div className='container'>
-                <div className='avatar'><Avatar/></div>
-                <p className='box'>
-                    {userData.followers || 0} <br></br>Followers<br></br>
-                    <button className='button' type='button' onClick={() => navigate('/edit')} >Edit Profile</button>
+                <div className='avatar'>{userId && <Avatar userId={userId} />}</div>
+                <p className='box'>--- <br></br>Followers<br></br>
+                <button className='button' type='button' onClick={() => navigate('/edit')} >Edit Profile</button>
                 </p>
                 <p className='box'>
                     {userData.sketches || 0} <br></br>Sketches<br></br>

@@ -17,3 +17,8 @@
 .navbar-custom .navbar-brand:hover {
     color: rgb(255, 192, 0);
 }
+
+.pic {
+    width: 60px;
+    height: 60px;
+}

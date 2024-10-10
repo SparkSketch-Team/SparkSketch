@@ -16,3 +16,10 @@
     width: 100%;
     padding: 40px;
 }
+
+.check2 {
+    width: 15px;
+    position: absolute;
+    bottom: 23.5%;
+    left: 70px;
+}

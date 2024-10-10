@@ -17,24 +17,39 @@ public class FriendController : ApiController
         _friendRepository = friendRepository;
     }
 
-    // POST: api/Friend/Add
     [HttpPost("Add")]
-    public async Task<IActionResult> AddFriend([FromBody] Guid followedUserId)
+    public async Task<IActionResult> AddFriend([FromBody] AddFriendRequest followedUserId)
     {
+        _logger.LogInformation("AddFriend called.");
         var currentUserId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
 
         if (currentUserId == null)
         {
+            _logger.LogError("CurrentUserId is null.");
             return Unauthorized();
         }
 
-        var isAdded = await _friendRepository.AddFriend(Guid.Parse(currentUserId), followedUserId);
+        if (followedUserId == null || followedUserId.FollowedUserId == null)
+        {
+            _logger.LogError("FollowedUserId is null.");
+            return FailMessage("Failed to add friend");
+        }
+
+        var friendExists = await _friendRepository.CheckExistingFriendship(Guid.Parse(currentUserId), Guid.Parse(followedUserId.FollowedUserId));
+        if (friendExists) {
+            _logger.LogError("Friendship already exists");
+            return FailMessage("Friendship already exists");
+        }
+
+        var isAdded = await _friendRepository.AddFriend(Guid.Parse(currentUserId), Guid.Parse(followedUserId.FollowedUserId));
 
         if (!isAdded)
         {
+            _logger.LogError("Failed to add friend.");
             return FailMessage("Failed to add friend.");
         }
 
+        _logger.LogInformation("Friend added successfully.");
         return SuccessMessage("Friend added successfully.");
     }
 

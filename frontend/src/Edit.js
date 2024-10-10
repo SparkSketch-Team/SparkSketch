@@ -7,28 +7,36 @@ function Edit() {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [bio, setBio] = useState('');
-    const [profilePictureUrl, setProfilePictureUrl] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
 
     const handleSave = async () => {
         const token = localStorage.getItem('token');
-        
+
         try {
+            const formData = new FormData();
+
+            // Append user information
+            formData.append('firstName', null); // or ''
+            formData.append('lastName', null);  // or ''
+            formData.append('username', username);
+            formData.append('emailAddress', email);
+            formData.append('bio', bio);
+
+            // Append profile picture if selected
+            if (selectedFile) {
+                formData.append('profilePicture', selectedFile); // 'profilePicture' matches the IFormFile param name
+            }
+
             const response = await axios.post(
                 `${process.env.REACT_APP_API_URL}api/User/EditUser`,
-                {
-                    firstName: null, // or ''
-                    lastName: null,  // or ''
-                    username: username,
-                    emailAddress: email,
-                    bio: bio,
-                    profilePictureUrl: profilePictureUrl
-                },
+                formData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
-                    }
+                    },
                 }
             );
+
             console.log('Profile updated successfully:', response.data);
             // Optionally handle success (e.g., navigate to another page, show a success message)
         } catch (error) {
@@ -38,8 +46,10 @@ function Edit() {
     };
 
     const handleImageChange = (e) => {
-        // Handle image selection, for now, just simulate it as a string URL
-        setProfilePictureUrl('path/to/selected/image.jpg');
+        const file = e.target.files[0];
+        if (file) {
+            setSelectedFile(file);
+        }
     };
 
     return (
@@ -50,8 +60,11 @@ function Edit() {
             <div className='container'>
                 <p className='box-edit'>Change Picture
                     <br/>
-                    <button onClick={handleImageChange}>Choose Image</button>
+                    <input type='file' onChange={handleImageChange} />
                     <br/>
+                    {selectedFile && (
+                        <img src={URL.createObjectURL(selectedFile)} alt='Profile Preview' width={100} height={100} />
+                    )}
                     <br/>
                     Email
                     <br/>

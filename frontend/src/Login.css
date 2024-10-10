@@ -107,3 +107,11 @@ form button {
     font-size: larger;
 }
 
+.error {
+    color: white;
+    font-size: 14px;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+
