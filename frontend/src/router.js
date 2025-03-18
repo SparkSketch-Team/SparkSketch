@@ -9,6 +9,7 @@ import Forgot from './Forgot';
 import Reset from './Reset';
 import Profile from './Profile';
 import Edit from './Edit';
+import PromptPage from './PromptPage';
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ export const router = createBrowserRouter([
     {
       path: "/edit",
       element: <PrivateRoute element={<Edit />} />,
+    },
+    {
+      path: "/PromptDemo",
+      element: <PromptPage />
     }
   ]);
 
