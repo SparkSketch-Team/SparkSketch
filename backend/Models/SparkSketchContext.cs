@@ -17,6 +17,8 @@ public class SparkSketchContext : DbContext
     public DbSet<Like> Likes { get; set; } = null!;
     public DbSet<Follower> Followers { get; set; } = null!;
     public DbSet<Media> Media { get; set; } = null!;
+    public DbSet<Rating> Ratings { get; set; } = null!;
+
 
     public SparkSketchContext(IConfiguration configuration)
     {

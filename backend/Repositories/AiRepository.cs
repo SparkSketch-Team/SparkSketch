@@ -99,14 +99,50 @@ public class AiRepository : BaseRepository, IAiRepository
             // Assuming CreateNewPrompt adds a new prompt to the _prompts list
             return db.Prompts.First(p => p.PromptDate.Date == currentDate);
         }
-
-
     }
 
     public async Task<List<string>> GetAllPromptTextsAsync()
     {
     return await db.Prompts.Select(p => p.PromptText).ToListAsync();
     }
+
+    public async Task<Rating> UpdatePromptRating(RatingInfo ratingInfo)
+    {
+        var prompt = await db.Prompts.FindAsync(ratingInfo.PromptId);
+        if (prompt == null)
+        {
+            return null; // Prompt doesn't exist
+        }
+
+        var existingRating = await db.Ratings.FirstOrDefaultAsync(r => r.Id == ratingInfo.Id);
+
+        if (existingRating == null)
+        {
+            // Create a new rating
+            var newRating = new Rating
+            {
+                PromptId = ratingInfo.PromptId,
+                RatingValue = ratingInfo.RatingValue,
+                Comment = ratingInfo.Comment,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            db.Ratings.Add(newRating);
+            await db.SaveChangesAsync();
+            return newRating; // Return the newly created rating with its ID
+        }
+        else
+        {
+            // Update the existing rating
+            existingRating.RatingValue = ratingInfo.RatingValue;
+            existingRating.Comment = ratingInfo.Comment;
+            existingRating.UpdatedAt = DateTime.UtcNow;
+
+            await db.SaveChangesAsync();
+            return existingRating;
+        }
+    }
+
 
 
 }

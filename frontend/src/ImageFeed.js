@@ -7,7 +7,7 @@ import { FaRegComments } from "react-icons/fa";
 import 'animate.css';
 import CommentModal from './CommentModal';
 import LikeButton from './Like.js';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ImageFeed = ({ searchTerm }) => {

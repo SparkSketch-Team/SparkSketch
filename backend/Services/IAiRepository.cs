@@ -7,5 +7,7 @@ public interface IAiRepository
     Task<ChatResult> CreateNewPrompt();
     Task<Prompt> GetPrompt();
     Task<List<string>> GetAllPromptTextsAsync();
+    Task<Rating?> UpdatePromptRating(RatingInfo ratingInfo);
+
 }
 
