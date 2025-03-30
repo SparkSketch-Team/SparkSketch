@@ -59,4 +59,45 @@ public class AiController : ApiController
                 return FailMessage(e.Message);
             }
     }
+
+    [HttpPost]
+    [Route("UpdatePromptRating")]
+    public async Task<JsonResult> UpdatePromptRating([FromBody] RatingInfo ratingInfo) // Ensure [FromBody] is present
+    {
+        if (ratingInfo == null)
+        {
+            _logger.LogWarning("RatingInfo is null in request.");
+            return FailMessage("Request body is missing or incorrect.");
+        }
+
+        try
+        {
+            _logger.LogInformation("RatingPrompt called with RatingInfo: {@RatingInfo}", ratingInfo);
+
+            var response = await _aiRepository.UpdatePromptRating(ratingInfo);
+            if (response == null)
+            {
+                _logger.LogWarning("RatingPrompt returned null: Invalid Prompt ID.");
+                return FailMessage("Invalid Prompt ID");
+            }
+
+            return SuccessMessage(new
+            {
+                Id = response.Id,
+                PromptId = response.PromptId,
+                RatingValue = response.RatingValue.ToString(), // Ensure enum is returned as a string
+                Comment = response.Comment,
+                CreatedAt = response.CreatedAt,
+                UpdatedAt = response.UpdatedAt
+            });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Exception in RatingPrompt.");
+            return FailMessage(e.Message);
+        }
+    }
+
+
+
 }
