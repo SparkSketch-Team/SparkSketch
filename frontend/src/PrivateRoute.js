@@ -6,8 +6,8 @@ const PrivateRoute = ({ element }) => {
     console.log('Token:', token); // Check if the token is being retrieved correctly
 
     if (!token) {
-        console.log('User not authenticated, redirecting to /login');
-        return <Navigate to="/login" />;
+        console.log('Other features are not available in this demo, redirecting to /home');
+        return <Navigate to="/home" />;
     }
 
     console.log('User authenticated, rendering element');
