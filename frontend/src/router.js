@@ -14,7 +14,7 @@ import PromptPage from './PromptPage';
 export const router = createBrowserRouter([
   {
       path: "/",
-      element: <Login />,
+      element: <App />,
       errorElement: <ErrorPage />,
   },
   {
@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
   },
   {
       path: "/home",
-      element: <PrivateRoute element={<App />} />,
+      element: <App />,
   },
   {
       path: "/login",
